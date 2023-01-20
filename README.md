@@ -7,6 +7,7 @@
 - numpy
 - wavio
 - argparse
+- math
 
 ## To run
 ```
