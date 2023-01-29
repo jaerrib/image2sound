@@ -67,8 +67,9 @@ def array_to_sound(array):
 
 def save_wav(save_path, array):
     rate = 22050
-    split_test = save_path.split(".")
-    file_name = split_test[0]+".wav"
+    split_str = save_path.split(".")
+    split_str = split_str[0].split("/")
+    file_name = split_str[-1]+".wav"
     wavio.write(file_name, array, rate, sampwidth=4, scale=2, clip="ignore")
     print("Saved file as ", file_name)
 
