@@ -61,7 +61,7 @@ def array_to_sound(array):
             blue = y[2]
             freq = rgb_to_frequency(red, green, blue)
             tone = np.sin(2 * np.pi * freq)
-            temp_array.append(tone)
+            temp_array.append([tone, tone])
     return temp_array
 
 
@@ -70,7 +70,7 @@ def save_wav(save_path, array):
     split_str = save_path.split(".")
     split_str = split_str[0].split("/")
     file_name = split_str[-1]+".wav"
-    wavio.write(file_name, array, rate, sampwidth=4, scale=2, clip="ignore")
+    wavio.write(file_name, array, rate, scale=2, sampwidth=4, clip="ignore")
     print("Saved file as ", file_name)
 
 
