@@ -62,9 +62,16 @@ def array_to_sound(array):
             red = y[0]
             green = y[1]
             blue = y[2]
-            left_tone = np.sin(2 * np.pi * get_freq(red, green))
-            right_tone = np.sin(2 * np.pi * get_freq(green, blue))
-            temp_array.append([left_tone, right_tone])
+            left_freq = get_freq(red, green)
+            right_freq = get_freq(green, blue)
+            rate = 22050
+            time = 1 # 1 works best for very small image files, try .1 or less
+            n = int(rate * time)
+            time_grid = np.arange(n) / rate
+            left_side = np.sin(2 * np.pi * left_freq * time_grid)
+            right_side = np.sin(2 * np.pi * right_freq * time_grid)
+
+            temp_array.append([left_side, right_side])
     return temp_array
 
 
@@ -73,7 +80,7 @@ def save_wav(save_path, array):
     split_str = save_path.split(".")
     split_str = split_str[0].split("/")
     file_name = split_str[-1]+".wav"
-    wavio.write(file_name, array, rate, scale=2, sampwidth=4, clip="ignore")
+    wavio.write(file_name, array, rate, scale=2, sampwidth=3, clip="ignore")
     print("Saved file as ", file_name)
 
 
