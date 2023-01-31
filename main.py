@@ -11,7 +11,7 @@ def image_to_array(save_path):
     return img_arr
 
 
-def get_freq(color1, color2):
+def get_freq(color):
     freq_dict = {
         "0": 130.8128,
         "1": 146.8324,
@@ -49,45 +49,52 @@ def get_freq(color1, color2):
         "33": 3520.000,
         "34": 3951.066,
     }
-
-    selection = (color1 + color2) / 2
-    key_item = str(trunc(selection / 7.314285714))
+    key_item = str(trunc(color / 7.314285714))
     return freq_dict[key_item]
 
 
-def array_to_sound(array):
-    temp_array = []
-    for x in array:
+def get_sin(color):
+    freq = get_freq(color)
+    rate = 44100
+    time = .75
+    n = int(rate * time)
+    time_grid = np.arange(n) / rate
+    return np.sin(2 * np.pi * freq * time_grid)
+
+
+def save_wav(save_path, side, array):
+    rate = 44100
+    split_str = save_path.split(".")
+    split_str = split_str[0].split("/")
+    file_name = split_str[-1]+side+".wav"
+    wavio.write(file_name, array, rate, scale=2, sampwidth=3, clip="ignore")
+    print("Saved file as ", file_name)
+
+
+def convert_to_multiple(file_path):
+    image_array = image_to_array(file_path)
+    red_array = []
+    green_array = []
+    blue_array = []
+    for x in image_array:
         for y in x:
             red = y[0]
             green = y[1]
             blue = y[2]
-            left_freq = get_freq(red, green)
-            right_freq = get_freq(green, blue)
-            rate = 22050
-            time = 1 # 1 works best for very small image files, try .1 or less
-            n = int(rate * time)
-            time_grid = np.arange(n) / rate
-            left_side = np.sin(2 * np.pi * left_freq * time_grid)
-            right_side = np.sin(2 * np.pi * right_freq * time_grid)
-
-            temp_array.append([left_side, right_side])
-    return temp_array
-
-
-def save_wav(save_path, array):
-    rate = 22050
-    split_str = save_path.split(".")
-    split_str = split_str[0].split("/")
-    file_name = split_str[-1]+".wav"
-    wavio.write(file_name, array, rate, scale=2, sampwidth=3, clip="ignore")
-    print("Saved file as ", file_name)
+            red_value = get_sin(red)
+            green_value = get_sin(green)
+            blue_value = get_sin(blue)
+            red_array.append([red_value])
+            green_array.append([green_value])
+            blue_array.append([blue_value])
+    save_wav(file_path, "-R", red_array)
+    save_wav(file_path, "-G", green_array)
+    save_wav(file_path, "-B", blue_array)
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--path", type=str)
 args = parser.parse_args()
 path = args.path
-image_array = image_to_array(path)
-sound_array = array_to_sound(image_array)
-save_wav(path, sound_array)
+
+convert_to_multiple(path)
