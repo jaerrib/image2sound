@@ -7,11 +7,12 @@ from tone_array import get_tone_array
 
 class SoundImage:
 
-    def __init__(self, path, key):
+    def __init__(self, path, key="C", tempo="60"):
         self.path = path
         self.freq_dict = get_tone_array(key)
         self.image_array = self.image_to_array(path)
         self.length = len(self.freq_dict)
+        self.tempo = int(tempo)
 
     @staticmethod
     def image_to_array(path):
@@ -27,7 +28,7 @@ class SoundImage:
     def get_sin(self, color):
         freq = self.get_freq(color)
         rate = 44100
-        time = .75
+        time = 60 / self.tempo
         n = int(rate * time)
         time_grid = np.arange(n) / rate
         return np.sin(2 * np.pi * freq * time_grid)
