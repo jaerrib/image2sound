@@ -94,7 +94,8 @@ def convert_to_multiple(file_path):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--path", type=str)
+parser.add_argument("-key", "--key", type=str)
 args = parser.parse_args()
 path = args.path
-
+key = args.key
 convert_to_multiple(path)
