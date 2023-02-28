@@ -98,6 +98,7 @@ FREQ_DICT = {
 }
 
 # Due to the conversion method, all scales are written starting with C
+# Currently testing the accuracy of this statement by changing some keys
 SCALE = {
     "C": ("C", "D", "E", "F", "G", "A", "B"),
     "Cminor": ("C", "D", "E", "F", "G", "A", "B"),
@@ -105,13 +106,14 @@ SCALE = {
     "C#minor": ("C#", "D#", "E", "F#", "G#", "A", "B"),
     "Db": ("C#", "D#", "E#", "F#", "G#", "A#", "C"),
     "D": ("C#", "D", "E", "F#", "G", "A", "B"),
-    "Dminor": ("C", "D", "E", "F", "G", "A", "A#"),
-    "D#": ("C", "D", "E", "F", "G", "A", "B"),
-    "D#minor": ("C#", "D#", "F", "F#", "G#", "A#", "B"),
+    "Dminor": ("D", "E", "F", "G", "A", "A#", "C"),
+    "D#": ("D#", "F", "G", "G#", "A#", "C", "D"),
+    "D#minor": ("D#", "F", "F#", "G#", "A#", "B", "C#"),
     "Eb": ("C", "D", "D#", "F", "G", "G#", "A#"),
     "Ebminor": ("C#", "D#", "F", "F#", "G#", "A#", "B"),
     "E": ("C#", "D#", "E", "F#", "G#", "A", "B"),
     "Eminor": ("C", "D", "E", "F#", "G", "A", "B"),
+    "EminorPentatonic": ("E", "G", "A", "B", "D"),
     "F": ("C", "D", "E", "F", "G", "A", "A#"),
     "Fminor": ("C", "C#", "D#", "F", "G", "G#", "A#"),
     "F#": ("C#", "D#", "F", "F#", "G#", "A#", "B"),
@@ -123,6 +125,7 @@ SCALE = {
     "Ab": ("C", "C#", "D#", "F", "G", "G#", "A#"),
     "A": ("C#", "D", "E", "F#", "G#", "A", "B"),
     "Aminor": ("C", "D", "E", "F", "G", "A", "B"),
+    "AminorPentatonic": ("A", "C", "D", "E", "G"),
     "A#": ("C", "D", "E", "F", "G", "A", "B"),
     "A#minor": ("C#", "D#", "F", "F#", "G#", "A#", "C"),
     "Bbminor": ("C#", "D#", "F", "F#", "G#", "A#", "C"),
