@@ -134,7 +134,8 @@ SCALE = {
 def get_tone_array(key):
     scale_array = SCALE[key]
     tone_array = []
-    for index in range(1, 8):
+    index_length = len(scale_array) + 1
+    for index in range(1, index_length):
         for note in scale_array:
             tone_array.append(FREQ_DICT[note+str(index)])
     return tone_array
