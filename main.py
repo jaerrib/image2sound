@@ -9,6 +9,6 @@ args = parser.parse_args()
 path = args.path
 key = args.key
 tempo = args.tempo
-si = SoundImage(path, key)
+si = SoundImage(path, key, tempo)
 si.convert_to_multiple()
 
