@@ -7,7 +7,7 @@ from tone_array import get_tone_array
 
 class SoundImage:
 
-    def __init__(self, path, key="C", tempo="60"):
+    def __init__(self, path="test_image.png", key="C", tempo="60"):
         self.path = path
         self.freq_dict = get_tone_array(key)
         self.image_array = self.image_to_array(path)
