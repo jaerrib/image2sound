@@ -134,6 +134,25 @@ SCALE = {
     "Bbminor": ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
     "Bminor": ["B", "C#", "D", "E", "F#", "G", "A"],
 
+    # Major Pentatonic
+    "Cpentatonic": ["C", "D", "E", "G", "A"],
+    "C#pentatonic": ["C#", "D#", "F", "G#", "A#"],
+    "Dbpentatonic": ["Db", "Eb", "F", "Ab", "Bb"],
+    "Dpentatonic": ["D", "E", "F#", "A", "B"],
+    "D#pentatonic": ["D#", "F", "G#", "A#", "C"],
+    "Ebpentatonic": ["Eb", "F", "G", "Bb", "C"],
+    "Epentatonic": ["E", "F#", "G#", "B", "C#"],
+    "Fpentatonic": ["F", "G", "A", "C", "D"],
+    "F#pentatonic": ["F#", "G#", "A#", "C#", "D#"],
+    "Gbpentatonic": ["Gb", "Ab", "Bb", "Db", "Eb"],
+    "Gpentatonic": ["G", "A", "B", "D", "E"],
+    "G#pentatonic": ["G#", "A#", "C", "D#", "F"],
+    "Abpentatonic": ["Ab", "Bb", "C", "Eb", "F"],
+    "Apentatonic": ["A", "B", "C#", "E", "F#"],
+    "A#pentatonic": ["A#", "B#", "D", "F", "G"],
+    "Bbpentatonic": ["Bb", "C", "D", "F", "G"],
+    "Bpentatonic": ["B", "C#", "D#", "F#", "G#"],
+
     # Minor Pentatonic
     "CminorPentatonic": ["C", "Eb", "F", "G", "Bb"],
     "C#minorPentatonic": ["C#", "E", "F#", "G#", "B"],
