@@ -144,7 +144,7 @@ SCALE = {
     "FminorPentatonic": ["F", "Ab", "Bb", "C", "Eb"],
     "F#minorPentaonic": ["F#", "A", "B", "C#", "E"],
     "GbminorPentatonic": ["G", "A", "B", "Db", "E"],
-    "GminorPentatonic": ["G", "A", "Bb", "C", "D", "Eb", "F"],
+    "GminorPentatonic": ["G", "Bb", "C", "D", "F"],
     "G#minorPentaonic": ["G#", "B", "C#", "D#", "F#"],
     "AminorPentatonic": ["A", "C", "D", "E", "G"],
     "A#minorPentatonic": ["A#", "C#", "D#", "E#", "G#"],
