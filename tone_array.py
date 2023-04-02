@@ -188,12 +188,10 @@ EQUIVALENT_NOTES = {
 
 
 def flat_conversion(scale):
-    print("Original scale", scale)
     for index in range(len(scale)):
         if scale[index] in EQUIVALENT_NOTES:
             note = scale[index]
             scale[index] = EQUIVALENT_NOTES[note]
-    print("New scale", scale)
     return scale
 
 
