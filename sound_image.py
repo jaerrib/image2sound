@@ -3,21 +3,35 @@ import numpy as np
 import wavio
 from math import trunc
 from tone_array import get_tone_array
+from dimension_calc import get_new_dim
 
 
 class SoundImage:
 
-    def __init__(self, path="test_image.png", key="C", tempo="60"):
+    def __init__(self,
+                 path="test_image.png",
+                 key="C",
+                 tempo="60",
+                 minutes="1",
+                 seconds="0"):
         self.path = path
         self.freq_dict = get_tone_array(key)
-        self.image_array = self.image_to_array(path)
         self.length = len(self.freq_dict)
         self.tempo = int(tempo)
+        self.minutes = int(minutes)
+        self.seconds = int(seconds)
+        self.image_array = self.image_to_array(path,
+                                               self.minutes,
+                                               self.seconds,
+                                               self.tempo)
 
     @staticmethod
-    def image_to_array(path):
+    def image_to_array(path, minutes, seconds, tempo):
         img = Image.open(path).convert(mode="RGB")
-        img_arr = np.asarray(img, dtype='int64')
+        img_dim = img.size
+        size = get_new_dim(img_dim, minutes, seconds, tempo)
+        output = img.resize(size)
+        img_arr = np.asarray(output, dtype='int64')
         return img_arr
 
     def get_freq(self, color):
