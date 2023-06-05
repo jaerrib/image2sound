@@ -169,6 +169,9 @@ SCALE = {
     "A#minorPentatonic": ["A#", "C#", "D#", "E#", "G#"],
     "BbminorPentatonic": ["Bb", "Db", "Eb", "F", "Ab"],
     "BminorPentatonic": ["B", "D", "E", "F#", "A"],
+
+    # Chromatic
+    "chromatic": ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 }
 
 EQUIVALENT_NOTES = {
