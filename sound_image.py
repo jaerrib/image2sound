@@ -74,3 +74,20 @@ class SoundImage:
         self.save_wav(self.path, "-R", red_array)
         self.save_wav(self.path, "-G", green_array)
         self.save_wav(self.path, "-B", blue_array)
+
+    def convert_to_stereo(self):
+        left_data = []
+        right_data = []
+        for x in self.image_array:
+            for y in x:
+                red = y[0]
+                green = y[1]
+                blue = y[2]
+                left_value = self.get_sin((red + green) / 2)
+                right_value = self.get_sin((blue + green) / 2)
+                left_data.append(left_value)
+                right_data.append(right_value)
+        left = np.array(left_data)
+        right = np.array(right_data)
+        combined = np.hstack((left.reshape(-1, 1), right.reshape(-1, 1)))
+        self.save_wav(self.path, "-stereo", combined)
