@@ -12,7 +12,7 @@
 - math
 
 ## To run
-Simply running ```python3 main.py``` will generate audio files using the test image and default settings.
+Simply running ```python3 main.py``` will generate audio using the test image and default settings.
 
 The following optional parameters may be set, however:
 
@@ -22,8 +22,16 @@ The following optional parameters may be set, however:
 - ***-min*** for the desired number of minutes (defaults to 1 so must be set to zero if shorter tracks are wanted)
 - ***-sec*** for the desired number of seconds (defaults to zero)
 
+Note that the default behavior of the utility is to create a single stereo audio file. 
+Adding ***--split*** will split the resulting audio into three separate files (red, green, blue).
 
-Example:
+
+Example 1:
 ```
 python3 main.py -p image.png -key Dminor -t 80 -min 11 -sec 38
+```
+
+Example 2:
+```
+python3 main.py -p image.png -key Dminor -t 80 -min 11 -sec 38 --split
 ```

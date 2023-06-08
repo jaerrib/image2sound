@@ -13,7 +13,8 @@ class SoundImage:
                  key="C",
                  tempo="60",
                  minutes="1",
-                 seconds="0"):
+                 seconds="0",
+                 split=False):
         self.path = path
         self.freq_dict = get_tone_array(key)
         self.length = len(self.freq_dict)
@@ -24,6 +25,7 @@ class SoundImage:
                                                self.minutes,
                                                self.seconds,
                                                self.tempo)
+        self.split = split
 
     @staticmethod
     def image_to_array(path, minutes, seconds, tempo):
@@ -91,3 +93,9 @@ class SoundImage:
         right = np.array(right_data)
         combined = np.hstack((left.reshape(-1, 1), right.reshape(-1, 1)))
         self.save_wav(self.path, "-stereo", combined)
+
+    def convert(self):
+        if not self.split:
+            self.convert_to_stereo()
+        else:
+            self.convert_to_multiple()
