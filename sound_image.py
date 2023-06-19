@@ -18,9 +18,9 @@ class SoundImage:
         self.path = path
         self.freq_dict = get_tone_array(key)
         self.length = len(self.freq_dict)
-        self.tempo = int(tempo)
-        self.minutes = int(minutes)
-        self.seconds = int(seconds)
+        self.tempo = tempo
+        self.minutes = minutes
+        self.seconds = seconds
         self.image_array = self.image_to_array(path,
                                                self.minutes,
                                                self.seconds,
