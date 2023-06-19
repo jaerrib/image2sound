@@ -9,17 +9,17 @@ from dimension_calc import get_new_dim
 class SoundImage:
 
     def __init__(self,
-                 path="test_image.png",
-                 key="C",
-                 tempo="60",
-                 minutes="1",
-                 seconds="0",
-                 split=False):
+                 path,
+                 key,
+                 tempo,
+                 minutes,
+                 seconds,
+                 split):
         self.path = path
         self.freq_dict = get_tone_array(key)
         self.length = len(self.freq_dict)
-        self.tempo = int(tempo)
-        self.minutes = int(minutes) + (int(seconds) / 60)
+        self.tempo = tempo
+        self.minutes = minutes + (seconds / 60)
         self.image_array = self.image_to_array(path,
                                                self.minutes,
                                                self.tempo)
