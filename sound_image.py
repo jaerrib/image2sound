@@ -19,19 +19,17 @@ class SoundImage:
         self.freq_dict = get_tone_array(key)
         self.length = len(self.freq_dict)
         self.tempo = tempo
-        self.minutes = minutes
-        self.seconds = seconds
+        self.minutes = minutes + (seconds / 60)
         self.image_array = self.image_to_array(path,
                                                self.minutes,
-                                               self.seconds,
                                                self.tempo)
         self.split = split
 
     @staticmethod
-    def image_to_array(path, minutes, seconds, tempo):
+    def image_to_array(path, minutes, tempo):
         img = Image.open(path).convert(mode="RGB")
         img_dim = img.size
-        size = get_new_dim(img_dim, minutes, seconds, tempo)
+        size = get_new_dim(img_dim, minutes, tempo)
         output = img.resize(size)
         img_arr = np.asarray(output, dtype='int64')
         return img_arr
