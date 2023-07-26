@@ -10,7 +10,8 @@ parser.add_argument(
 parser.add_argument(
     "-key",
     "--key",
-    help="Key of the output track as a capital letter",
+    help="Key of the output track as a capital letter plus"
+         "Major/Minor, without spaces",
     default="CMajor",
     type=str)
 parser.add_argument(
