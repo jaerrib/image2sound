@@ -23,8 +23,10 @@ The following optional parameters may be set, however:
 - ***-sec*** for the desired number of seconds (defaults to zero)
 
 Note that the default behavior of the utility is to create a single stereo audio file. 
-Adding ***--split*** will split the resulting audio into three separate files (red, green, blue).
+Adding ```--split``` will split the resulting audio into three separate files (red, green, blue).
 
+### "Reveal" mode 
+Adding ```--reveal``` will override the key, tempo, and minutes/seconds with data derived from the image itself, "revealing" the music within the image as it were,
 
 Example 1:
 ```

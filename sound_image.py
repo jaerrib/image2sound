@@ -1,8 +1,8 @@
 from PIL import Image
 import numpy as np
 import wavio
-from math import trunc
-from tone_array import get_tone_array
+from math import trunc, sqrt
+from tone_array import get_tone_array, get_chromatic_notes
 from dimension_calc import get_new_dim
 
 
@@ -14,25 +14,28 @@ class SoundImage:
                  tempo,
                  minutes,
                  seconds,
-                 split):
+                 split,
+                 reveal):
         self.path = path
-        self.freq_dict = get_tone_array(key)
+        self.key = key
+        self.freq_dict = get_tone_array(self.key)
         self.length = len(self.freq_dict)
         self.tempo = tempo
         self.minutes = minutes + (seconds / 60)
-        self.image_array = self.image_to_array(path,
-                                               self.minutes,
-                                               self.tempo)
+        self.image_array = None
         self.split = split
+        self.reveal = reveal
 
-    @staticmethod
-    def image_to_array(path, minutes, tempo):
-        img = Image.open(path).convert(mode="RGB")
+    def open_file(self):
+        img = Image.open(self.path).convert(mode="RGB")
+        return img
+
+    def image_to_array(self, img):
         img_dim = img.size
-        size = get_new_dim(img_dim, minutes, tempo)
+        size = get_new_dim(img_dim, self.minutes, self.tempo)
         output = img.resize(size)
-        img_arr = np.asarray(output, dtype='int64')
-        return img_arr
+        self.image_array = np.asarray(output, dtype='int64')
+        return self
 
     def get_freq(self, color):
         divisor = 256 / self.length
@@ -93,7 +96,36 @@ class SoundImage:
         self.save_wav(self.path, "-stereo", combined)
 
     def convert(self):
+        img = self.open_file()
+        if self.reveal:
+            self.override(img)
+        self.image_to_array(img)
         if not self.split:
             self.convert_to_stereo()
         else:
             self.convert_to_multiple()
+
+    @staticmethod
+    def determine_key(self, red, green, blue):
+        notes = get_chromatic_notes()
+        root = notes[trunc(red / (len(notes)))]
+        if blue % 2 == 0:
+            family = "Major"
+        else:
+            family = "Minor"
+        key = root + family
+        if green % 2 == 0:
+            key += "Pentatonic"
+        self.key = key
+        return self
+
+    def override(self, img):
+        tiny_output = img.resize((1, 1))
+        tiny_img_arr = np.asarray(tiny_output, dtype='int64')
+        red = tiny_img_arr[0][0][0]
+        green = tiny_img_arr[0][0][1]
+        blue = tiny_img_arr[0][0][2]
+        self.tempo = (red + green + blue) / 3
+        self.determine_key(self, red=red, green=green, blue=blue)
+        self.minutes = sqrt((img.size[0] + img.size[1]) / 2) / 2
+        return self
