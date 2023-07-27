@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "image2sound_jaerrib"
+name = "image2sound"
 version = "0.5"
 authors = [
   { name="John Beers", email="jaerrib@tutanota.com" },
