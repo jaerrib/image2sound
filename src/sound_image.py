@@ -54,16 +54,16 @@ class SoundImage:
         return np.sin(2 * np.pi * freq * time_grid)
 
     @staticmethod
-    def save_wav(input_path, output, side, array):
+    def save_wav(input_path, output_path, side, array):
         rate = 44100
         split_str = ".".join(input_path.split(".")[:-1]).split("/")
         file_name = split_str[-1] + side + ".wav"
         if output == "":
             pass
-        elif path.isdir(output):
-            file_name = output + file_name
+        elif path.isdir(output_path):
+            file_name = output_path + file_name
         else:
-            file_name = output
+            file_name = output_path
         wavio.write(file_name, array, rate, scale=2, sampwidth=3, clip="ignore")
         print("Saved file as ", file_name)
 
