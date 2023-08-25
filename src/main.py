@@ -14,6 +14,13 @@ parser.add_argument(
     type=str,
 )
 parser.add_argument(
+    "-o",
+    "--output",
+    help="The filepath to save the output file to",
+    default="",
+    type=str,
+)
+parser.add_argument(
     "-key",
     "--key",
     help="Key of the output track as a capital letter plus"
