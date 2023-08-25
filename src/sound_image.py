@@ -51,7 +51,7 @@ class SoundImage:
         rate = 44100
         split_str = ".".join(input_path.split(".")[:-1]).split("/")
         file_name = split_str[-1] + side + ".wav"
-        if output == "":
+        if output_path == "":
             pass
         elif isdir(output_path):
             file_name = output_path + file_name
