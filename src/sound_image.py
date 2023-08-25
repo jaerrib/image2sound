@@ -2,6 +2,7 @@ from PIL import Image
 import numpy as np
 import wavio
 from math import trunc, sqrt
+from os import path
 from tone_array import get_tone_array, get_chromatic_notes
 from dimension_calc import get_new_dim
 
@@ -10,6 +11,7 @@ class SoundImage:
 
     def __init__(self,
                  path,
+                 output,
                  key,
                  tempo,
                  minutes,
@@ -17,6 +19,7 @@ class SoundImage:
                  split,
                  reveal):
         self.path = path
+        self.output = output
         self.key = key
         self.freq_dict = get_tone_array(self.key)
         self.length = len(self.freq_dict)
@@ -51,11 +54,16 @@ class SoundImage:
         return np.sin(2 * np.pi * freq * time_grid)
 
     @staticmethod
-    def save_wav(save_path, side, array):
+    def save_wav(input_path, output, side, array):
         rate = 44100
-        split_str = save_path.split(".")
-        split_str = split_str[0].split("/")
+        split_str = ".".join(input_path.split(".")[:-1]).split("/")
         file_name = split_str[-1] + side + ".wav"
+        if output == "":
+            pass
+        elif path.isdir(output):
+            file_name = output + file_name
+        else:
+            file_name = output
         wavio.write(file_name, array, rate, scale=2, sampwidth=3, clip="ignore")
         print("Saved file as ", file_name)
 
@@ -74,9 +82,9 @@ class SoundImage:
                 red_array.append([red_value])
                 green_array.append([green_value])
                 blue_array.append([blue_value])
-        self.save_wav(self.path, "-R", red_array)
-        self.save_wav(self.path, "-G", green_array)
-        self.save_wav(self.path, "-B", blue_array)
+        self.save_wav(self.path, self.output, "-R", red_array)
+        self.save_wav(self.path, self.output, "-G", green_array)
+        self.save_wav(self.path, self.output, "-B", blue_array)
 
     def convert_to_stereo(self):
         left_data = []
@@ -93,7 +101,7 @@ class SoundImage:
         left = np.array(left_data)
         right = np.array(right_data)
         combined = np.hstack((left.reshape(-1, 1), right.reshape(-1, 1)))
-        self.save_wav(self.path, "-stereo", combined)
+        self.save_wav(self.path, self.output, "-stereo", combined)
 
     def convert(self):
         img = self.open_file()
