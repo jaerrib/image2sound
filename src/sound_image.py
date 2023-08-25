@@ -1,5 +1,5 @@
 from math import sqrt, trunc
-from os import path
+from os.path import isdir
 
 import numpy as np
 import wavio
@@ -53,7 +53,7 @@ class SoundImage:
         file_name = split_str[-1] + side + ".wav"
         if output == "":
             pass
-        elif path.isdir(output_path):
+        elif isdir(output_path):
             file_name = output_path + file_name
         else:
             file_name = output_path
