@@ -2,7 +2,6 @@ FREQ_DICT = {
     "A0": 27.5000,
     "A#0": 29.13524,
     "B0": 30.86771,
-
     "C1": 32.70320,
     "C#1": 34.64783,
     "D1": 36.70810,
@@ -15,7 +14,6 @@ FREQ_DICT = {
     "A1": 55.00000,
     "A#1": 58.27047,
     "B1": 61.73541,
-
     "C2": 65.40639,
     "C#2": 69.29566,
     "D2": 73.41619,
@@ -28,7 +26,6 @@ FREQ_DICT = {
     "A2": 110.0000,
     "A#2": 116.5409,
     "B2": 123.4708,
-
     "C3": 130.8128,
     "C#3": 138.5913,
     "D3": 146.8324,
@@ -41,7 +38,6 @@ FREQ_DICT = {
     "A3": 220.0000,
     "A#3": 233.0819,
     "B3": 246.9417,
-
     "C4": 261.6256,
     "C#4": 277.1826,
     "D4": 293.6646,
@@ -54,7 +50,6 @@ FREQ_DICT = {
     "A4": 440.0000,
     "A#4": 466.1638,
     "B4": 493.8833,
-
     "C5": 523.2511,
     "C#5": 523.2511,
     "D5": 587.3295,
@@ -67,7 +62,6 @@ FREQ_DICT = {
     "A5": 880.0000,
     "A#5": 932.3275,
     "B5": 987.7666,
-
     "C6": 1046.502,
     "C#6": 1108.731,
     "D6": 1174.659,
@@ -80,7 +74,6 @@ FREQ_DICT = {
     "A6": 1760.000,
     "A#6": 1864.655,
     "B6": 1975.533,
-
     "C7": 2093.005,
     "C#7": 2217.461,
     "D7": 2349.318,
@@ -93,7 +86,6 @@ FREQ_DICT = {
     "A7": 3520.000,
     "A#7": 3729.310,
     "B7": 3951.066,
-
     "C8": 4186.009,
 }
 
@@ -117,7 +109,6 @@ SCALE = {
     "BbMajor": ["Bb", "C", "D", "Eb", "F", "G", "A"],
     "BMajor": ["B", "C#", "D#", "E", "F#", "G#", "A#"],
     "CbMajor": ["Cb", "Db", "Eb", "Fb", "Gb", "Ab", "Bb"],
-
     # Minor keys
     "CMinor": ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
     "C#Minor": ["C#", "D#", "E", "F#", "G#", "A", "B"],
@@ -133,7 +124,6 @@ SCALE = {
     "A#Minor": ["A#", "B#", "C#", "D#", "E#", "F#", "G#"],
     "BbMinor": ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
     "BMinor": ["B", "C#", "D", "E", "F#", "G", "A"],
-
     # Major Pentatonic
     "CMajorPentatonic": ["C", "D", "E", "G", "A"],
     "C#MajorPentatonic": ["C#", "D#", "F", "G#", "A#"],
@@ -152,7 +142,6 @@ SCALE = {
     "A#MajorPentatonic": ["A#", "B#", "D", "F", "G"],
     "BbMajorPentatonic": ["Bb", "C", "D", "F", "G"],
     "BMajorPentatonic": ["B", "C#", "D#", "F#", "G#"],
-
     # Minor Pentatonic
     "CMinorPentatonic": ["C", "Eb", "F", "G", "Bb"],
     "C#MinorPentatonic": ["C#", "E", "F#", "G#", "B"],
@@ -169,11 +158,8 @@ SCALE = {
     "A#MinorPentatonic": ["A#", "C#", "D#", "E#", "G#"],
     "BbMinorPentatonic": ["Bb", "Db", "Eb", "F", "Ab"],
     "BMinorPentatonic": ["B", "D", "E", "F#", "A"],
-
     # Chromatic
-    "chromatic": [
-        "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
-    ]
+    "chromatic": ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
 }
 
 EQUIVALENT_NOTES = {
@@ -188,7 +174,7 @@ EQUIVALENT_NOTES = {
     "B#": "C",
     "C##": "D",
     "F##": "G",
-    "G##": "A"
+    "G##": "A",
 }
 
 
@@ -205,7 +191,7 @@ def get_tone_array(key):
     tone_array = []
     for index in range(1, 8):
         for note in scale_array:
-            tone_array.append(FREQ_DICT[note+str(index)])
+            tone_array.append(FREQ_DICT[note + str(index)])
     return tone_array
 
 

@@ -1,23 +1,16 @@
-from PIL import Image
+from math import sqrt, trunc
+from os import path
+
 import numpy as np
 import wavio
-from math import trunc, sqrt
-from os import path
-from tone_array import get_tone_array, get_chromatic_notes
+from PIL import Image
+
 from dimension_calc import get_new_dim
+from tone_array import get_chromatic_notes, get_tone_array
 
 
 class SoundImage:
-
-    def __init__(self,
-                 path,
-                 output,
-                 key,
-                 tempo,
-                 minutes,
-                 seconds,
-                 split,
-                 reveal):
+    def __init__(self, path, output, key, tempo, minutes, seconds, split, reveal):
         self.path = path
         self.output = output
         self.key = key
@@ -37,7 +30,7 @@ class SoundImage:
         img_dim = img.size
         size = get_new_dim(img_dim, self.minutes, self.tempo)
         output = img.resize(size)
-        self.image_array = np.asarray(output, dtype='int64')
+        self.image_array = np.asarray(output, dtype="int64")
         return self
 
     def get_freq(self, color):
@@ -129,7 +122,7 @@ class SoundImage:
 
     def override(self, img):
         tiny_output = img.resize((1, 1))
-        tiny_img_arr = np.asarray(tiny_output, dtype='int64')
+        tiny_img_arr = np.asarray(tiny_output, dtype="int64")
         red = tiny_img_arr[0][0][0]
         green = tiny_img_arr[0][0][1]
         blue = tiny_img_arr[0][0][2]
