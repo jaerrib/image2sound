@@ -21,3 +21,6 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://codeberg.org/jaerrib/image2sound"
 "Bug Tracker" = "https://codeberg.org/jaerrib/image2sound/issues"
+
+[tool.isort]
+profile = "black"
