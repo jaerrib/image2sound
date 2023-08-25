@@ -1,4 +1,4 @@
-from math import sqrt, floor
+from math import floor, sqrt
 
 
 def get_new_dim(img_dim, time_in_minutes, tempo):
