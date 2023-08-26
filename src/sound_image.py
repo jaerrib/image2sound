@@ -3,6 +3,7 @@ import os
 
 import numpy as np
 import wavio
+from halo import Halo
 from PIL import Image
 
 import dimension_calc
@@ -55,26 +56,29 @@ class SoundImage:
             file_name = output_path + file_name
         else:
             file_name = output_path
-        wavio.write(file_name, array, RATE, scale=2, sampwidth=3, clip="ignore")
+        with Halo(text="Saving file…", color="white"):
+            wavio.write(file_name, array, RATE, scale=2, sampwidth=3, clip="ignore")
         print("Saved file as " + file_name)
 
     def convert_to_multiple(self):
-        red_array, green_array, blue_array = [], [], []
-        for x in self.image_array:
-            for y in x:
-                red_array.append(self.get_sin(y[0]))
-                green_array.append(self.get_sin(y[1]))
-                blue_array.append(self.get_sin(y[2]))
+        with Halo(text="Converting data…", color="white"):
+            red_array, green_array, blue_array = [], [], []
+            for x in self.image_array:
+                for y in x:
+                    red_array.append(self.get_sin(y[0]))
+                    green_array.append(self.get_sin(y[1]))
+                    blue_array.append(self.get_sin(y[2]))
         self.save_wav(self.path, self.output, "-R", red_array)
         self.save_wav(self.path, self.output, "-G", green_array)
         self.save_wav(self.path, self.output, "-B", blue_array)
 
     def convert_to_stereo(self):
-        left_data, right_data = [], []
-        for x in self.image_array:
-            for y in x:
-                left_data.append(self.get_sin((y[0] + y[1]) / 2))
-                right_data.append(self.get_sin((y[2] + y[1]) / 2))
+        with Halo(text="Converting data…", color="white"):
+            left_data, right_data = [], []
+            for x in self.image_array:
+                for y in x:
+                    left_data.append(self.get_sin((y[0] + y[1]) / 2))
+                    right_data.append(self.get_sin((y[2] + y[1]) / 2))
         self.save_wav(
             self.path,
             self.output,
