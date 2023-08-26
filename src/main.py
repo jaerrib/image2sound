@@ -54,8 +54,5 @@ parser.add_argument(
     default=False,
     action="store_true",
 )
-args = parser.parse_args()
 
-si = SoundImage(**{key: val for key, val in vars(args).items() if val is not None})
-
-si.convert()
+SoundImage(**{key: val for key, val in vars(parser.parse_args()).items() if val is not None}).convert()

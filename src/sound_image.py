@@ -24,14 +24,10 @@ class SoundImage:
         self.reveal = reveal
 
     def open_file(self):
-        img = Image.open(self.path).convert(mode="RGB")
-        return img
+        return Image.open(self.path).convert(mode="RGB")
 
     def image_to_array(self, img):
-        img_dim = img.size
-        size = dimension_calc.get_new_dim(img_dim, self.minutes, self.tempo)
-        output = img.resize(size)
-        self.image_array = np.asarray(output, dtype="int64")
+        self.image_array = np.asarray(img.resize(dimension_calc.get_new_dim(img.size, self.minutes, self.tempo)), dtype="int64")
         return self
 
     def get_freq(self, color):
