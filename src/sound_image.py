@@ -1,20 +1,21 @@
-from math import sqrt, trunc
-from os.path import isdir
+import math
+import os
 
 import numpy as np
 import wavio
 from PIL import Image
 
-from dimension_calc import get_new_dim
-from tone_array import get_chromatic_notes, get_tone_array
+import dimension_calc
+import tone_array
 
+RATE = 44100
 
 class SoundImage:
     def __init__(self, path, output, key, tempo, minutes, seconds, split, reveal):
         self.path = path
         self.output = output
         self.key = key
-        self.freq_dict = get_tone_array(self.key)
+        self.freq_dict = tone_array.get_tone_array(self.key)
         self.length = len(self.freq_dict)
         self.tempo = tempo
         self.minutes = minutes + (seconds / 60)
@@ -28,36 +29,34 @@ class SoundImage:
 
     def image_to_array(self, img):
         img_dim = img.size
-        size = get_new_dim(img_dim, self.minutes, self.tempo)
+        size = dimension_calc.get_new_dim(img_dim, self.minutes, self.tempo)
         output = img.resize(size)
         self.image_array = np.asarray(output, dtype="int64")
         return self
 
     def get_freq(self, color):
         divisor = 256 / self.length
-        key_item = int(trunc(color / divisor))
+        key_item = int(math.trunc(color / divisor))
         return self.freq_dict[key_item]
 
     def get_sin(self, color):
         freq = self.get_freq(color)
-        rate = 44100
         time = 60 / self.tempo
-        n = int(rate * time)
-        time_grid = np.arange(n) / rate
+        n = int(RATE * time)
+        time_grid = np.arange(n) / RATE
         return np.sin(2 * np.pi * freq * time_grid)
 
     @staticmethod
     def save_wav(input_path, output_path, side, array):
-        rate = 44100
         split_str = ".".join(input_path.split(".")[:-1]).split("/")
         file_name = split_str[-1] + side + ".wav"
         if output_path == "":
             pass
-        elif isdir(output_path):
+        elif os.path.isdir(output_path):
             file_name = output_path + file_name
         else:
             file_name = output_path
-        wavio.write(file_name, array, rate, scale=2, sampwidth=3, clip="ignore")
+        wavio.write(file_name, array, RATE, scale=2, sampwidth=3, clip="ignore")
         print("Saved file as ", file_name)
 
     def convert_to_multiple(self):
@@ -108,8 +107,8 @@ class SoundImage:
 
     @staticmethod
     def determine_key(self, red, green, blue):
-        notes = get_chromatic_notes()
-        root = notes[trunc(red / (len(notes)))]
+        notes = tone_array.get_chromatic_notes()
+        root = notes[math.trunc(red / (len(notes)))]
         if blue % 2 == 0:
             family = "Major"
         else:
@@ -128,5 +127,5 @@ class SoundImage:
         blue = tiny_img_arr[0][0][2]
         self.tempo = (red + green + blue) / 3
         self.determine_key(self, red=red, green=green, blue=blue)
-        self.minutes = sqrt((img.size[0] + img.size[1]) / 2) / 2
+        self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
