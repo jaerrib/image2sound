@@ -10,6 +10,7 @@ import tone_array
 
 RATE = 44100
 
+
 class SoundImage:
     def __init__(self, path, output, key, tempo, minutes, seconds, split, reveal):
         self.path = path
@@ -27,25 +28,26 @@ class SoundImage:
         return Image.open(self.path).convert(mode="RGB")
 
     def image_to_array(self, img):
-        self.image_array = np.asarray(img.resize(dimension_calc.get_new_dim(img.size, self.minutes, self.tempo)), dtype="int64")
+        self.image_array = np.asarray(
+            img.resize(dimension_calc.get_new_dim(img.size, self.minutes, self.tempo)),
+            dtype="int64",
+        )
         return self
 
     def get_freq(self, color):
-        divisor = 256 / self.length
-        key_item = int(math.trunc(color / divisor))
-        return self.freq_dict[key_item]
+        return self.freq_dict[int(math.trunc(color / (256 / self.length)))]
 
     def get_sin(self, color):
-        freq = self.get_freq(color)
-        time = 60 / self.tempo
-        n = int(RATE * time)
-        time_grid = np.arange(n) / RATE
-        return np.sin(2 * np.pi * freq * time_grid)
+        return np.sin(
+            2
+            * np.pi
+            * self.get_freq(color)
+            * (np.arange(int(RATE * (60 / self.tempo))) / RATE)
+        )
 
     @staticmethod
     def save_wav(input_path, output_path, side, array):
-        split_str = ".".join(input_path.split(".")[:-1]).split("/")
-        file_name = split_str[-1] + side + ".wav"
+        file_name = ".".join(input_path.split(".")[:-1]).split("/")[-1] + side + ".wav"
         if output_path == "":
             pass
         elif os.path.isdir(output_path):
