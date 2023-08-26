@@ -57,7 +57,7 @@ class SoundImage:
         else:
             file_name = output_path
         wavio.write(file_name, array, RATE, scale=2, sampwidth=3, clip="ignore")
-        print("Saved file as ", file_name)
+        print("Saved file as " + file_name)
 
     def convert_to_multiple(self):
         red_array = []
