@@ -3,12 +3,11 @@ import os
 
 import numpy as np
 import wavio
+from halo import Halo
 from PIL import Image
 
 import dimension_calc
 import tone_array
-
-from halo import Halo
 
 RATE = 44100
 
@@ -57,12 +56,12 @@ class SoundImage:
             file_name = output_path + file_name
         else:
             file_name = output_path
-        with Halo(text='Saving file…', color="white"):
+        with Halo(text="Saving file…", color="white"):
             wavio.write(file_name, array, RATE, scale=2, sampwidth=3, clip="ignore")
         print("Saved file as " + file_name)
 
     def convert_to_multiple(self):
-        with Halo(text='Converting data…', color="white"):
+        with Halo(text="Converting data…", color="white"):
             red_array, green_array, blue_array = [], [], []
             for x in self.image_array:
                 for y in x:
@@ -74,7 +73,7 @@ class SoundImage:
         self.save_wav(self.path, self.output, "-B", blue_array)
 
     def convert_to_stereo(self):
-        with Halo(text='Converting data…', color="white"):
+        with Halo(text="Converting data…", color="white"):
             left_data, right_data = [], []
             for x in self.image_array:
                 for y in x:
