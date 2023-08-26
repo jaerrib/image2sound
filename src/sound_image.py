@@ -3,6 +3,8 @@ import os
 
 import numpy as np
 import wavio
+from mutagen.id3 import APIC
+from mutagen.wave import WAVE
 from PIL import Image
 
 import dimension_calc
@@ -56,6 +58,18 @@ class SoundImage:
         else:
             file_name = output_path
         wavio.write(file_name, array, RATE, scale=2, sampwidth=3, clip="ignore")
+        audio_file = WAVE(file_name)
+        audio_file.add_tags()
+        audio_file.tags.add(
+            APIC(
+                encoding=3,  # 3 is for utf-8
+                mime=f"image/{Image.open(input_path).format.lower()}",  # can be image/jpeg or image/png
+                type=3,  # 3 is for the cover image
+                desc="Cover",
+                data=open(input_path, mode="rb").read(),
+            )
+        )
+        audio_file.save()
         print("Saved file as " + file_name)
 
     def convert_to_multiple(self):
