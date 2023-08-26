@@ -3,9 +3,9 @@ import os
 
 import numpy as np
 import wavio
+from halo import Halo
 from mutagen.id3 import APIC
 from mutagen.wave import WAVE
-from halo import Halo
 from PIL import Image
 
 import dimension_calc
