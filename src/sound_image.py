@@ -19,7 +19,7 @@ class SoundImage:
         self.freq_dict = tone_array.get_tone_array(self.key)
         self.length = len(self.freq_dict)
         self.tempo = tempo
-        self.minutes = minutes + (seconds / 60)
+        self.minutes = minutes + seconds / 60
         self.image_array = None
         self.split = split
         self.reveal = reveal
@@ -42,7 +42,8 @@ class SoundImage:
             2
             * np.pi
             * self.get_freq(color)
-            * (np.arange(int(RATE * (60 / self.tempo))) / RATE)
+            * np.arange(int(RATE * 60 / self.tempo))
+            / RATE
         )
 
     @staticmethod
@@ -58,68 +59,57 @@ class SoundImage:
         print("Saved file as " + file_name)
 
     def convert_to_multiple(self):
-        red_array = []
-        green_array = []
-        blue_array = []
+        red_array, green_array, blue_array = [], [], []
         for x in self.image_array:
             for y in x:
-                red = y[0]
-                green = y[1]
-                blue = y[2]
-                red_value = self.get_sin(red)
-                green_value = self.get_sin(green)
-                blue_value = self.get_sin(blue)
-                red_array.append([red_value])
-                green_array.append([green_value])
-                blue_array.append([blue_value])
+                red_array.append(self.get_sin(y[0]))
+                green_array.append(self.get_sin(y[1]))
+                blue_array.append(self.get_sin(y[2]))
         self.save_wav(self.path, self.output, "-R", red_array)
         self.save_wav(self.path, self.output, "-G", green_array)
         self.save_wav(self.path, self.output, "-B", blue_array)
 
     def convert_to_stereo(self):
-        left_data = []
-        right_data = []
+        left_data, right_data = [], []
         for x in self.image_array:
             for y in x:
-                red = y[0]
-                green = y[1]
-                blue = y[2]
-                left_value = self.get_sin((red + green) / 2)
-                right_value = self.get_sin((blue + green) / 2)
-                left_data.append(left_value)
-                right_data.append(right_value)
-        left = np.array(left_data)
-        right = np.array(right_data)
-        combined = np.hstack((left.reshape(-1, 1), right.reshape(-1, 1)))
-        self.save_wav(self.path, self.output, "-stereo", combined)
+                left_data.append(self.get_sin((y[0] + y[1]) / 2))
+                right_data.append(self.get_sin((y[2] + y[1]) / 2))
+        self.save_wav(
+            self.path,
+            self.output,
+            "-stereo",
+            np.hstack(
+                (
+                    np.array(left_data).reshape(-1, 1),
+                    np.array(right_data).reshape(-1, 1),
+                )
+            ),
+        )
 
     def convert(self):
         img = self.open_file()
         if self.reveal:
             self.override(img)
         self.image_to_array(img)
-        if not self.split:
-            self.convert_to_stereo()
-        else:
+        if self.split:
             self.convert_to_multiple()
+        else:
+            self.convert_to_stereo()
 
     @staticmethod
     def determine_key(self, red, green, blue):
         notes = tone_array.get_chromatic_notes()
-        root = notes[math.trunc(red / (len(notes)))]
-        if blue % 2 == 0:
-            family = "Major"
-        else:
-            family = "Minor"
-        key = root + family
+        key = notes[math.trunc(red / (len(notes)))] + (
+            "Major" if blue % 2 == 0 else "Minor"
+        )
         if green % 2 == 0:
             key += "Pentatonic"
         self.key = key
         return self
 
     def override(self, img):
-        tiny_output = img.resize((1, 1))
-        tiny_img_arr = np.asarray(tiny_output, dtype="int64")
+        tiny_img_arr = np.asarray(img.resize((1, 1)), dtype="int64")
         red = tiny_img_arr[0][0][0]
         green = tiny_img_arr[0][0][1]
         blue = tiny_img_arr[0][0][2]
