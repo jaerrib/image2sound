@@ -5,11 +5,13 @@
 *NOTE: Large image files no longer automatically result in large audio files as the user can specify a target track length and sane defaults are applied when this is not specified.*
 
 ## Requirements
-- PIL
-- numpy
-- wavio
 - argparse
+- halo
 - math
+- mutagen
+- numpy
+- PIL
+- wavio 
 
 ## To run
 Simply running `python3 main.py` will generate audio using the test image and default settings.
@@ -19,6 +21,7 @@ Simply running `python3 main.py` will generate audio using the test image and de
 The following optional arguments may be set, however:
 
 - `-p` for a path to an image
+- `-o` for path to save the output file to
 - `-key` for musical key (defaults to C )
 - `-t` for tempo (defaults to 60 bpm)
 - `-min` for the desired number of minutes (defaults to 1 so must be set to zero if shorter tracks are wanted)
@@ -31,7 +34,7 @@ Adding `--split` will split the resulting audio into three separate files (red, 
 
 ### "Reveal" mode
 
-Adding `--reveal` will override the key, tempo, and minutes/seconds with data derived from the image itself, "revealing" the music within the image as it were,
+Adding `--reveal` will override the key, tempo, and minutes/seconds with data derived from the image itself, "revealing" the music within the image
 
 ### Examples
 
