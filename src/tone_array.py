@@ -181,16 +181,14 @@ EQUIVALENT_NOTES = {
 def flat_conversion(scale):
     for index in range(len(scale)):
         if scale[index] in EQUIVALENT_NOTES:
-            note = scale[index]
-            scale[index] = EQUIVALENT_NOTES[note]
+            scale[index] = EQUIVALENT_NOTES[scale[index]]
     return scale
 
 
 def get_tone_array(key):
-    scale_array = flat_conversion(SCALE[key])
     tone_array = []
     for index in range(1, 8):
-        for note in scale_array:
+        for note in flat_conversion(SCALE[key]):
             tone_array.append(FREQ_DICT[note + str(index)])
     return tone_array
 

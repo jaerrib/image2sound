@@ -14,13 +14,6 @@ parser.add_argument(
     type=str,
 )
 parser.add_argument(
-    "-o",
-    "--output",
-    help="The filepath to save the output file to",
-    default="",
-    type=str,
-)
-parser.add_argument(
     "-key",
     "--key",
     help="Key of the output track as a capital letter plus"
@@ -61,8 +54,7 @@ parser.add_argument(
     default=False,
     action="store_true",
 )
-args = parser.parse_args()
 
-si = SoundImage(**{key: val for key, val in vars(args).items() if val is not None})
-
-si.convert()
+SoundImage(
+    **{key: val for key, val in vars(parser.parse_args()).items() if val is not None}
+).convert()
