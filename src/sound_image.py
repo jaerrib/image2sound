@@ -115,10 +115,9 @@ class SoundImage:
         else:
             self.convert_to_stereo()
 
-    @staticmethod
     def determine_key(self, red, green, blue):
         notes = tone_array.get_chromatic_notes()
-        key = notes[math.trunc(red / (len(notes)))] + (
+        key = notes[math.trunc(red / (255 / (len(notes))))] + (
             "Major" if blue % 2 == 0 else "Minor"
         )
         if green % 2 == 0:
@@ -132,6 +131,6 @@ class SoundImage:
         green = tiny_img_arr[0][0][1]
         blue = tiny_img_arr[0][0][2]
         self.tempo = (red + green + blue) / 3
-        self.determine_key(self, red=red, green=green, blue=blue)
+        self.determine_key(red=red, green=green, blue=blue)
         self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
