@@ -117,10 +117,12 @@ class SoundImage:
 
     def determine_key(self, red, green, blue):
         notes = tone_array.get_chromatic_notes()
-        key = notes[math.trunc(red / (255 / (len(notes))))] + (
+        key = notes[math.trunc(red / (255 / len(notes)))] + (
             "Major" if blue % 2 == 0 else "Minor"
         )
-        if green % 2 == 0:
+        if type(math.sqrt(red * green * blue)) is not float:
+            key = notes[math.trunc(red / (255 / len(notes)))] + "8Tone"
+        elif green % 16 == 0:
             key += "Pentatonic"
         self.key = key
         return self
