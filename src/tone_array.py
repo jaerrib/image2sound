@@ -158,6 +158,19 @@ SCALE = {
     "A#MinorPentatonic": ["A#", "C#", "D#", "E#", "G#"],
     "BbMinorPentatonic": ["Bb", "Db", "Eb", "F", "Ab"],
     "BMinorPentatonic": ["B", "D", "E", "F#", "A"],
+    # Eight Tone Spanish
+    "C8Tone": ["C", "C#", "D#", "E", "F", "F#", "G#", "A#"],
+    "C#8Tone": ["C#", "D", "E", "F", "F#", "G", "A", "B"],
+    "D8Tone": ["D", "D#", "F", "F#", "G", "G#", "A#", "C"],
+    "D#8Tone": ["D#", "E", "F#", "G", "G#", "A", "B", "C#", "D"],
+    "E8Tone": ["E", "F", "G", "G#", "A", "A#", "C", "D"],
+    "F8Tone": ["F", "F#", "G#", "A", "A#", "B", "C#", "D#"],
+    "F#8Tone": ["F#", "G", "A", "A#", "B", "C", "D", "E"],
+    "G8Tone": ["G", "G#", "A#", "B", "C", "C#", "D#", "F"],
+    "G#8Tone": ["G#", "A", "B", "C", "C#", "D", "E", "F#"],
+    "A8Tone": ["A", "A#", "C", "C#", "D", "D#", "F", "G"],
+    "A#8Tone": ["A#", "B", "C#", "D", "D#", "E", "F#", "G#"],
+    "B8Tone": ["B", "C", "D", "D#", "E", "F", "G", "A"],
     # Chromatic
     "chromatic": ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
 }
