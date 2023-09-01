@@ -89,91 +89,7 @@ FREQ_DICT = {
     "C8": 4186.009,
 }
 
-SCALE = {
-    # Major keys
-    "CMajor": ["C", "D", "E", "F", "G", "A", "B"],
-    "C#Major": ["C#", "D#", "F", "F#", "G#", "A#", "B#"],
-    "DbMajor": ["Db", "Eb", "F", "Gb", "Ab", "Bb", "C"],
-    "DMajor": ["D", "E", "F#", "G", "A", "B", "C#"],
-    "D#Major": ["D#", "E#", "F##", "G#", "A#", "B#", "C##"],
-    "EbMajor": ["Eb", "F", "G", "Ab", "Bb", "C", "D"],
-    "EMajor": ["E", "F#", "G#", "A", "B", "C#", "D#"],
-    "FMajor": ["F", "G", "A", "Bb", "C", "D", "E"],
-    "F#Major": ["F#", "G#", "A#", "B", "C#", "D#", "E#"],
-    "GbMajor": ["Gb", "Ab", "Bb", "Cb", "Db", "Eb", "F"],
-    "GMajor": ["G", "A", "B", "C", "D", "E", "F#"],
-    "G#Major": ["G#", "A#", "B#", "C#", "D#", "E#", "F##"],
-    "AbMajor": ["Ab", "Bb", "C", "Db", "Eb", "F", "G"],
-    "AMajor": ["A", "B", "C#", "D", "E", "F#", "G#"],
-    "A#Major": ["A#", "B#", "C##", "D#", "E#", "F##", "G##"],
-    "BbMajor": ["Bb", "C", "D", "Eb", "F", "G", "A"],
-    "BMajor": ["B", "C#", "D#", "E", "F#", "G#", "A#"],
-    "CbMajor": ["Cb", "Db", "Eb", "Fb", "Gb", "Ab", "Bb"],
-    # Minor keys
-    "CMinor": ["C", "D", "Eb", "F", "G", "Ab", "Bb"],
-    "C#Minor": ["C#", "D#", "E", "F#", "G#", "A", "B"],
-    "DMinor": ["D", "E", "F", "G", "A", "Bb", "C"],
-    "D#Minor": ["D#", "E#", "F#", "G#", "A#", "B", "C#"],
-    "EbMinor": ["Eb", "F", "Gb", "Ab", "Bb", "Cb", "Db"],
-    "EMinor": ["E", "F#", "G", "A", "B", "C", "D"],
-    "FMinor": ["F", "G", "Ab", "Bb", "C", "Db", "Eb"],
-    "F#Minor": ["F#", "G#", "A", "B", "C#", "D", "E"],
-    "GMinor": ["G", "A", "Bb", "C", "D", "Eb", "F"],
-    "G#Minor": ["G#", "A#", "B", "C#", "D#", "E", "F#"],
-    "AMinor": ["A", "B", "C", "D", "E", "F", "G"],
-    "A#Minor": ["A#", "B#", "C#", "D#", "E#", "F#", "G#"],
-    "BbMinor": ["Bb", "C", "Db", "Eb", "F", "Gb", "Ab"],
-    "BMinor": ["B", "C#", "D", "E", "F#", "G", "A"],
-    # Major Pentatonic
-    "CMajorPentatonic": ["C", "D", "E", "G", "A"],
-    "C#MajorPentatonic": ["C#", "D#", "F", "G#", "A#"],
-    "DbMajorPentatonic": ["Db", "Eb", "F", "Ab", "Bb"],
-    "DMajorPentatonic": ["D", "E", "F#", "A", "B"],
-    "D#MajorPentatonic": ["D#", "F", "G#", "A#", "C"],
-    "EbMajorPentatonic": ["Eb", "F", "G", "Bb", "C"],
-    "EMajorPentatonic": ["E", "F#", "G#", "B", "C#"],
-    "FMajorPentatonic": ["F", "G", "A", "C", "D"],
-    "F#MajorPentatonic": ["F#", "G#", "A#", "C#", "D#"],
-    "GbMajorPentatonic": ["Gb", "Ab", "Bb", "Db", "Eb"],
-    "GMajorPentatonic": ["G", "A", "B", "D", "E"],
-    "G#MajorPentatonic": ["G#", "A#", "C", "D#", "F"],
-    "AbMajorPentatonic": ["Ab", "Bb", "C", "Eb", "F"],
-    "AMajorPentatonic": ["A", "B", "C#", "E", "F#"],
-    "A#MajorPentatonic": ["A#", "B#", "D", "F", "G"],
-    "BbMajorPentatonic": ["Bb", "C", "D", "F", "G"],
-    "BMajorPentatonic": ["B", "C#", "D#", "F#", "G#"],
-    # Minor Pentatonic
-    "CMinorPentatonic": ["C", "Eb", "F", "G", "Bb"],
-    "C#MinorPentatonic": ["C#", "E", "F#", "G#", "B"],
-    "DMinorPentatonic": ["D", "F", "G", "A", "C"],
-    "D#MinorPentaonic": ["D#", "F#", "G#", "A#", "C#"],
-    "EbMinorPentatonic": ["Eb", "Gb", "Ab", "Bb", "Db"],
-    "EMinorPentatonic": ["E", "G", "A", "B", "D"],
-    "FMinorPentatonic": ["F", "Ab", "Bb", "C", "Eb"],
-    "F#MinorPentaonic": ["F#", "A", "B", "C#", "E"],
-    "GbMinorPentatonic": ["G", "A", "B", "Db", "E"],
-    "GMinorPentatonic": ["G", "Bb", "C", "D", "F"],
-    "G#MinorPentaonic": ["G#", "B", "C#", "D#", "F#"],
-    "AMinorPentatonic": ["A", "C", "D", "E", "G"],
-    "A#MinorPentatonic": ["A#", "C#", "D#", "E#", "G#"],
-    "BbMinorPentatonic": ["Bb", "Db", "Eb", "F", "Ab"],
-    "BMinorPentatonic": ["B", "D", "E", "F#", "A"],
-    # Eight Tone Spanish
-    "C8Tone": ["C", "C#", "D#", "E", "F", "F#", "G#", "A#"],
-    "C#8Tone": ["C#", "D", "E", "F", "F#", "G", "A", "B"],
-    "D8Tone": ["D", "D#", "F", "F#", "G", "G#", "A#", "C"],
-    "D#8Tone": ["D#", "E", "F#", "G", "G#", "A", "B", "C#", "D"],
-    "E8Tone": ["E", "F", "G", "G#", "A", "A#", "C", "D"],
-    "F8Tone": ["F", "F#", "G#", "A", "A#", "B", "C#", "D#"],
-    "F#8Tone": ["F#", "G", "A", "A#", "B", "C", "D", "E"],
-    "G8Tone": ["G", "G#", "A#", "B", "C", "C#", "D#", "F"],
-    "G#8Tone": ["G#", "A", "B", "C", "C#", "D", "E", "F#"],
-    "A8Tone": ["A", "A#", "C", "C#", "D", "D#", "F", "G"],
-    "A#8Tone": ["A#", "B", "C#", "D", "D#", "E", "F#", "G#"],
-    "B8Tone": ["B", "C", "D", "D#", "E", "F", "G", "A"],
-    # Chromatic
-    "chromatic": ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"],
-}
+NOTES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 
 EQUIVALENT_NOTES = {
     "Cb": "B",
@@ -190,6 +106,14 @@ EQUIVALENT_NOTES = {
     "G##": "A",
 }
 
+SCALE_PATTERNS = {
+    "Major": [2, 2, 1, 2, 2, 2, 1],
+    "Minor": [2, 1, 2, 2, 1, 2, 2],
+    "MajorPentatonic": [2, 2, 3, 2, 3],
+    "MinorPentatonic": [3, 2, 2, 3, 2],
+    "8Tone": [1, 2, 1, 1, 1, 2, 2, 2],
+}
+
 
 def flat_conversion(scale):
     for index in range(len(scale)):
@@ -198,13 +122,35 @@ def flat_conversion(scale):
     return scale
 
 
+def get_scale(string):
+    data = string.split("-")
+    root, family = data[0], data[1]
+    for key in EQUIVALENT_NOTES:
+        if root == key:
+            root = EQUIVALENT_NOTES[key]
+    index = 0
+    for note in NOTES:
+        if root == note:
+            root_index = index
+            break
+        index += 1
+    scale = []
+    step_index = root_index
+    for step in SCALE_PATTERNS[family]:
+        if step_index + step > len(NOTES):
+            step_index -= len(NOTES)
+        scale.append(NOTES[step_index])
+        step_index += step
+    return scale
+
+
 def get_tone_array(key):
     tone_array = []
     for index in range(1, 8):
-        for note in flat_conversion(SCALE[key]):
+        for note in flat_conversion(get_scale(key)):
             tone_array.append(FREQ_DICT[note + str(index)])
     return tone_array
 
 
 def get_chromatic_notes():
-    return SCALE["chromatic"]
+    return NOTES
