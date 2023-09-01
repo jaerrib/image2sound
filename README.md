@@ -40,12 +40,12 @@ Adding `--reveal` will override the key, tempo, and minutes/seconds with data de
 
 Example 1:
 ```
-python3 main.py -p image.png -key Dminor -t 80 -min 11 -sec 38
+python3 main.py -p image.png -key D-minor -t 80 -min 11 -sec 38
 ```
 
 Example 2:
 ```
-python3 main.py -p image.png -key Dminor -t 80 -min 11 -sec 38 --split
+python3 main.py -p image.png -key D-minor -t 80 -min 11 -sec 38 --split
 ```
 
 Example 3:

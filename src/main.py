@@ -16,8 +16,8 @@ parser.add_argument(
 parser.add_argument(
     "-key",
     "--key",
-    help="Key of the output track as a capital letter plus"
-    "Major/Minor, without spaces",
+    help="Key of the output track as a capital letter, then a dash, plus"
+    "Major/Minor/MajorPentatonic/MinorPentatonic/8Tone, without spaces",
     default="C-Major",
     type=str,
 )
