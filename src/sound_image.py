@@ -12,6 +12,16 @@ import dimension_calc
 import tone_array
 
 RATE = 44100
+DEFAULT_SETTINGS = {
+    "path": "test_image.png",
+    "output": "",
+    "key": "C-Major",
+    "tempo": 60,
+    "minutes": 1,
+    "seconds": 0,
+    "split": False,
+    "reveal": False,
+}
 
 
 class SoundImage:
@@ -108,7 +118,9 @@ class SoundImage:
     def convert(self):
         img = self.open_file()
         if self.reveal:
+            print(self.tempo, self.key)
             self.override(img)
+            print(self.tempo, self.key)
         self.image_to_array(img)
         if self.split:
             self.convert_to_multiple()
@@ -132,7 +144,10 @@ class SoundImage:
         red = tiny_img_arr[0][0][0]
         green = tiny_img_arr[0][0][1]
         blue = tiny_img_arr[0][0][2]
-        self.tempo = (red + green + blue) / 3
-        self.determine_key(red=red, green=green, blue=blue)
-        self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
+        if self.tempo in DEFAULT_SETTINGS:
+            self.tempo = (red + green + blue) / 3
+        if self.key in DEFAULT_SETTINGS:
+            self.determine_key(red=red, green=green, blue=blue)
+        if self.minutes in DEFAULT_SETTINGS:
+            self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
