@@ -144,10 +144,10 @@ class SoundImage:
         red = tiny_img_arr[0][0][0]
         green = tiny_img_arr[0][0][1]
         blue = tiny_img_arr[0][0][2]
-        if self.tempo in DEFAULT_SETTINGS:
+        if self.tempo == DEFAULT_SETTINGS["tempo"]:
             self.tempo = (red + green + blue) / 3
-        if self.key in DEFAULT_SETTINGS:
+        if self.key == DEFAULT_SETTINGS["key"]:
             self.determine_key(red=red, green=green, blue=blue)
-        if self.minutes in DEFAULT_SETTINGS:
+        if self.minutes == DEFAULT_SETTINGS["minutes"]:
             self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
