@@ -25,7 +25,9 @@ DEFAULT_SETTINGS = {
 
 
 class SoundImage:
-    def __init__(self, path, output, key, tempo, minutes, seconds, split, reveal):
+    def __init__(
+        self, path, output, key, tempo, minutes, seconds, split, reveal, overrides
+    ):
         self.path = path
         self.output = output
         self.key = key
@@ -36,6 +38,7 @@ class SoundImage:
         self.image_array = None
         self.split = split
         self.reveal = reveal
+        self.overrides = overrides
 
     def open_file(self):
         return Image.open(self.path).convert(mode="RGB")
@@ -118,9 +121,7 @@ class SoundImage:
     def convert(self):
         img = self.open_file()
         if self.reveal:
-            print(self.tempo, self.key)
             self.override(img)
-            print(self.tempo, self.key)
         self.image_to_array(img)
         if self.split:
             self.convert_to_multiple()
@@ -144,10 +145,10 @@ class SoundImage:
         red = tiny_img_arr[0][0][0]
         green = tiny_img_arr[0][0][1]
         blue = tiny_img_arr[0][0][2]
-        if self.tempo == DEFAULT_SETTINGS["tempo"]:
+        if "tempo" in self.overrides:
             self.tempo = (red + green + blue) / 3
-        if self.key == DEFAULT_SETTINGS["key"]:
+        if "key" in self.overrides:
             self.determine_key(red=red, green=green, blue=blue)
-        if self.minutes == DEFAULT_SETTINGS["minutes"]:
+        if "minutes" in self.overrides and "seconds" in self.overrides:
             self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
