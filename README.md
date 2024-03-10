@@ -36,6 +36,10 @@ Adding `--split` will split the resulting audio into three separate files (red, 
 
 Adding `--reveal` will override the key, tempo, and minutes/seconds with data derived from the image itself, "revealing" the music within the image
 
+> **"Reveal" mode plus overrides**
+> 
+> You can specify arguments as overrides in conjunction with "Reveal" mode. For example, if you want to make sure that the key is D-Major, but you want the other parameters to be derived from the image, run `python3 main.py -key D-Major --reveal`
+
 ### Examples
 
 Example 1:
