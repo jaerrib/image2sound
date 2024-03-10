@@ -12,10 +12,22 @@ import dimension_calc
 import tone_array
 
 RATE = 44100
+DEFAULT_SETTINGS = {
+    "path": "test_image.png",
+    "output": "",
+    "key": "C-Major",
+    "tempo": 60,
+    "minutes": 1,
+    "seconds": 0,
+    "split": False,
+    "reveal": False,
+}
 
 
 class SoundImage:
-    def __init__(self, path, output, key, tempo, minutes, seconds, split, reveal):
+    def __init__(
+        self, path, output, key, tempo, minutes, seconds, split, reveal, overrides
+    ):
         self.path = path
         self.output = output
         self.key = key
@@ -26,6 +38,7 @@ class SoundImage:
         self.image_array = None
         self.split = split
         self.reveal = reveal
+        self.overrides = overrides
 
     def open_file(self):
         return Image.open(self.path).convert(mode="RGB")
@@ -117,10 +130,12 @@ class SoundImage:
 
     def determine_key(self, red, green, blue):
         notes = tone_array.get_chromatic_notes()
-        key = notes[math.trunc(red / (255 / (len(notes))))] + (
+        key = notes[math.trunc(red / (255 / len(notes)))] + (
             "Major" if blue % 2 == 0 else "Minor"
         )
-        if green % 2 == 0:
+        if type(math.sqrt(red * green * blue)) is not float:
+            key = notes[math.trunc(red / (255 / len(notes)))] + "8Tone"
+        elif green % 16 == 0:
             key += "Pentatonic"
         self.key = key
         return self
@@ -130,7 +145,10 @@ class SoundImage:
         red = tiny_img_arr[0][0][0]
         green = tiny_img_arr[0][0][1]
         blue = tiny_img_arr[0][0][2]
-        self.tempo = (red + green + blue) / 3
-        self.determine_key(red=red, green=green, blue=blue)
-        self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
+        if "tempo" in self.overrides:
+            self.tempo = (red + green + blue) / 3
+        if "key" in self.overrides:
+            self.determine_key(red=red, green=green, blue=blue)
+        if "minutes" in self.overrides and "seconds" in self.overrides:
+            self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self

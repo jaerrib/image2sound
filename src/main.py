@@ -1,6 +1,6 @@
 import argparse
 
-from sound_image import SoundImage
+from sound_image import DEFAULT_SETTINGS, SoundImage
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -10,51 +10,49 @@ parser.add_argument(
     "-o",
     "--output",
     help="The filepath to save the output file to",
-    default="",
     type=str,
 )
 parser.add_argument(
     "-key",
     "--key",
-    help="Key of the output track as a capital letter plus"
-    "Major/Minor, without spaces",
-    default="CMajor",
+    help="Key of the output track as a capital letter, then a dash, plus"
+    "Major/Minor/MajorPentatonic/MinorPentatonic/8Tone, without spaces",
     type=str,
 )
 parser.add_argument(
     "-t",
     "--tempo",
     help="Tempo of the output track in beats per minute",
-    default=60,
     type=int,
 )
 parser.add_argument(
     "-min",
     "--minutes",
     help="Length of the output track in minutes",
-    default=1,
     type=int,
 )
 parser.add_argument(
     "-sec",
     "--seconds",
     help="Length of the output track in seconds",
-    default=0,
     type=int,
 )
 parser.add_argument(
     "--split",
     help="Whether to save the different subpixel tracks as separate files",
-    default=False,
     action="store_true",
 )
 parser.add_argument(
     "--reveal",
     help="Whether to use the image data itself to provide arguments",
-    default=False,
     action="store_true",
 )
 
-SoundImage(
-    **{key: val for key, val in vars(parser.parse_args()).items() if val is not None}
-).convert()
+data = vars(parser.parse_args())
+data["overrides"] = []
+for key in data:
+    if data[key] is None:
+        if data["reveal"]:
+            data["overrides"].append(key)
+        data[key] = DEFAULT_SETTINGS[key]
+SoundImage(**{key: val for key, val in data.items() if val is not None}).convert()
