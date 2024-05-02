@@ -21,12 +21,23 @@ DEFAULT_SETTINGS = {
     "seconds": 0,
     "split": False,
     "reveal": False,
+    "method2": False,
 }
 
 
 class SoundImage:
     def __init__(
-        self, path, output, key, tempo, minutes, seconds, split, reveal, overrides
+        self,
+        path,
+        output,
+        key,
+        tempo,
+        minutes,
+        seconds,
+        split,
+        reveal,
+        method2,
+        overrides,
     ):
         self.path = path
         self.output = output
@@ -39,6 +50,7 @@ class SoundImage:
         self.split = split
         self.reveal = reveal
         self.overrides = overrides
+        self.method2 = method2
 
     def open_file(self):
         return Image.open(self.path).convert(mode="RGB")
@@ -123,7 +135,9 @@ class SoundImage:
         if self.reveal:
             self.override(img)
         self.image_to_array(img)
-        if self.split:
+        if self.method2:
+            self.convert_to_stereo_with_new_method()
+        elif self.split:
             self.convert_to_multiple()
         else:
             self.convert_to_stereo()
@@ -152,3 +166,46 @@ class SoundImage:
         if "minutes" in self.overrides and "seconds" in self.overrides:
             self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
+
+    def get_split_freq(self, color, freq_range):
+        freq = freq_range[int(math.trunc(color / (256 / len(freq_range)))) - 1]
+        return freq
+
+    def get_split_sin(self, color, freq_range):
+        return np.sin(
+            2
+            * np.pi
+            * self.get_split_freq(color, freq_range)
+            * np.arange(int(RATE * 60 / self.tempo))
+            / RATE
+        )
+
+    def convert_to_stereo_with_new_method(self):
+        left_freq_range = []
+        right_freq_range = []
+        for num in self.freq_dict:
+            if num <= 523.2511:  # C5 or below
+                left_freq_range.append(num)
+            elif 261.6256 < num <= 2093.005:  # between C4 and C7
+                right_freq_range.append(num)
+        with Halo(text="Converting data…", color="white"):
+            left_data, right_data = [], []
+            for x in self.image_array:
+                for y in x:
+                    left_data.append(
+                        self.get_split_sin((y[0] + y[1]) / 2, left_freq_range)
+                    )
+                    right_data.append(
+                        self.get_split_sin((y[2] + y[1]) / 2, right_freq_range)
+                    )
+        self.save_wav(
+            self.path,
+            self.output,
+            "-stereo",
+            np.hstack(
+                (
+                    np.array(left_data).reshape(-1, 1),
+                    np.array(right_data).reshape(-1, 1),
+                )
+            ),
+        )

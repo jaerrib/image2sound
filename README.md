@@ -40,6 +40,10 @@ Adding `--reveal` will override the key, tempo, and minutes/seconds with data de
 > 
 > You can specify arguments as overrides in conjunction with "Reveal" mode. For example, if you want to make sure that the key is D-Major, but you want the other parameters to be derived from the image, run `python3 main.py -key D-Major --reveal`
 
+### Experiemental new conversion method
+
+Adding `--method2` will utilize an experimental new conversion method that limits the left and right channels to specific frequency ranges, simulating "left-hand" and "right-hand" keyboar dparts 
+
 ### Examples
 
 Example 1:
