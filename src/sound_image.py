@@ -122,7 +122,7 @@ class SoundImage:
         self.save_wav(
             self.path,
             self.output,
-            "-G",
+            "-B",
             np.hstack((np.array(blue_array).reshape(-1, 1),)),
         )
 
