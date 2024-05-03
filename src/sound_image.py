@@ -3,10 +3,10 @@ import os
 
 import numpy as np
 import wavio
+from PIL import Image
 from halo import Halo
 from mutagen.id3 import APIC
 from mutagen.wave import WAVE
-from PIL import Image
 
 import dimension_calc
 import tone_array
@@ -184,9 +184,9 @@ class SoundImage:
         left_freq_range = []
         right_freq_range = []
         for num in self.freq_dict:
-            if num <= 523.2511:  # C5 or below
+            if num <= tone_array.FREQ_DICT["C5"]:
                 left_freq_range.append(num)
-            elif 261.6256 < num <= 2093.005:  # between C4 and C7
+            elif tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["C7"]:
                 right_freq_range.append(num)
         with Halo(text="Converting data…", color="white"):
             left_data, right_data = [], []
