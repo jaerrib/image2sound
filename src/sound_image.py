@@ -107,9 +107,24 @@ class SoundImage:
                     red_array.append(self.get_sin(y[0]))
                     green_array.append(self.get_sin(y[1]))
                     blue_array.append(self.get_sin(y[2]))
-        self.save_wav(self.path, self.output, "-R", red_array)
-        self.save_wav(self.path, self.output, "-G", green_array)
-        self.save_wav(self.path, self.output, "-B", blue_array)
+        self.save_wav(
+            self.path,
+            self.output,
+            "-R",
+            np.hstack((np.array(red_array).reshape(-1, 1),)),
+        )
+        self.save_wav(
+            self.path,
+            self.output,
+            "-G",
+            np.hstack((np.array(green_array).reshape(-1, 1),)),
+        )
+        self.save_wav(
+            self.path,
+            self.output,
+            "-G",
+            np.hstack((np.array(blue_array).reshape(-1, 1),)),
+        )
 
     def convert_to_stereo(self):
         with Halo(text="Converting data…", color="white"):
