@@ -62,14 +62,14 @@ class SoundImage:
         )
         return self
 
-    def get_freq(self, color):
-        return self.freq_dict[int(math.trunc(color / (256 / self.length)))]
+    def get_freq(self, color, freq_range):
+        return freq_range[int(math.trunc(color / (256 / len(freq_range)))) - 1]
 
-    def get_sin(self, color):
+    def get_sin(self, color, freq_range):
         return np.sin(
             2
             * np.pi
-            * self.get_freq(color)
+            * self.get_freq(color, freq_range)
             * np.arange(int(RATE * 60 / self.tempo))
             / RATE
         )
@@ -104,9 +104,9 @@ class SoundImage:
             red_array, green_array, blue_array = [], [], []
             for x in self.image_array:
                 for y in x:
-                    red_array.append(self.get_sin(y[0]))
-                    green_array.append(self.get_sin(y[1]))
-                    blue_array.append(self.get_sin(y[2]))
+                    red_array.append(self.get_sin(y[0], self.freq_dict))
+                    green_array.append(self.get_sin(y[1], self.freq_dict))
+                    blue_array.append(self.get_sin(y[2], self.freq_dict))
         self.save_wav(
             self.path,
             self.output,
@@ -131,8 +131,8 @@ class SoundImage:
             left_data, right_data = [], []
             for x in self.image_array:
                 for y in x:
-                    left_data.append(self.get_sin((y[0] + y[1]) / 2))
-                    right_data.append(self.get_sin((y[2] + y[1]) / 2))
+                    left_data.append(self.get_sin((y[0] + y[1]) / 2, self.freq_dict))
+                    right_data.append(self.get_sin((y[2] + y[1]) / 2, self.freq_dict))
         self.save_wav(
             self.path,
             self.output,
@@ -182,19 +182,6 @@ class SoundImage:
             self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
 
-    def get_split_freq(self, color, freq_range):
-        freq = freq_range[int(math.trunc(color / (256 / len(freq_range)))) - 1]
-        return freq
-
-    def get_split_sin(self, color, freq_range):
-        return np.sin(
-            2
-            * np.pi
-            * self.get_split_freq(color, freq_range)
-            * np.arange(int(RATE * 60 / self.tempo))
-            / RATE
-        )
-
     def convert_to_stereo_with_new_method(self):
         left_freq_range = []
         right_freq_range = []
@@ -207,12 +194,8 @@ class SoundImage:
             left_data, right_data = [], []
             for x in self.image_array:
                 for y in x:
-                    left_data.append(
-                        self.get_split_sin((y[0] + y[1]) / 2, left_freq_range)
-                    )
-                    right_data.append(
-                        self.get_split_sin((y[2] + y[1]) / 2, right_freq_range)
-                    )
+                    left_data.append(self.get_sin((y[0] + y[1]) / 2, left_freq_range))
+                    right_data.append(self.get_sin((y[2] + y[1]) / 2, right_freq_range))
         self.save_wav(
             self.path,
             self.output,
