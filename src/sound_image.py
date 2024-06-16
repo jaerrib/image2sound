@@ -66,12 +66,10 @@ class SoundImage:
         return freq_range[int(math.trunc(color / (256 / len(freq_range)))) - 1]
 
     def get_sin(self, color, freq_range):
-        return np.sin(
-            2
-            * np.pi
-            * self.get_freq(color, freq_range)
-            * np.arange(int(RATE * 60 / self.tempo))
-            / RATE
+        duration = int(60 / self.tempo)
+        freq = int(self.get_freq(int(color), freq_range))
+        return (np.sin(2 * np.pi * np.arange(RATE * duration) * freq / RATE)).astype(
+            np.float32
         )
 
     @staticmethod
