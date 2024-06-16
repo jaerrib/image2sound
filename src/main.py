@@ -48,6 +48,13 @@ parser.add_argument(
     action="store_true",
 )
 
+parser.add_argument(
+    "--method2",
+    help="Whether to use the new conversion method",
+    action="store_true",
+)
+
+
 data = vars(parser.parse_args())
 data["overrides"] = []
 for key in data:
