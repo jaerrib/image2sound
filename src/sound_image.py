@@ -74,9 +74,9 @@ class SoundImage:
             np.sin(2 * np.pi * np.arange(RATE * duration) * freq / RATE)
         ).astype(np.float32)
 
-        # Apply the Hann window to remove clickiness cause by partial waveforms
-        hann_window = np.hanning(len(sine_wave))
-        sine_wave *= hann_window
+        # Apply the Blackman window to remove clickiness cause by partial waveforms
+        blackman_window = np.blackman(len(sine_wave))
+        sine_wave *= blackman_window
 
         return sine_wave
 
