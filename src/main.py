@@ -54,6 +54,11 @@ parser.add_argument(
     action="store_true",
 )
 
+parser.add_argument(
+    "--nosmooth",
+    help="Whether to apply a smoothing filter",
+    action="store_true",
+)
 
 data = vars(parser.parse_args())
 data["overrides"] = []

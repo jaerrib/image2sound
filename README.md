@@ -34,6 +34,10 @@ The following optional arguments may be set, however:
   if shorter tracks are wanted)
 - `-sec` for the desired number of seconds (defaults to zero)
 
+> The algorithm now uses Blackman smoothing by default. The original conversion
+> method had a characteristic "clicky" sound due to incomplete wave forms. To
+> achieve the original sound, pass `--nosmooth`.
+
 ### "Split" mode
 
 Note that the default behavior of the utility is to create a single stereo audio

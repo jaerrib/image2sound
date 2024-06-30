@@ -22,6 +22,7 @@ DEFAULT_SETTINGS = {
     "split": False,
     "reveal": False,
     "method2": False,
+    "nosmooth": False,
 }
 
 
@@ -38,6 +39,7 @@ class SoundImage:
         reveal,
         method2,
         overrides,
+        nosmooth,
     ):
         self.path = path
         self.output = output
@@ -51,6 +53,7 @@ class SoundImage:
         self.reveal = reveal
         self.overrides = overrides
         self.method2 = method2
+        self.nosmooth = nosmooth
 
     def open_file(self):
         return Image.open(self.path).convert(mode="RGB")
@@ -69,15 +72,13 @@ class SoundImage:
         amplitude = 1
         duration = 60 / self.tempo
         freq = self.get_freq(color, freq_range)
-
         sine_wave = amplitude * (
             np.sin(2 * np.pi * np.arange(RATE * duration) * freq / RATE)
         ).astype(np.float32)
-
-        # Apply the Blackman window to remove clickiness cause by partial waveforms
-        blackman_window = np.blackman(len(sine_wave))
-        sine_wave *= blackman_window
-
+        if not self.nosmooth:
+            # Apply the Blackman window to remove clickiness cause by partial waveforms
+            blackman_window = np.blackman(len(sine_wave))
+            sine_wave *= blackman_window
         return sine_wave
 
     @staticmethod
