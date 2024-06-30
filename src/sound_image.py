@@ -63,14 +63,22 @@ class SoundImage:
         return self
 
     def get_freq(self, color, freq_range):
-        return freq_range[int(math.trunc(color / (256 / len(freq_range)))) - 1]
+        return freq_range[math.trunc(color / (256 / len(freq_range))) - 1]
 
     def get_sin(self, color, freq_range):
-        duration = int(60 / self.tempo)
-        freq = int(self.get_freq(int(color), freq_range))
-        return (np.sin(2 * np.pi * np.arange(RATE * duration) * freq / RATE)).astype(
-            np.float32
-        )
+        amplitude = 1
+        duration = 60 / self.tempo
+        freq = self.get_freq(color, freq_range)
+
+        sine_wave = amplitude * (
+            np.sin(2 * np.pi * np.arange(RATE * duration) * freq / RATE)
+        ).astype(np.float32)
+
+        # Apply the Hann window to remove clickiness cause by partial waveforms
+        hann_window = np.hanning(len(sine_wave))
+        sine_wave *= hann_window
+
+        return sine_wave
 
     @staticmethod
     def save_wav(input_path, output_path, side, array):
