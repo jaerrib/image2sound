@@ -3,10 +3,10 @@ import os
 
 import numpy as np
 import wavio
-from PIL import Image
 from halo import Halo
 from mutagen.id3 import APIC
 from mutagen.wave import WAVE
+from PIL import Image
 
 import dimension_calc
 import tone_array
