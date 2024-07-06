@@ -23,6 +23,7 @@ DEFAULT_SETTINGS = {
     "reveal": False,
     "method2": False,
     "nosmooth": False,
+    "time_signature": "4/4",
 }
 
 
@@ -40,13 +41,15 @@ class SoundImage:
         method2,
         overrides,
         nosmooth,
+        time_signature,
     ):
         self.path = path
         self.output = output
         self.key = key
         self.freq_dict = tone_array.get_tone_array(self.key)
         self.length = len(self.freq_dict)
-        self.tempo = tempo
+        self.time_signature = self.separate_time_signature(time_signature)
+        self.tempo = tempo * self.time_signature[1]
         self.minutes = minutes + seconds / 60
         self.image_array = None
         self.split = split
@@ -65,11 +68,20 @@ class SoundImage:
         )
         return self
 
+    def separate_time_signature(self, time_signature):
+        top, bottom = time_signature.split("/")
+        top, bottom = int(top), int(bottom)
+        if top == 0:
+            top = 4
+        if bottom == 0:
+            bottom = 4
+        split_time_signature = [top, bottom]
+        return split_time_signature
+
     def get_freq(self, color, freq_range):
         return freq_range[math.trunc(color / (256 / len(freq_range))) - 1]
 
-    def get_sin(self, color, freq_range):
-        amplitude = 1
+    def get_sin(self, color, freq_range, amplitude):
         duration = 60 / self.tempo
         freq = self.get_freq(color, freq_range)
         sine_wave = amplitude * (
@@ -106,14 +118,22 @@ class SoundImage:
             audio_file.save()
         print("Saved file as " + file_name)
 
+    def get_amplitude(self, index):
+        if index // self.time_signature[0] == 0:
+            return 1.5
+        return 0.75
+
     def convert_to_multiple(self):
         with Halo(text="Converting data…", color="white"):
             red_array, green_array, blue_array = [], [], []
+            index = 0
             for x in self.image_array:
                 for y in x:
-                    red_array.append(self.get_sin(y[0], self.freq_dict))
-                    green_array.append(self.get_sin(y[1], self.freq_dict))
-                    blue_array.append(self.get_sin(y[2], self.freq_dict))
+                    amplitude = self.get_amplitude(index)
+                    red_array.append(self.get_sin(y[0], self.freq_dict, amplitude))
+                    green_array.append(self.get_sin(y[1], self.freq_dict, amplitude))
+                    blue_array.append(self.get_sin(y[2], self.freq_dict, amplitude))
+                    index += 1
         self.save_wav(
             self.path,
             self.output,
@@ -136,10 +156,17 @@ class SoundImage:
     def convert_to_stereo(self):
         with Halo(text="Converting data…", color="white"):
             left_data, right_data = [], []
+            index = 0
             for x in self.image_array:
                 for y in x:
-                    left_data.append(self.get_sin((y[0] + y[1]) / 2, self.freq_dict))
-                    right_data.append(self.get_sin((y[2] + y[1]) / 2, self.freq_dict))
+                    amplitude = self.get_amplitude(index)
+                    left_data.append(
+                        self.get_sin((y[0] + y[1]) / 2, self.freq_dict, amplitude)
+                    )
+                    right_data.append(
+                        self.get_sin((y[2] + y[1]) / 2, self.freq_dict, amplitude)
+                    )
+                    index += 1
         self.save_wav(
             self.path,
             self.output,
