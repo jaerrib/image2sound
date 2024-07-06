@@ -3,10 +3,10 @@ import os
 
 import numpy as np
 import wavio
+from PIL import Image
 from halo import Halo
 from mutagen.id3 import APIC
 from mutagen.wave import WAVE
-from PIL import Image
 
 import dimension_calc
 import tone_array
@@ -23,7 +23,7 @@ DEFAULT_SETTINGS = {
     "reveal": False,
     "method2": False,
     "nosmooth": False,
-    "time_signature": "4/4",
+    "time_signature": "1/1",
 }
 
 
@@ -72,9 +72,9 @@ class SoundImage:
         top, bottom = time_signature.split("/")
         top, bottom = int(top), int(bottom)
         if top == 0:
-            top = 4
+            top = 1
         if bottom == 0:
-            bottom = 4
+            bottom = 1
         split_time_signature = [top, bottom]
         return split_time_signature
 
@@ -96,7 +96,6 @@ class SoundImage:
     @staticmethod
     def save_wav(input_path, output_path, side, array):
         file_name = ".".join(input_path.split(".")[:-1]).split("/")[-1] + side + ".wav"
-        print(file_name)
         if output_path == "":
             pass
         elif os.path.isdir(output_path):

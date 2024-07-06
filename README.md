@@ -27,7 +27,7 @@ The following optional arguments may be set, however:
 - `-min` for the desired number of minutes (defaults to 1 so must be set to zero
   if shorter tracks are wanted)
 - `-sec` for the desired number of seconds (defaults to zero)
-- `-ts` to set the time signature (defaults to 4/4)
+- `-ts` to set the time signature (defaults to 1/1, essentially "no feel")
 
 > The algorithm now uses Blackman smoothing by default. The original conversion
 > method had a characteristic "clicky" sound due to incomplete wave forms. To
