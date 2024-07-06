@@ -96,12 +96,13 @@ class SoundImage:
     @staticmethod
     def save_wav(input_path, output_path, side, array):
         file_name = ".".join(input_path.split(".")[:-1]).split("/")[-1] + side + ".wav"
+        print(file_name)
         if output_path == "":
             pass
         elif os.path.isdir(output_path):
             file_name = output_path + file_name
         else:
-            file_name = output_path
+            file_name = file_name
         with Halo(text="Saving file…", color="white"):
             wavio.write(file_name, array, RATE, scale=2, sampwidth=3, clip="ignore")
             audio_file = WAVE(file_name)
