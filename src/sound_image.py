@@ -119,9 +119,9 @@ class SoundImage:
         print("Saved file as " + file_name)
 
     def get_amplitude(self, index):
-        if index // self.time_signature[0] == 0:
-            return 1.5
-        return 0.75
+        if index % ((self.time_signature[0] * self.time_signature[1]) / 2) == 0:
+            return 1
+        return 0.5
 
     def convert_to_multiple(self):
         with Halo(text="Converting data…", color="white"):
