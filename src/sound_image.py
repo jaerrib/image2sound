@@ -49,7 +49,8 @@ class SoundImage:
         self.freq_dict = tone_array.get_tone_array(self.key)
         self.length = len(self.freq_dict)
         self.time_signature = self.separate_time_signature(time_signature)
-        self.tempo = tempo * self.time_signature[1]
+        self.tempo = tempo
+        self.note_length = self.get_note_length()
         self.minutes = minutes + seconds / 60
         self.image_array = None
         self.split = split
@@ -63,10 +64,19 @@ class SoundImage:
 
     def image_to_array(self, img):
         self.image_array = np.asarray(
-            img.resize(dimension_calc.get_new_dim(img.size, self.minutes, self.tempo)),
+            img.resize(
+                dimension_calc.get_new_dim(
+                    img.size, self.minutes, self.tempo, self.time_signature
+                )
+            ),
             dtype="int64",
         )
         return self
+
+    def get_note_length(self):
+        duration = 60 / self.tempo
+        note_length = duration / self.time_signature[1]
+        return note_length
 
     def separate_time_signature(self, time_signature):
         top, bottom = time_signature.split("/")
@@ -82,10 +92,9 @@ class SoundImage:
         return freq_range[math.trunc(color / (256 / len(freq_range))) - 1]
 
     def get_sin(self, color, freq_range, amplitude):
-        duration = 60 / self.tempo
         freq = self.get_freq(color, freq_range)
         sine_wave = amplitude * (
-            np.sin(2 * np.pi * np.arange(RATE * duration) * freq / RATE)
+            np.sin(2 * np.pi * np.arange(RATE * self.note_length) * freq / RATE)
         ).astype(np.float32)
         if not self.nosmooth:
             # Apply the Blackman window to remove clickiness cause by partial waveforms
@@ -119,7 +128,8 @@ class SoundImage:
         print("Saved file as " + file_name)
 
     def get_amplitude(self, index):
-        if index % ((self.time_signature[0] * self.time_signature[1]) / 2) == 0:
+        # Accents the first beat of each measure by applying a higher amplitude
+        if index % self.time_signature[0] == 0:
             return 1
         return 0.5
 
