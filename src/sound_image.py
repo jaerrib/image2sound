@@ -88,7 +88,8 @@ class SoundImage:
         split_time_signature = [top, bottom]
         return split_time_signature
 
-    def get_freq(self, color, freq_range):
+    @staticmethod
+    def get_freq(color, freq_range):
         return freq_range[math.trunc(color / (256 / len(freq_range))) - 1]
 
     def get_sin(self, color, freq_range, amplitude):
@@ -164,6 +165,17 @@ class SoundImage:
         )
 
     def convert_to_stereo(self):
+        if self.method2:
+            left_freq_range = []
+            right_freq_range = []
+            for num in self.freq_dict:
+                if num <= tone_array.FREQ_DICT["C5"]:
+                    left_freq_range.append(num)
+                elif tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["C7"]:
+                    right_freq_range.append(num)
+        else:
+            left_freq_range = self.freq_dict
+            right_freq_range = self.freq_dict
         with Halo(text="Converting data…", color="white"):
             left_data, right_data = [], []
             index = 0
@@ -171,10 +183,10 @@ class SoundImage:
                 for y in x:
                     amplitude = self.get_amplitude(index)
                     left_data.append(
-                        self.get_sin((y[0] + y[1]) / 2, self.freq_dict, amplitude)
+                        self.get_sin((y[0] + y[1]) / 2, left_freq_range, amplitude)
                     )
                     right_data.append(
-                        self.get_sin((y[2] + y[1]) / 2, self.freq_dict, amplitude)
+                        self.get_sin((y[2] + y[1]) / 2, right_freq_range, amplitude)
                     )
                     index += 1
         self.save_wav(
@@ -194,9 +206,7 @@ class SoundImage:
         if self.reveal:
             self.override(img)
         self.image_to_array(img)
-        if self.method2:
-            self.convert_to_stereo_with_new_method()
-        elif self.split:
+        if self.split:
             self.convert_to_multiple()
         else:
             self.convert_to_stereo()
@@ -225,29 +235,3 @@ class SoundImage:
         if "minutes" in self.overrides and "seconds" in self.overrides:
             self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
-
-    def convert_to_stereo_with_new_method(self):
-        left_freq_range = []
-        right_freq_range = []
-        for num in self.freq_dict:
-            if num <= tone_array.FREQ_DICT["C5"]:
-                left_freq_range.append(num)
-            elif tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["C7"]:
-                right_freq_range.append(num)
-        with Halo(text="Converting data…", color="white"):
-            left_data, right_data = [], []
-            for x in self.image_array:
-                for y in x:
-                    left_data.append(self.get_sin((y[0] + y[1]) / 2, left_freq_range))
-                    right_data.append(self.get_sin((y[2] + y[1]) / 2, right_freq_range))
-        self.save_wav(
-            self.path,
-            self.output,
-            "-stereo",
-            np.hstack(
-                (
-                    np.array(left_data).reshape(-1, 1),
-                    np.array(right_data).reshape(-1, 1),
-                )
-            ),
-        )
