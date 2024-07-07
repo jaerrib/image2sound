@@ -135,15 +135,29 @@ class SoundImage:
         return 0.5
 
     def convert_to_multiple(self):
+        if self.method2:
+            red_freq_range = []
+            green_freq_range = []
+            blue_freq_range = []
+            for num in self.freq_dict:
+                if num <= tone_array.FREQ_DICT["C5"]:
+                    red_freq_range.append(num)
+                elif tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["C7"]:
+                    green_freq_range.append(num)
+                    blue_freq_range.append(num)
+        else:
+            red_freq_range = self.freq_dict
+            green_freq_range = self.freq_dict
+            blue_freq_range = self.freq_dict
         with Halo(text="Converting data…", color="white"):
             red_array, green_array, blue_array = [], [], []
             index = 0
             for x in self.image_array:
                 for y in x:
                     amplitude = self.get_amplitude(index)
-                    red_array.append(self.get_sin(y[0], self.freq_dict, amplitude))
-                    green_array.append(self.get_sin(y[1], self.freq_dict, amplitude))
-                    blue_array.append(self.get_sin(y[2], self.freq_dict, amplitude))
+                    red_array.append(self.get_sin(y[0], red_freq_range, amplitude))
+                    green_array.append(self.get_sin(y[1], green_freq_range, amplitude))
+                    blue_array.append(self.get_sin(y[2], blue_freq_range, amplitude))
                     index += 1
         self.save_wav(
             self.path,
