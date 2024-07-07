@@ -47,6 +47,12 @@ parser.add_argument(
     help="Whether to use the image data itself to provide arguments",
     action="store_true",
 )
+parser.add_argument(
+    "-ts",
+    "--time_signature",
+    help="Sets the time signature as 3/4, 12/8, etc. Defaults to 4/4",
+    type=str,
+)
 
 parser.add_argument(
     "--method2",

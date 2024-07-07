@@ -9,13 +9,7 @@ this is not specified.*
 
 ## Requirements
 
-- argparse
-- halo
-- math
-- mutagen
-- numpy
-- PIL
-- wavio
+*See `requirements.txt` for specifics*
 
 ## To run
 
@@ -33,6 +27,7 @@ The following optional arguments may be set, however:
 - `-min` for the desired number of minutes (defaults to 1 so must be set to zero
   if shorter tracks are wanted)
 - `-sec` for the desired number of seconds (defaults to zero)
+- `-ts` to set the time signature (defaults to 1/1, essentially "no feel")
 
 > The algorithm now uses Blackman smoothing by default. The original conversion
 > method had a characteristic "clicky" sound due to incomplete wave forms. To
@@ -82,4 +77,10 @@ Example 3:
 
 ```
 python3 main.py -p image.png --reveal
+```
+
+Example 4:
+
+```
+python3 main.py -p image.png -key G-Major -t 96 -min 4 -sec 20 -ts 3/4 --split
 ```
