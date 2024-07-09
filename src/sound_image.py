@@ -60,7 +60,7 @@ class SoundImage:
         self.nosmooth = nosmooth
 
     def open_file(self):
-        return Image.open(self.path).convert(mode="RGB")
+        return Image.open(self.path)
 
     def image_to_array(self, img):
         self.image_array = np.asarray(
@@ -220,7 +220,10 @@ class SoundImage:
         if self.reveal:
             self.override(img)
         self.image_to_array(img)
-        if self.split:
+        if img.mode == "CMYK":
+            print("CMYK format recognized - converting using 'quartet' mode")
+            self.create_quartet()
+        elif self.split:
             self.convert_to_multiple()
         else:
             self.convert_to_stereo()
@@ -249,3 +252,57 @@ class SoundImage:
         if "minutes" in self.overrides and "seconds" in self.overrides:
             self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
+
+    def create_quartet(self):
+        cyan_freq_range = []
+        magenta_freq_range = []
+        yellow_freq_range = []
+        black_freq_range = []
+        for num in self.freq_dict:
+            if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["A7"]:
+                cyan_freq_range.append(num)
+            if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["C7"]:
+                magenta_freq_range.append(num)
+            if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["C6"]:
+                yellow_freq_range.append(num)
+            if tone_array.FREQ_DICT["C1"] <= num <= tone_array.FREQ_DICT["C5"]:
+                black_freq_range.append(num)
+        with Halo(text="Converting data…", color="white"):
+            cyan_array, magenta_array, yellow_array, black_array = [], [], [], []
+            index = 0
+            for x in self.image_array:
+                for y in x:
+                    amplitude = self.get_amplitude(index)
+                    cyan_array.append(self.get_sin(y[0], cyan_freq_range, amplitude))
+                    magenta_array.append(
+                        self.get_sin(y[1], magenta_freq_range, amplitude)
+                    )
+                    yellow_array.append(
+                        self.get_sin(y[2], yellow_freq_range, amplitude)
+                    )
+                    black_array.append(self.get_sin(y[3], black_freq_range, amplitude))
+                    index += 1
+        self.save_wav(
+            self.path,
+            self.output,
+            "-C",
+            np.hstack((np.array(cyan_array).reshape(-1, 1),)),
+        )
+        self.save_wav(
+            self.path,
+            self.output,
+            "-M",
+            np.hstack((np.array(magenta_array).reshape(-1, 1),)),
+        )
+        self.save_wav(
+            self.path,
+            self.output,
+            "-Y",
+            np.hstack((np.array(yellow_array).reshape(-1, 1),)),
+        )
+        self.save_wav(
+            self.path,
+            self.output,
+            "-K",
+            np.hstack((np.array(black_array).reshape(-1, 1),)),
+        )
