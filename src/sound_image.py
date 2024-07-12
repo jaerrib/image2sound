@@ -262,7 +262,7 @@ class SoundImage:
             if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["A7"]:
                 cyan_freq_range.append(num)
 
-            # Use these settings to simulate the range of two violins, viola and cello
+            # These settings simulate the range of two violins, viola and cello
             if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["A7"]:
                 magenta_freq_range.append(num)
             if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["C7"]:
@@ -270,13 +270,6 @@ class SoundImage:
             if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["C6"]:
                 black_freq_range.append(num)
 
-            # Use these settings to include upright bass range instead of the second violin
-            # if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["C7"]:
-            #     magenta_freq_range.append(num)
-            # if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["C6"]:
-            #     yellow_freq_range.append(num)
-            # if tone_array.FREQ_DICT["C1"] <= num <= tone_array.FREQ_DICT["C5"]:
-            #     black_freq_range.append(num)
         with Halo(text="Converting data…", color="white"):
             cyan_array, magenta_array, yellow_array, black_array = [], [], [], []
             index = 0
