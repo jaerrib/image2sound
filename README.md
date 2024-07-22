@@ -52,12 +52,18 @@ derived from the image itself, "revealing" the music within the image
 > other parameters to be derived from the image,
 > run `python3 main.py -key D-Major --reveal`
 
-### Experiemental new conversion method
+### Experimental new conversion method
 
 Adding `--method2` will utilize an experimental new conversion method that
 limits the left and right channels to specific frequency ranges, simulating "
 left-hand" and "right-hand" keyboard parts. Please note that this method does
 not currently support "Split" mode.
+
+### "Quartet Mode"
+
+Using CMYK images will automatically trigger "quartet mode". This will create
+four separate, mono WAV files with each being limited to the sonic range
+associated with the four instruments used in a traditional string quartet
 
 ### Examples
 
