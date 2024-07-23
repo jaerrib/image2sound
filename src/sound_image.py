@@ -103,6 +103,30 @@ class SoundImage:
             sine_wave *= blackman_window
         return sine_wave
 
+    def get_square(self, color, freq_range, amplitude):
+        freq = self.get_freq(color, freq_range)
+        t = np.linspace(
+            0, self.note_length, int(RATE * self.note_length), endpoint=False
+        )
+        wave = amplitude * 0.5 * (1 + np.sign(np.sin(2 * np.pi * freq * t)))
+        return wave
+
+    def get_triangle(self, color, freq_range, amplitude):
+        freq = self.get_freq(color, freq_range)
+        t = np.linspace(
+            0, self.note_length, int(RATE * self.note_length), endpoint=False
+        )
+        wave = amplitude * (2 * np.abs(2 * (t * freq - np.floor(t * freq + 0.5))) - 1)
+        return wave
+
+    def get_sawtooth(self, color, freq_range, amplitude):
+        freq = self.get_freq(color, freq_range)
+        t = np.linspace(
+            0, self.note_length, int(RATE * self.note_length), endpoint=False
+        )
+        wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
+        return wave
+
     @staticmethod
     def save_wav(input_path, output_path, side, array):
         file_name = ".".join(input_path.split(".")[:-1]).split("/")[-1] + side + ".wav"
