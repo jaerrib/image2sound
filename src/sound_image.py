@@ -92,16 +92,21 @@ class SoundImage:
     def get_freq(color, freq_range):
         return freq_range[math.trunc(color / (256 / len(freq_range))) - 1]
 
+    @staticmethod
+    def apply_blackman(wave):
+        # Apply the Blackman window to remove clickiness cause by partial waveforms
+        blackman_window = np.blackman(len(wave))
+        wave *= blackman_window
+        return wave
+
     def get_sin(self, color, freq_range, amplitude):
         freq = self.get_freq(color, freq_range)
-        sine_wave = amplitude * (
+        wave = amplitude * (
             np.sin(2 * np.pi * np.arange(RATE * self.note_length) * freq / RATE)
         ).astype(np.float32)
         if not self.nosmooth:
-            # Apply the Blackman window to remove clickiness cause by partial waveforms
-            blackman_window = np.blackman(len(sine_wave))
-            sine_wave *= blackman_window
-        return sine_wave
+            wave = self.apply_blackman(wave)
+        return wave
 
     def get_square(self, color, freq_range, amplitude):
         freq = self.get_freq(color, freq_range)
@@ -109,6 +114,8 @@ class SoundImage:
             0, self.note_length, int(RATE * self.note_length), endpoint=False
         )
         wave = amplitude * 0.5 * (1 + np.sign(np.sin(2 * np.pi * freq * t)))
+        if not self.nosmooth:
+            wave = self.apply_blackman(wave)
         return wave
 
     def get_triangle(self, color, freq_range, amplitude):
@@ -117,6 +124,8 @@ class SoundImage:
             0, self.note_length, int(RATE * self.note_length), endpoint=False
         )
         wave = amplitude * (2 * np.abs(2 * (t * freq - np.floor(t * freq + 0.5))) - 1)
+        if not self.nosmooth:
+            wave = self.apply_blackman(wave)
         return wave
 
     def get_sawtooth(self, color, freq_range, amplitude):
@@ -125,6 +134,8 @@ class SoundImage:
             0, self.note_length, int(RATE * self.note_length), endpoint=False
         )
         wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
+        if not self.nosmooth:
+            wave = self.apply_blackman(wave)
         return wave
 
     @staticmethod
