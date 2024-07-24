@@ -309,14 +309,18 @@ class SoundImage:
             for x in self.image_array:
                 for y in x:
                     amplitude = self.get_amplitude(index)
-                    cyan_array.append(self.get_sin(y[0], cyan_freq_range, amplitude))
+                    cyan_array.append(
+                        self.get_sawtooth(y[0], cyan_freq_range, amplitude)
+                    )
                     magenta_array.append(
-                        self.get_sin(y[1], magenta_freq_range, amplitude)
+                        self.get_sawtooth(y[1], magenta_freq_range, amplitude)
                     )
                     yellow_array.append(
-                        self.get_sin(y[2], yellow_freq_range, amplitude)
+                        self.get_sawtooth(y[2], yellow_freq_range, amplitude)
                     )
-                    black_array.append(self.get_sin(y[3], black_freq_range, amplitude))
+                    black_array.append(
+                        self.get_sawtooth(y[3], black_freq_range, amplitude)
+                    )
                     index += 1
         self.save_wav(
             self.path,
