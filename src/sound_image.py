@@ -58,6 +58,7 @@ class SoundImage:
         self.overrides = overrides
         self.method2 = method2
         self.nosmooth = nosmooth
+        self.image_mode = None
 
     def open_file(self):
         return Image.open(self.path)
@@ -170,48 +171,40 @@ class SoundImage:
         return 0.5
 
     def convert_to_multiple(self):
-        if self.method2:
-            red_freq_range = []
-            green_freq_range = []
-            blue_freq_range = []
-            for num in self.freq_dict:
-                if num <= tone_array.FREQ_DICT["C5"]:
-                    red_freq_range.append(num)
-                elif tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["C7"]:
-                    green_freq_range.append(num)
-                    blue_freq_range.append(num)
-        else:
-            red_freq_range = self.freq_dict
-            green_freq_range = self.freq_dict
-            blue_freq_range = self.freq_dict
         with Halo(text="Converting data…", color="white"):
-            red_array, green_array, blue_array = [], [], []
-            index = 0
-            for x in self.image_array:
-                for y in x:
-                    amplitude = self.get_amplitude(index)
-                    red_array.append(self.get_sin(y[0], red_freq_range, amplitude))
-                    green_array.append(self.get_sin(y[1], green_freq_range, amplitude))
-                    blue_array.append(self.get_sin(y[2], blue_freq_range, amplitude))
-                    index += 1
-        self.save_wav(
-            self.path,
-            self.output,
-            "-R",
-            np.hstack((np.array(red_array).reshape(-1, 1),)),
-        )
-        self.save_wav(
-            self.path,
-            self.output,
-            "-G",
-            np.hstack((np.array(green_array).reshape(-1, 1),)),
-        )
-        self.save_wav(
-            self.path,
-            self.output,
-            "-B",
-            np.hstack((np.array(blue_array).reshape(-1, 1),)),
-        )
+            for char in self.image_mode:
+                if self.method2:
+                    freq_range = []
+                    for num in self.freq_dict:
+                        if char == "R":
+                            if num <= tone_array.FREQ_DICT["C5"]:
+                                freq_range.append(num)
+                        elif char != "R":
+                            if (
+                                tone_array.FREQ_DICT["C4"]
+                                <= num
+                                <= tone_array.FREQ_DICT["C7"]
+                            ):
+                                freq_range.append(num)
+                else:
+                    freq_range = self.freq_dict
+                color_array = []
+                color_index = self.image_mode.index(char)
+                side = "-" + char
+                index = 0
+                for x in self.image_array:
+                    for y in x:
+                        amplitude = self.get_amplitude(index)
+                        color_array.append(
+                            self.get_sin(y[color_index], freq_range, amplitude)
+                        )
+                        index += 1
+                self.save_wav(
+                    self.path,
+                    self.output,
+                    side,
+                    np.hstack((np.array(color_array).reshape(-1, 1),)),
+                )
 
     def convert_to_stereo(self):
         if self.method2:
@@ -255,6 +248,7 @@ class SoundImage:
         if self.reveal:
             self.override(img)
         self.image_to_array(img)
+        self.image_mode = img.mode
         if img.mode == "CMYK":
             print("CMYK format recognized - converting using 'quartet' mode")
             self.create_quartet()
