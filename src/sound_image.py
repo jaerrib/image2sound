@@ -100,41 +100,24 @@ class SoundImage:
         wave *= blackman_window
         return wave
 
-    def get_sin(self, color, freq_range, amplitude):
-        freq = self.get_freq(color, freq_range)
-        wave = amplitude * (
-            np.sin(2 * np.pi * np.arange(RATE * self.note_length) * freq / RATE)
-        ).astype(np.float32)
-        if not self.nosmooth:
-            wave = self.apply_blackman(wave)
-        return wave
-
-    def get_square(self, color, freq_range, amplitude):
+    def get_wave(self, color, freq_range, amplitude, wave_type):
         freq = self.get_freq(color, freq_range)
         t = np.linspace(
             0, self.note_length, int(RATE * self.note_length), endpoint=False
         )
-        wave = amplitude * 0.5 * (1 + np.sign(np.sin(2 * np.pi * freq * t)))
-        if not self.nosmooth:
-            wave = self.apply_blackman(wave)
-        return wave
-
-    def get_triangle(self, color, freq_range, amplitude):
-        freq = self.get_freq(color, freq_range)
-        t = np.linspace(
-            0, self.note_length, int(RATE * self.note_length), endpoint=False
-        )
-        wave = amplitude * (2 * np.abs(2 * (t * freq - np.floor(t * freq + 0.5))) - 1)
-        if not self.nosmooth:
-            wave = self.apply_blackman(wave)
-        return wave
-
-    def get_sawtooth(self, color, freq_range, amplitude):
-        freq = self.get_freq(color, freq_range)
-        t = np.linspace(
-            0, self.note_length, int(RATE * self.note_length), endpoint=False
-        )
-        wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
+        match wave_type:
+            case "sine":
+                wave = amplitude * (np.sin(2 * np.pi * t * freq))
+            case "square":
+                wave = amplitude * 0.5 * (1 + np.sign(np.sin(2 * np.pi * freq * t)))
+            case "triangle":
+                wave = amplitude * (
+                    2 * np.abs(2 * (t * freq - np.floor(t * freq + 0.5))) - 1
+                )
+            case "sawtooth":
+                wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
+            case _:
+                wave = amplitude * (np.sin(2 * np.pi * t * freq))
         if not self.nosmooth:
             wave = self.apply_blackman(wave)
         return wave
@@ -179,7 +162,7 @@ class SoundImage:
                         if char == "R":
                             if num <= tone_array.FREQ_DICT["C5"]:
                                 freq_range.append(num)
-                        elif char != "R":
+                        else:
                             if (
                                 tone_array.FREQ_DICT["C4"]
                                 <= num
@@ -196,7 +179,9 @@ class SoundImage:
                     for y in x:
                         amplitude = self.get_amplitude(index)
                         color_array.append(
-                            self.get_sin(y[color_index], freq_range, amplitude)
+                            self.get_wave(
+                                y[color_index], freq_range, amplitude, wave_type="sine"
+                            )
                         )
                         index += 1
                 self.save_wav(
@@ -225,10 +210,20 @@ class SoundImage:
                 for y in x:
                     amplitude = self.get_amplitude(index)
                     left_data.append(
-                        self.get_sin((y[0] + y[1]) / 2, left_freq_range, amplitude)
+                        self.get_wave(
+                            (y[0] + y[1]) / 2,
+                            left_freq_range,
+                            amplitude,
+                            wave_type="sine",
+                        )
                     )
                     right_data.append(
-                        self.get_sin((y[2] + y[1]) / 2, right_freq_range, amplitude)
+                        self.get_wave(
+                            (y[2] + y[1]) / 2,
+                            right_freq_range,
+                            amplitude,
+                            wave_type="sine",
+                        )
                     )
                     index += 1
         self.save_wav(
@@ -304,16 +299,24 @@ class SoundImage:
                 for y in x:
                     amplitude = self.get_amplitude(index)
                     cyan_array.append(
-                        self.get_sawtooth(y[0], cyan_freq_range, amplitude)
+                        self.get_wave(
+                            y[0], cyan_freq_range, amplitude, wave_type="sawtooth"
+                        )
                     )
                     magenta_array.append(
-                        self.get_sawtooth(y[1], magenta_freq_range, amplitude)
+                        self.get_wave(
+                            y[1], magenta_freq_range, amplitude, wave_type="sawtooth"
+                        )
                     )
                     yellow_array.append(
-                        self.get_sawtooth(y[2], yellow_freq_range, amplitude)
+                        self.get_wave(
+                            y[2], yellow_freq_range, amplitude, wave_type="sawtooth"
+                        )
                     )
                     black_array.append(
-                        self.get_sawtooth(y[3], black_freq_range, amplitude)
+                        self.get_wave(
+                            y[3], black_freq_range, amplitude, wave_type="sawtooth"
+                        )
                     )
                     index += 1
         self.save_wav(
