@@ -240,8 +240,9 @@ class SoundImage:
 
     def convert(self):
         img = self.open_file()
-        if img.mode not in ["RGB", "CMYK"]:
-            print("Invalid image type. Please use an RGB or CMYK file.")
+        print(img.mode)
+        if img.mode not in ["RGB", "RGBA", "CMYK"]:
+            print("Invalid image type. Please use an RGB, RGBA, or CMYK file.")
         else:
             if self.reveal:
                 self.override(img)
