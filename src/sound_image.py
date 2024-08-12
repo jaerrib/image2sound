@@ -240,17 +240,20 @@ class SoundImage:
 
     def convert(self):
         img = self.open_file()
-        if self.reveal:
-            self.override(img)
-        self.image_to_array(img)
-        self.image_mode = img.mode
-        if img.mode == "CMYK":
-            print("CMYK format recognized - converting using 'quartet' mode")
-            self.create_quartet()
-        elif self.split:
-            self.convert_to_multiple()
+        if img.mode not in ["RGB", "CMYK"]:
+            print("Invalid image type. Please use an RGB or CMYK file.")
         else:
-            self.convert_to_stereo()
+            if self.reveal:
+                self.override(img)
+            self.image_to_array(img)
+            self.image_mode = img.mode
+            if img.mode == "CMYK":
+                print("CMYK format recognized - converting using 'quartet' mode")
+                self.create_quartet()
+            elif self.split:
+                self.convert_to_multiple()
+            else:
+                self.convert_to_stereo()
 
     def determine_key(self, red, green, blue):
         notes = tone_array.get_chromatic_notes()
