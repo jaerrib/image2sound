@@ -101,10 +101,37 @@ class SoundImage:
         return wave
 
     def get_wave(self, color, freq_range, amplitude, wave_type):
+        attack = 0.08 * self.note_length
+        decay = 0.6 * self.note_length
+        sustain = 1 * amplitude
+        release = 0.3 * self.note_length
+        sample_rate = RATE
         freq = self.get_freq(color, freq_range)
         t = np.linspace(
             0, self.note_length, int(RATE * self.note_length), endpoint=False
         )
+
+        total_samples = int(RATE * self.note_length)
+        attack_samples = int(attack * sample_rate)
+        decay_samples = int(decay * sample_rate)
+        release_samples = int(release * sample_rate)
+        sustain_samples = total_samples - (
+            attack_samples + decay_samples + release_samples
+        )
+
+        envelope = np.zeros(total_samples)
+        envelope[:attack_samples] = np.linspace(0, amplitude, attack_samples)
+        envelope[attack_samples : attack_samples + decay_samples] = np.linspace(
+            amplitude, sustain, decay_samples
+        )
+        envelope[
+            attack_samples
+            + decay_samples : attack_samples
+            + decay_samples
+            + sustain_samples
+        ] = sustain
+        envelope[-release_samples:] = np.linspace(sustain, 0, release_samples)
+
         match wave_type:
             case "sine":
                 wave = amplitude * (np.sin(2 * np.pi * t * freq))
@@ -118,8 +145,10 @@ class SoundImage:
                 wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
             case _:
                 wave = amplitude * (np.sin(2 * np.pi * t * freq))
-        if not self.nosmooth:
-            wave = self.apply_blackman(wave)
+        # if not self.nosmooth:
+        #     wave = self.apply_blackman(wave)
+
+        wave = wave * envelope
         return wave
 
     @staticmethod
@@ -240,7 +269,6 @@ class SoundImage:
 
     def convert(self):
         img = self.open_file()
-        print(img.mode)
         if img.mode not in ["RGB", "RGBA", "CMYK"]:
             print("Invalid image type. Please use an RGB, RGBA, or CMYK file.")
         else:
