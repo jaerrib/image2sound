@@ -81,7 +81,8 @@ class SoundImage:
         note_length = duration / self.time_signature[1]
         return note_length
 
-    def separate_time_signature(self, time_signature):
+    @staticmethod
+    def separate_time_signature(time_signature):
         top, bottom = time_signature.split("/")
         top, bottom = int(top), int(bottom)
         if top == 0:
