@@ -101,10 +101,10 @@ class SoundImage:
         return wave
 
     def get_wave(self, color, freq_range, amplitude, wave_type):
-        attack = 0.08 * self.note_length
-        decay = 0.6 * self.note_length
-        sustain = 1 * amplitude
-        release = 0.3 * self.note_length
+        attack = 0.10 * self.note_length
+        decay = 0.3 * self.note_length
+        sustain = 0.5 * amplitude
+        release = 0.1 * self.note_length
         sample_rate = RATE
         freq = self.get_freq(color, freq_range)
         t = np.linspace(
@@ -179,7 +179,7 @@ class SoundImage:
     def get_amplitude(self, index):
         # Accents the first beat of each measure by applying a higher amplitude
         if index % self.time_signature[0] == 0:
-            return 1
+            return 0.7
         return 0.5
 
     def convert_to_multiple(self):
