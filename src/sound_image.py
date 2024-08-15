@@ -22,7 +22,7 @@ DEFAULT_SETTINGS = {
     "split": False,
     "reveal": False,
     "method2": False,
-    "nosmooth": False,
+    "smooth": False,
     "time_signature": "4/4",
 }
 
@@ -40,7 +40,7 @@ class SoundImage:
         reveal,
         method2,
         overrides,
-        nosmooth,
+        smooth,
         time_signature,
     ):
         self.path = path
@@ -57,7 +57,7 @@ class SoundImage:
         self.reveal = reveal
         self.overrides = overrides
         self.method2 = method2
-        self.nosmooth = nosmooth
+        self.smooth = smooth
         self.image_mode = None
 
     def open_file(self):
@@ -145,10 +145,9 @@ class SoundImage:
                 wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
             case _:
                 wave = amplitude * (np.sin(2 * np.pi * t * freq))
-        # if not self.nosmooth:
-        #     wave = self.apply_blackman(wave)
-
         wave = wave * envelope
+        if self.smooth:
+            wave = self.apply_blackman(wave)
         return wave
 
     @staticmethod

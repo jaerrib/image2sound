@@ -29,9 +29,10 @@ The following optional arguments may be set, however:
 - `-sec` for the desired number of seconds (defaults to zero)
 - `-ts` to set the time signature (defaults to 1/1, essentially "no feel")
 
-> The algorithm now uses Blackman smoothing by default. The original conversion
-> method had a characteristic "clicky" sound due to incomplete wave forms. To
-> achieve the original sound, pass `--nosmooth`.
+> The "clicky" audio found in older versions has now been solved by introducing
+> ADSR envelope filters. This also negates the need to use Blackman smoothing,
+> which is now an option rather than the default behavior. To apply smoothing,
+> pass `--smooth`.
 
 ### "Split" mode
 

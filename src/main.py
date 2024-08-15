@@ -61,8 +61,8 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--nosmooth",
-    help="Whether to apply a smoothing filter",
+    "--smooth",
+    help="Apply a smoothing filter",
     action="store_true",
 )
 
