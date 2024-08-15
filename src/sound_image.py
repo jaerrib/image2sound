@@ -23,7 +23,7 @@ DEFAULT_SETTINGS = {
     "reveal": False,
     "method2": False,
     "nosmooth": False,
-    "time_signature": "1/1",
+    "time_signature": "4/4",
 }
 
 

@@ -50,7 +50,7 @@ parser.add_argument(
 parser.add_argument(
     "-ts",
     "--time_signature",
-    help="Sets the time signature as 3/4, 12/8, etc. Defaults to 4/4",
+    help="Sets the time signature as 3/4, 12/8, etc. Defaults to 4/4. The bottom number is handled as the number of notes per measure while the top determines how often to emphasize a note with a greater amplitude.",
     type=str,
 )
 
