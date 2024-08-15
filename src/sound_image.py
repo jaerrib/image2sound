@@ -24,6 +24,7 @@ DEFAULT_SETTINGS = {
     "method2": False,
     "smooth": False,
     "time_signature": "4/4",
+    "adsr": [0.05, 0.3, 0.5, 0.1],
 }
 
 
@@ -59,6 +60,7 @@ class SoundImage:
         self.method2 = method2
         self.smooth = smooth
         self.image_mode = None
+        self.adsr = DEFAULT_SETTINGS["adsr"]
 
     def open_file(self):
         return Image.open(self.path)
@@ -100,16 +102,12 @@ class SoundImage:
         wave *= blackman_window
         return wave
 
-    def get_wave(self, color, freq_range, amplitude, wave_type):
-        attack = 0.10 * self.note_length
-        decay = 0.3 * self.note_length
-        sustain = 0.5 * amplitude
-        release = 0.1 * self.note_length
+    def get_envelope(self, amplitude):
+        attack = self.adsr[0] * self.note_length
+        decay = self.adsr[1] * self.note_length
+        sustain = self.adsr[2] * amplitude
+        release = self.adsr[3] * self.note_length
         sample_rate = RATE
-        freq = self.get_freq(color, freq_range)
-        t = np.linspace(
-            0, self.note_length, int(RATE * self.note_length), endpoint=False
-        )
 
         total_samples = int(RATE * self.note_length)
         attack_samples = int(attack * sample_rate)
@@ -131,6 +129,14 @@ class SoundImage:
             + sustain_samples
         ] = sustain
         envelope[-release_samples:] = np.linspace(sustain, 0, release_samples)
+        return envelope
+
+    def get_wave(self, color, freq_range, amplitude, wave_type):
+        freq = self.get_freq(color, freq_range)
+        t = np.linspace(
+            0, self.note_length, int(RATE * self.note_length), endpoint=False
+        )
+        envelope = self.get_envelope(amplitude)
 
         match wave_type:
             case "sine":
