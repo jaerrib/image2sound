@@ -150,6 +150,11 @@ class SoundImage:
                 )
             case "sawtooth":
                 wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
+            case "piano":
+                wave = np.sin(2 * np.pi * freq * t)
+                wave += 0.5 * np.sin(2 * np.pi * 2 * freq * t)
+                wave += 0.25 * np.sin(2 * np.pi * 3 * freq * t)
+                wave += 0.125 * np.sin(2 * np.pi * 4 * freq * t)
             case _:
                 wave = amplitude * (np.sin(2 * np.pi * t * freq))
         wave = wave * envelope
