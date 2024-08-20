@@ -107,6 +107,7 @@ class SoundImage:
         attack = self.adsr[0] * self.note_length
         decay = self.adsr[1] * self.note_length
         sustain = self.adsr[2] * amplitude
+        sustain_level = sustain
         release = self.adsr[3] * self.note_length
         sample_rate = RATE
 
@@ -121,7 +122,7 @@ class SoundImage:
         envelope = np.zeros(total_samples)
         envelope[:attack_samples] = np.linspace(0, amplitude, attack_samples)
         envelope[attack_samples : attack_samples + decay_samples] = np.linspace(
-            amplitude, sustain, decay_samples
+            amplitude, sustain_level, decay_samples
         )
         envelope[
             attack_samples
@@ -129,7 +130,8 @@ class SoundImage:
             + decay_samples
             + sustain_samples
         ] = sustain
-        envelope[-release_samples:] = np.linspace(sustain, 0, release_samples)
+        envelope[-release_samples:] = np.linspace(sustain_level, 0, release_samples)
+
         return envelope
 
     def get_wave(self, color, freq_range, amplitude, wave_type):
@@ -150,6 +152,13 @@ class SoundImage:
                 )
             case "sawtooth":
                 wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
+                for n in range(2, 20):
+                    wave += (
+                        (amplitude / n)
+                        * 2
+                        * (t * n * freq - np.floor(0.5 + t * n * freq))
+                    )
+                wave = wave / np.max(np.abs(wave))
             case "piano":
                 wave = np.sin(2 * np.pi * freq * t)
                 wave += 0.5 * np.sin(2 * np.pi * 2 * freq * t)
