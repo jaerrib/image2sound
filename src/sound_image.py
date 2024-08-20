@@ -98,7 +98,7 @@ class SoundImage:
 
     @staticmethod
     def apply_blackman(wave):
-        # Apply the Blackman window to remove clickiness cause by partial waveforms
+        # Optionally apply the Blackman smoothing window
         blackman_window = np.blackman(len(wave))
         wave *= blackman_window
         return wave
