@@ -34,6 +34,10 @@ The following optional arguments may be set, however:
 > which is now an option rather than the default behavior. To apply smoothing,
 > pass `--smooth`.
 
+- Use `-adsr` followed by a [template type](/src/envelope_settings.py) to choose
+  a preset for attack, decay, sustain, and release values. This defaults to
+  *piano*.
+
 ### "Split" mode
 
 Note that the default behavior of the utility is to create a single stereo audio
@@ -89,5 +93,5 @@ python3 main.py -p image.png --reveal
 Example 4:
 
 ```
-python3 main.py -p image.png -key G-Major -t 96 -min 4 -sec 20 -ts 3/4 --split
+python3 main.py -p image.png -key G-Major -t 96 -min 4 -sec 20 -ts 3/4 -adsr cello --split
 ```
