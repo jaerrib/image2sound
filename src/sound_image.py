@@ -10,6 +10,7 @@ from mutagen.wave import WAVE
 
 import dimension_calc
 import tone_array
+from envelope_settings import envelope_settings
 
 RATE = 44100
 DEFAULT_SETTINGS = {
@@ -24,7 +25,7 @@ DEFAULT_SETTINGS = {
     "method2": False,
     "smooth": False,
     "time_signature": "4/4",
-    "adsr": [0.05, 0.3, 0.5, 0.1],
+    "adsr": "piano",
 }
 
 
@@ -43,6 +44,7 @@ class SoundImage:
         overrides,
         smooth,
         time_signature,
+        adsr,
     ):
         self.path = path
         self.output = output
@@ -60,7 +62,8 @@ class SoundImage:
         self.method2 = method2
         self.smooth = smooth
         self.image_mode = None
-        self.adsr = DEFAULT_SETTINGS["adsr"]
+        self.adsr = adsr
+        self.adsr_settings = envelope_settings[self.adsr]
 
     def open_file(self):
         return Image.open(self.path)
@@ -104,11 +107,11 @@ class SoundImage:
         return wave
 
     def get_envelope(self, amplitude):
-        attack = self.adsr[0] * self.note_length
-        decay = self.adsr[1] * self.note_length
-        sustain = self.adsr[2] * amplitude
+        attack = self.adsr_settings["a"] * self.note_length
+        decay = self.adsr_settings["d"] * self.note_length
+        sustain = self.adsr_settings["s"] * amplitude
         sustain_level = sustain
-        release = self.adsr[3] * self.note_length
+        release = self.adsr_settings["r"] * self.note_length
         sample_rate = RATE
 
         total_samples = int(RATE * self.note_length)

@@ -66,6 +66,13 @@ parser.add_argument(
     action="store_true",
 )
 
+parser.add_argument(
+    "-adsr",
+    "--adsr",
+    help="Provide a general template for ADSR settings. Defaults to 'piano'. See envelope_settings.py for more options.",
+    type=str,
+)
+
 data = vars(parser.parse_args())
 data["overrides"] = []
 for key in data:
