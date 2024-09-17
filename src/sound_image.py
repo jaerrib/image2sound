@@ -156,6 +156,13 @@ class SoundImage:
                 wave = amplitude * (
                     2 * np.abs(2 * (t * freq - np.floor(t * freq + 0.5))) - 1
                 )
+                for k in range(1, 10, 2):
+                    harmonic = (
+                        (8 / (np.pi**2))
+                        * ((-1) ** ((k - 1) // 2) / k**2)
+                        * np.sin(2 * np.pi * k * freq * t)
+                    )
+                    wave += harmonic
             case "sawtooth":
                 wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
                 for n in range(2, 20):
