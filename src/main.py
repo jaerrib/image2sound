@@ -73,6 +73,13 @@ parser.add_argument(
     type=str,
 )
 
+parser.add_argument(
+    "-w",
+    "--waveform",
+    help="Which waveform to use: sine, square, triangle, sawtooth (defaults to sine)",
+    type=str,
+)
+
 data = vars(parser.parse_args())
 data["overrides"] = []
 for key in data:

@@ -26,6 +26,7 @@ DEFAULT_SETTINGS = {
     "smooth": False,
     "time_signature": "4/4",
     "adsr": "piano",
+    "waveform": "sine",
 }
 
 
@@ -45,6 +46,7 @@ class SoundImage:
         smooth,
         time_signature,
         adsr,
+        waveform,
     ):
         self.path = path
         self.output = output
@@ -64,6 +66,7 @@ class SoundImage:
         self.image_mode = None
         self.adsr = adsr
         self.adsr_settings = envelope_settings[self.adsr]
+        self.waveform = waveform
 
     def open_file(self):
         return Image.open(self.path)
@@ -232,7 +235,10 @@ class SoundImage:
                         amplitude = self.get_amplitude(index)
                         color_array.append(
                             self.get_wave(
-                                y[color_index], freq_range, amplitude, wave_type="sine"
+                                y[color_index],
+                                freq_range,
+                                amplitude,
+                                wave_type=self.waveform,
                             )
                         )
                         index += 1
@@ -266,7 +272,7 @@ class SoundImage:
                             (y[0] + y[1]) / 2,
                             left_freq_range,
                             amplitude,
-                            wave_type="sine",
+                            wave_type=self.waveform,
                         )
                     )
                     right_data.append(
@@ -274,7 +280,7 @@ class SoundImage:
                             (y[2] + y[1]) / 2,
                             right_freq_range,
                             amplitude,
-                            wave_type="sine",
+                            wave_type=self.waveform,
                         )
                     )
                     index += 1
@@ -355,22 +361,22 @@ class SoundImage:
                     amplitude = self.get_amplitude(index)
                     cyan_array.append(
                         self.get_wave(
-                            y[0], cyan_freq_range, amplitude, wave_type="sawtooth"
+                            y[0], cyan_freq_range, amplitude, wave_type=self.waveform
                         )
                     )
                     magenta_array.append(
                         self.get_wave(
-                            y[1], magenta_freq_range, amplitude, wave_type="sawtooth"
+                            y[1], magenta_freq_range, amplitude, wave_type=self.waveform
                         )
                     )
                     yellow_array.append(
                         self.get_wave(
-                            y[2], yellow_freq_range, amplitude, wave_type="sawtooth"
+                            y[2], yellow_freq_range, amplitude, wave_type=self.waveform
                         )
                     )
                     black_array.append(
                         self.get_wave(
-                            y[3], black_freq_range, amplitude, wave_type="sawtooth"
+                            y[3], black_freq_range, amplitude, wave_type=self.waveform
                         )
                     )
                     index += 1
