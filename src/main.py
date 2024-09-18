@@ -76,7 +76,7 @@ parser.add_argument(
 parser.add_argument(
     "-w",
     "--waveform",
-    help="Which waveform to use: sine, square, triangle, sawtooth (defaults to sine)",
+    help="Which waveform to use: sine, square, triangle, sawtooth or piano (which uses special harmonic generation) - defaults to sine",
     type=str,
 )
 
