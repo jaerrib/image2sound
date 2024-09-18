@@ -150,14 +150,18 @@ class SoundImage:
         match wave_type:
             case "sine":
                 wave = amplitude * (np.sin(2 * np.pi * t * freq))
+                for k in range(1, 6):
+                    wave += amplitude * (1 / k) * np.sin(2 * np.pi * k * freq * t)
             case "square":
                 wave = amplitude * 0.5 * (1 + np.sign(np.sin(2 * np.pi * freq * t)))
+                for k in range(1, 10, 2):
+                    wave += amplitude * (1 / k) * np.sin(2 * np.pi * k * freq * t)
             case "triangle":
                 wave = amplitude * (
                     2 * np.abs(2 * (t * freq - np.floor(t * freq + 0.5))) - 1
                 )
                 for k in range(1, 10, 2):
-                    harmonic = (
+                    harmonic = amplitude * (
                         (8 / (np.pi**2))
                         * ((-1) ** ((k - 1) // 2) / k**2)
                         * np.sin(2 * np.pi * k * freq * t)
@@ -165,18 +169,18 @@ class SoundImage:
                     wave += harmonic
             case "sawtooth":
                 wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
-                for n in range(2, 20):
+                for k in range(2, 20):
                     wave += (
-                        (amplitude / n)
+                        (amplitude / k)
                         * 2
-                        * (t * n * freq - np.floor(0.5 + t * n * freq))
+                        * (t * k * freq - np.floor(0.5 + t * k * freq))
                     )
                 wave = wave / np.max(np.abs(wave))
             case "piano":
                 wave = np.sin(2 * np.pi * freq * t)
-                wave += 0.5 * np.sin(2 * np.pi * 2 * freq * t)
-                wave += 0.25 * np.sin(2 * np.pi * 3 * freq * t)
-                wave += 0.125 * np.sin(2 * np.pi * 4 * freq * t)
+                wave += amplitude * 0.5 * np.sin(2 * np.pi * 2 * freq * t)
+                wave += amplitude * 0.25 * np.sin(2 * np.pi * 3 * freq * t)
+                wave += amplitude * 0.125 * np.sin(2 * np.pi * 4 * freq * t)
             case _:
                 wave = amplitude * (np.sin(2 * np.pi * t * freq))
         wave = wave * envelope
