@@ -370,6 +370,7 @@ class SoundImage:
             for x in self.image_array:
                 for y in x:
                     amplitude = self.get_amplitude(index)
+                    self.adsr_settings = envelope_settings["violin"]
                     cyan_array.append(
                         self.get_wave(
                             y[0], cyan_freq_range, amplitude, wave_type=self.waveform
@@ -380,11 +381,13 @@ class SoundImage:
                             y[1], magenta_freq_range, amplitude, wave_type=self.waveform
                         )
                     )
+                    self.adsr_settings = envelope_settings["viola"]
                     yellow_array.append(
                         self.get_wave(
                             y[2], yellow_freq_range, amplitude, wave_type=self.waveform
                         )
                     )
+                    self.adsr_settings = envelope_settings["cello"]
                     black_array.append(
                         self.get_wave(
                             y[3], black_freq_range, amplitude, wave_type=self.waveform
