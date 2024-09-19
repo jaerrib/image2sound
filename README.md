@@ -27,7 +27,7 @@ The following optional arguments may be set, however:
 - `-min` for the desired number of minutes (defaults to 1 so must be set to zero
   if shorter tracks are wanted)
 - `-sec` for the desired number of seconds (defaults to zero)
-- `-ts` to set the time signature (defaults to 1/1, essentially "no feel")
+- `-ts` to set the time signature (defaults to 4/4)
 - `-w` to use specific waveform types (sine, square, triangle, sawtooth or
   piano)
 
