@@ -28,6 +28,8 @@ The following optional arguments may be set, however:
   if shorter tracks are wanted)
 - `-sec` for the desired number of seconds (defaults to zero)
 - `-ts` to set the time signature (defaults to 1/1, essentially "no feel")
+- `-w` to use specific waveform types (sine, square, triangle, sawtooth or
+  piano)
 
 > The "clicky" audio found in older versions has now been solved by introducing
 > ADSR envelope filters. This also negates the need to use Blackman smoothing,
@@ -93,5 +95,5 @@ python3 main.py -p image.png --reveal
 Example 4:
 
 ```
-python3 main.py -p image.png -key G-Major -t 96 -min 4 -sec 20 -ts 3/4 -adsr cello --split
+python3 main.py -p image.png -key G-Major -t 96 -min 4 -sec 20 -ts 3/4 -adsr cello -w sawtooth --split
 ```
