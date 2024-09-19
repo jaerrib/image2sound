@@ -4,7 +4,7 @@ from sound_image import DEFAULT_SETTINGS, SoundImage
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "-p", "--path", help="Path to the input image", default="test_image.png", type=str
+    "-p", "--path", help="Path to the input image", default="test_image_rgb.png", type=str
 )
 parser.add_argument(
     "-o",
@@ -50,7 +50,7 @@ parser.add_argument(
 parser.add_argument(
     "-ts",
     "--time_signature",
-    help="Sets the time signature as 3/4, 12/8, etc. Defaults to 4/4",
+    help="Sets the time signature as 3/4, 12/8, etc. Defaults to 4/4. The bottom number is handled as the number of notes per measure while the top determines how often to emphasize a note with a greater amplitude.",
     type=str,
 )
 
@@ -61,9 +61,23 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--nosmooth",
-    help="Whether to apply a smoothing filter",
+    "--smooth",
+    help="Apply a smoothing filter",
     action="store_true",
+)
+
+parser.add_argument(
+    "-adsr",
+    "--adsr",
+    help="Provide a general template for ADSR settings. Defaults to 'piano'. See envelope_settings.py for more options.",
+    type=str,
+)
+
+parser.add_argument(
+    "-w",
+    "--waveform",
+    help="Which waveform to use: sine, square, triangle, sawtooth or piano (which uses special harmonic generation) - defaults to sine",
+    type=str,
 )
 
 data = vars(parser.parse_args())
