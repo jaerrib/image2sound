@@ -4,7 +4,7 @@ from sound_image import DEFAULT_SETTINGS, SoundImage
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "-p", "--path", help="Path to the input image", default="test_image.png", type=str
+    "-p", "--path", help="Path to the input image", default="test_image_rgb.png", type=str
 )
 parser.add_argument(
     "-o",
