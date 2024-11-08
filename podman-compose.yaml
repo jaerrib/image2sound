@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  image2sound:
+    image: python:3.11
+    container_name: image2sound_dev_container
+    working_dir: /image2sound
+    volumes:
+      - .:/image2sound:Z  # Mount current directory to /app in the container with SELinux label
+    command: tail -f /dev/null  # Keeps the container running for interactive development
+    environment:
+      - PYTHONUNBUFFERED=1
+
+volumes:
+  app_data:
