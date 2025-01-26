@@ -1,0 +1,4 @@
+halo>=0.0.31
+mutagen>=1.47.0
+pillow>=10.4.0
+wavio>=0.0.9
