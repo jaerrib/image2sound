@@ -129,13 +129,14 @@ def get_scale(string: str) -> list[str]:
         if root == key:
             root = EQUIVALENT_NOTES[key]
     index = 0
+    step_index = 0
     for note in NOTES:
         if root == note:
             root_index = index
+            step_index = root_index
             break
         index += 1
     scale = []
-    step_index = root_index
     for step in SCALE_PATTERNS[family]:
         if step_index + step > len(NOTES):
             step_index -= len(NOTES)
