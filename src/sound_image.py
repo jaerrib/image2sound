@@ -6,6 +6,7 @@ import numpy as np
 import wavio
 from PIL import Image
 from halo import Halo
+
 # noinspection PyProtectedMember
 from mutagen.id3 import APIC
 from mutagen.wave import WAVE
