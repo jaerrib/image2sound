@@ -45,14 +45,18 @@ def midi_convert(sound_image) -> None:
         # midi_data = generate_json_from_image_data(sound_image)
         freq_range = sound_image.freq_dict
         midi_file = MidiFile(ticks_per_beat=TICKS_PER_BEAT, type=1)
-        track = MidiTrack()
-        midi_file.tracks.append(track)
+        track1 = MidiTrack()
+        track2 = MidiTrack()
+        track3 = MidiTrack()
+        midi_file.tracks.append(track1)
+        midi_file.tracks.append(track2)
+        midi_file.tracks.append(track3)
         index = 0
         for x in sound_image.image_array:
             for y in x:
-                generate_note(sound_image, 0, freq_range, track, index, y)
-                generate_note(sound_image, 1, freq_range, track, index, y)
-                generate_note(sound_image, 2, freq_range, track, index, y)
+                generate_note(sound_image, 0, freq_range, track1, index, y)
+                generate_note(sound_image, 1, freq_range, track2, index, y)
+                generate_note(sound_image, 2, freq_range, track3, index, y)
             index += 1
         midi_file.save("output.mid")
         print("Midi function complete")
