@@ -1,6 +1,7 @@
 import math
 
 from PIL import Image
+from mido import MidiFile, MidiTrack, Message
 
 TICKS_PER_BEAT = 480  # ticks per quarter note
 
@@ -10,30 +11,25 @@ def frequency_to_midi(frequency: float) -> int:
     return round(midi_note)
 
 
-def generate_json_from_image_data(sound_image):
-    # microseconds_per_beat = 60000000 // sound_image.tempo
-    freq_range = sound_image.freq_dict
-    midi_data = {"ticks_per_beat": 480, "tracks": []}
-    for color in sound_image.image_mode:
-        track = {"messages": []}
-        color_index = sound_image.image_mode.index(color)
-        index = 0
-        for x in sound_image.image_array:
-            for y in x:
-                freq = sound_image.get_freq(y[color_index], freq_range)
-                note = frequency_to_midi(freq)
-                on_msg = {"type": "note_on", "note": note, "velocity": 64, "time": 0}
-                off_msg = {
-                    "type": "note_off",
-                    "note": note,
-                    "velocity": 64,
-                    "time": 480,
-                }
-                track["messages"].append(on_msg)
-                track["messages"].append(off_msg)
-                index += 1
-        midi_data["tracks"].append(track)
-    print(midi_data)
+def generate_note(sound_image, color_index, freq_range, track, index, y):
+    freq = sound_image.get_freq(y[color_index], freq_range)
+    note = frequency_to_midi(freq)
+    track.append(
+        Message(
+            type="note_on",
+            note=note,
+            velocity=64,
+            time=index * TICKS_PER_BEAT,
+        )
+    )
+    track.append(
+        Message(
+            type="note_off",
+            note=note,
+            velocity=64,
+            time=index * TICKS_PER_BEAT + TICKS_PER_BEAT,
+        )
+    )
 
 
 def midi_convert(sound_image) -> None:
@@ -45,12 +41,19 @@ def midi_convert(sound_image) -> None:
             sound_image.override(img)
         sound_image.image_to_array(img)
         sound_image.image_mode = img.mode
-        generate_json_from_image_data(sound_image)
-        # if img.mode == "CMYK":
-        #     print("CMYK format recognized - converting using 'quartet' mode")
-        #     pass
-        # elif sound_image.split:
-        #     pass
-        # else:
-        #     pass
-    print("Midi function complete")
+
+        # midi_data = generate_json_from_image_data(sound_image)
+        freq_range = sound_image.freq_dict
+        midi_file = MidiFile(ticks_per_beat=TICKS_PER_BEAT, type=1)
+        track = MidiTrack()
+        midi_file.tracks.append(track)
+        index = 0
+        for x in sound_image.image_array:
+            for y in x:
+                generate_note(sound_image, 0, freq_range, track, index, y)
+                generate_note(sound_image, 1, freq_range, track, index, y)
+                generate_note(sound_image, 2, freq_range, track, index, y)
+            index += 1
+        midi_file.save("output.mid")
+        print("Midi function complete")
+        return
