@@ -1,7 +1,7 @@
 import math
 
 from PIL import Image
-from mido import MidiFile, MidiTrack, Message, MetaMessage
+from mido import MidiFile, MidiTrack, Message, MetaMessage, bpm2tempo
 
 TICKS_PER_BEAT = 480  # ticks per quarter note
 
@@ -11,23 +11,18 @@ def frequency_to_midi(frequency: float) -> int:
     return round(midi_note)
 
 
-def generate_note(sound_image, color_index, freq_range, track, index, y, note_length):
+def generate_note(sound_image, color_index, freq_range, track, y, note_length):
     freq = sound_image.get_freq(y[color_index], freq_range)
     note = frequency_to_midi(freq)
-    track.append(
-        Message(
-            type="note_on",
-            note=note,
-            velocity=64,
-            time=index * note_length,
-        )
-    )
+    on_time = 0
+    off_time = note_length
+    track.append(Message(type="note_on", note=note, velocity=64, time=on_time))
     track.append(
         Message(
             type="note_off",
             note=note,
             velocity=64,
-            time=index * note_length + note_length,
+            time=off_time,
         )
     )
 
@@ -42,7 +37,6 @@ def midi_convert(sound_image) -> None:
         sound_image.image_to_array(img)
         sound_image.image_mode = img.mode
         freq_range = sound_image.freq_dict
-
         midi_file = MidiFile(ticks_per_beat=TICKS_PER_BEAT, type=1)
 
         track1 = MidiTrack()
@@ -74,20 +68,39 @@ def midi_convert(sound_image) -> None:
             )
         )
 
-        # track1.append(Message("control_change", control=10, value=0))
-        # track2.append(Message("control_change", control=10, value=64))
-        # track3.append(Message("control_change", control=10, value=127))
+        midi_tempo = bpm2tempo(sound_image.tempo)
+        track1.append(
+            MetaMessage(
+                "set_tempo",
+                tempo=midi_tempo,
+            )
+        )
+        track2.append(
+            MetaMessage(
+                "set_tempo",
+                tempo=midi_tempo,
+            )
+        )
+        track3.append(
+            MetaMessage(
+                "set_tempo",
+                tempo=midi_tempo,
+            )
+        )
 
-        index = 0
-        note_length = round(sound_image.note_length * TICKS_PER_BEAT)
+        track1.append(Message("control_change", control=10, value=0))
+        track2.append(Message("control_change", control=10, value=64))
+        track3.append(Message("control_change", control=10, value=127))
+
+        note_length = round(TICKS_PER_BEAT * sound_image.note_length)
         for x in sound_image.image_array:
             for y in x:
-                generate_note(sound_image, 0, freq_range, track1, index, y, note_length)
-                generate_note(sound_image, 1, freq_range, track2, index, y, note_length)
-                generate_note(sound_image, 2, freq_range, track3, index, y, note_length)
-            index += 1
+                generate_note(sound_image, 0, freq_range, track1, y, note_length)
+                generate_note(sound_image, 1, freq_range, track2, y, note_length)
+                generate_note(sound_image, 2, freq_range, track3, y, note_length)
 
         midi_file.save("output.mid")
+
         print("Midi function complete")
 
         return
