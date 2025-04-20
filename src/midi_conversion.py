@@ -92,7 +92,8 @@ def midi_convert(sound_image) -> None:
         track2.append(Message("control_change", control=10, value=64))
         track3.append(Message("control_change", control=10, value=127))
 
-        note_length = round(TICKS_PER_BEAT * sound_image.note_length)
+        note_length = round(TICKS_PER_BEAT / sound_image.time_signature[1])
+
         for x in sound_image.image_array:
             for y in x:
                 generate_note(sound_image, 0, freq_range, track1, y, note_length)
