@@ -1,7 +1,7 @@
 import math
 
+from mido import Message, MetaMessage, MidiFile, MidiTrack, bpm2tempo
 from PIL import Image
-from mido import MidiFile, MidiTrack, Message, MetaMessage, bpm2tempo
 
 import tone_array
 
