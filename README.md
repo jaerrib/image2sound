@@ -72,6 +72,13 @@ Using CMYK images will automatically trigger "quartet mode". This will create
 four separate, mono WAV files with each being limited to the sonic range
 associated with the four instruments used in a traditional string quartet
 
+### MIDI export (experimental)
+
+Adding `--midi" will export the converted audio as a MIDI file. This is to be
+considered **experimental only** as many features have not been ported to this
+mode yet. That said, it's serviceable, and the file can be imported to other
+software, such as MuseScore or LMMS, for further modification.
+
 ### Examples
 
 Example 1:
