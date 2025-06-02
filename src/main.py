@@ -4,7 +4,11 @@ from sound_image import DEFAULT_SETTINGS, SoundImage
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "-p", "--path", help="Path to the input image", default="test_image_rgb.png", type=str
+    "-p",
+    "--path",
+    help="Path to the input image",
+    default="test_image_rgb.png",
+    type=str,
 )
 parser.add_argument(
     "-o",
@@ -80,6 +84,13 @@ parser.add_argument(
     type=str,
 )
 
+
+parser.add_argument(
+    "--midi",
+    help="Whether to convert to MIDI instead of WAV",
+    action="store_true",
+)
+
 data = vars(parser.parse_args())
 data["overrides"] = []
 for key in data:
@@ -87,4 +98,6 @@ for key in data:
         if data["reveal"]:
             data["overrides"].append(key)
         data[key] = DEFAULT_SETTINGS[key]
-SoundImage(**{key: val for key, val in data.items() if val is not None}).convert()
+
+new_sound_image = SoundImage(data)
+new_sound_image.convert()

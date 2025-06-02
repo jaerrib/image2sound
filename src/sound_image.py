@@ -4,15 +4,17 @@ from typing import Self
 
 import numpy as np
 import wavio
-from PIL import Image
 from halo import Halo
+
 # noinspection PyProtectedMember
 from mutagen.id3 import APIC
 from mutagen.wave import WAVE
+from PIL import Image
 
 import dimension_calc
 import tone_array
 from envelope_settings import envelope_settings
+from midi_conversion import midi_convert
 
 RATE: int = 44100
 DEFAULT_SETTINGS: dict = {
@@ -25,6 +27,7 @@ DEFAULT_SETTINGS: dict = {
     "split": False,
     "reveal": False,
     "method2": False,
+    "midi": False,
     "smooth": False,
     "time_signature": "4/4",
     "adsr": "piano",
@@ -33,44 +36,31 @@ DEFAULT_SETTINGS: dict = {
 
 
 class SoundImage:
-    def __init__(
-        self,
-        path,
-        output,
-        key,
-        tempo,
-        minutes,
-        seconds,
-        split,
-        reveal,
-        method2,
-        overrides,
-        smooth,
-        time_signature,
-        adsr,
-        waveform,
-    ) -> None:
-        self.path: str = path
-        self.output: str = output
-        self.key: str = key
+    def __init__(self, data) -> None:
+        self.path: str = data["path"]
+        self.output: str = data["output"]
+        self.key: str = data["key"]
         self.freq_dict: list[float] = tone_array.get_tone_array(self.key)
         self.length: int = len(self.freq_dict)
-        self.time_signature: list[int] = self.separate_time_signature(time_signature)
-        self.tempo: int = tempo
+        self.time_signature: list[int] = self.separate_time_signature(
+            data["time_signature"]
+        )
+        self.tempo: int = data["tempo"]
         self.note_length: float = self.get_note_length()
-        self.minutes: int = minutes + seconds / 60
+        self.minutes: int = data["minutes"] + data["seconds"] / 60
         self.image_array: np.ndarray[float] | None = None
-        self.split: bool = split
-        self.reveal: bool = reveal
-        self.overrides: list[str] = overrides
-        self.method2: bool = method2
-        self.smooth: bool = smooth
+        self.split: bool = data["split"]
+        self.reveal: bool = data["reveal"]
+        self.overrides: list[str] = data["overrides"]
+        self.method2: bool = data["method2"]
+        self.midi: bool = data["midi"]
+        self.smooth: bool = data["smooth"]
         self.image_mode: str | None = None
-        self.adsr: str = adsr
+        self.adsr: str = data["adsr"]
         self.adsr_settings: dict = envelope_settings[self.adsr]
-        self.waveform: str = waveform
+        self.waveform: str = data["waveform"]
 
-    def open_file(self) -> Image.Image:
+    def open_file(self) -> Image:
         return Image.open(self.path)
 
     def image_to_array(self, img: Image.Image) -> Self:
@@ -312,21 +302,24 @@ class SoundImage:
         )
 
     def convert(self) -> None:
-        img = self.open_file()
-        if img.mode not in ["RGB", "RGBA", "CMYK"]:
-            print("Invalid image type. Please use an RGB, RGBA, or CMYK file.")
+        if self.midi:
+            midi_convert(self)
         else:
-            if self.reveal:
-                self.override(img)
-            self.image_to_array(img)
-            self.image_mode = img.mode
-            if img.mode == "CMYK":
-                print("CMYK format recognized - converting using 'quartet' mode")
-                self.create_quartet()
-            elif self.split:
-                self.convert_to_multiple()
+            img: Image = self.open_file()
+            if img.mode not in ["RGB", "RGBA", "CMYK"]:
+                print("Invalid image type. Please use an RGB, RGBA, or CMYK file.")
             else:
-                self.convert_to_stereo()
+                if self.reveal:
+                    self.override(img)
+                self.image_to_array(img)
+                self.image_mode = img.mode
+                if img.mode == "CMYK":
+                    print("CMYK format recognized - converting using 'quartet' mode")
+                    self.create_quartet()
+                elif self.split:
+                    self.convert_to_multiple()
+                else:
+                    self.convert_to_stereo()
 
     def determine_key(self, red: int, green: int, blue: int) -> Self:
         notes = tone_array.get_chromatic_notes()
