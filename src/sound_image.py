@@ -376,12 +376,12 @@ class SoundImage:
         black_freq_range = []
         for num in self.freq_dict:
             # These settings simulate the range of two violins, viola and cello
-            if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["A7"]:
+            if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["C6"]:
                 cyan_freq_range.append(num)
                 magenta_freq_range.append(num)
-            if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["C7"]:
+            if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["A5"]:
                 yellow_freq_range.append(num)
-            if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["C6"]:
+            if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["A4"]:
                 black_freq_range.append(num)
 
         with Halo(text="Converting data…", color="white"):
