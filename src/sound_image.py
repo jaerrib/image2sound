@@ -254,22 +254,8 @@ class SoundImage:
                                 freq_range.append(num)
                 else:
                     freq_range = self.freq_dict
-                color_array = []
-                color_index = self.image_mode.index(char)
+                color_array = self.generate_color_array(char=char, freq_range=freq_range)
                 side = "-" + char
-                index = 0
-                for x in self.image_array:
-                    for y in x:
-                        amplitude = self.get_amplitude(index)
-                        color_array.append(
-                            self.get_wave(
-                                y[color_index],
-                                freq_range,
-                                amplitude,
-                                wave_type=self.waveform,
-                            )
-                        )
-                        index += 1
                 self.save_wav(
                     self.path,
                     self.output,
@@ -396,25 +382,29 @@ class SoundImage:
                         <= tone_array.FREQ_DICT["A4"]
                     ):
                         freq_range.append(num)
-                color_array = []
-                color_index = self.image_mode.index(char)
+                color_array = self.generate_color_array(char=char, freq_range=freq_range)
                 color = "-" + char
-                index = 0
-                for x in self.image_array:
-                    for y in x:
-                        amplitude = self.get_amplitude(index)
-                        color_array.append(
-                            self.get_wave(
-                                y[color_index],
-                                freq_range,
-                                amplitude,
-                                wave_type=self.waveform,
-                            )
-                        )
-                        index += 1
                 self.save_wav(
                     self.path,
                     self.output,
                     color,
                     np.hstack((np.array(color_array).reshape(-1, 1),)),
                 )
+
+    def generate_color_array(self, char: str, freq_range: list) -> list:
+        color_array = []
+        color_index = self.image_mode.index(char)
+        index = 0
+        for x in self.image_array:
+            for y in x:
+                amplitude = self.get_amplitude(index)
+                color_array.append(
+                    self.get_wave(
+                        y[color_index],
+                        freq_range,
+                        amplitude,
+                        wave_type=self.waveform,
+                    )
+                )
+                index += 1
+        return color_array
