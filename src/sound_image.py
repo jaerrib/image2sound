@@ -132,6 +132,52 @@ class SoundImage:
 
         return envelope
 
+    @staticmethod
+    def create_sine_wave(amplitude: float, freq: float, t: np.ndarray) -> np.ndarray:
+        wave = amplitude * (np.sin(2 * np.pi * t * freq))
+        for k in range(1, 6):
+            wave += amplitude * (1 / k) * np.sin(2 * np.pi * k * freq * t)
+        return wave
+
+    @staticmethod
+    def create_square_wave(amplitude: float, freq: float, t: np.ndarray) -> np.ndarray:
+        wave = amplitude * 0.5 * (1 + np.sign(np.sin(2 * np.pi * freq * t)))
+        for k in range(1, 10, 2):
+            wave += amplitude * (1 / k) * np.sin(2 * np.pi * k * freq * t)
+        return wave
+
+    @staticmethod
+    def create_sawtooth_wave(
+        amplitude: float, freq: float, t: np.ndarray
+    ) -> np.ndarray:
+        wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
+        for k in range(2, 20):
+            wave += (amplitude / k) * 2 * (t * k * freq - np.floor(0.5 + t * k * freq))
+        wave = wave / np.max(np.abs(wave))
+        return wave
+
+    @staticmethod
+    def create_triangle_wave(
+        amplitude: float, freq: float, t: np.ndarray
+    ) -> np.ndarray:
+        wave = amplitude * (2 * np.abs(2 * (t * freq - np.floor(t * freq + 0.5))) - 1)
+        for k in range(1, 10, 2):
+            harmonic = amplitude * (
+                (8 / (np.pi**2))
+                * ((-1) ** ((k - 1) // 2) / k**2)
+                * np.sin(2 * np.pi * k * freq * t)
+            )
+            wave += harmonic
+        return wave
+
+    @staticmethod
+    def create_piano_wave(amplitude: float, freq: float, t: np.ndarray) -> np.ndarray:
+        wave = np.sin(2 * np.pi * freq * t)
+        wave += amplitude * 0.5 * np.sin(2 * np.pi * 2 * freq * t)
+        wave += amplitude * 0.25 * np.sin(2 * np.pi * 3 * freq * t)
+        wave += amplitude * 0.125 * np.sin(2 * np.pi * 4 * freq * t)
+        return wave
+
     def get_wave(
         self, color: int, freq_range: list[float], amplitude: float, wave_type: str
     ) -> np.ndarray:
@@ -143,38 +189,15 @@ class SoundImage:
 
         match wave_type:
             case "sine":
-                wave = amplitude * (np.sin(2 * np.pi * t * freq))
-                for k in range(1, 6):
-                    wave += amplitude * (1 / k) * np.sin(2 * np.pi * k * freq * t)
+                wave = self.create_sine_wave(amplitude, freq, t)
             case "square":
-                wave = amplitude * 0.5 * (1 + np.sign(np.sin(2 * np.pi * freq * t)))
-                for k in range(1, 10, 2):
-                    wave += amplitude * (1 / k) * np.sin(2 * np.pi * k * freq * t)
+                wave = self.create_square_wave(amplitude, freq, t)
             case "triangle":
-                wave = amplitude * (
-                    2 * np.abs(2 * (t * freq - np.floor(t * freq + 0.5))) - 1
-                )
-                for k in range(1, 10, 2):
-                    harmonic = amplitude * (
-                        (8 / (np.pi**2))
-                        * ((-1) ** ((k - 1) // 2) / k**2)
-                        * np.sin(2 * np.pi * k * freq * t)
-                    )
-                    wave += harmonic
+                wave = self.create_triangle_wave(amplitude, freq, t)
             case "sawtooth":
-                wave = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
-                for k in range(2, 20):
-                    wave += (
-                        (amplitude / k)
-                        * 2
-                        * (t * k * freq - np.floor(0.5 + t * k * freq))
-                    )
-                wave = wave / np.max(np.abs(wave))
+                wave = self.create_sawtooth_wave(amplitude, freq, t)
             case "piano":
-                wave = np.sin(2 * np.pi * freq * t)
-                wave += amplitude * 0.5 * np.sin(2 * np.pi * 2 * freq * t)
-                wave += amplitude * 0.25 * np.sin(2 * np.pi * 3 * freq * t)
-                wave += amplitude * 0.125 * np.sin(2 * np.pi * 4 * freq * t)
+                wave = self.create_piano_wave(amplitude, freq, t)
             case _:
                 wave = amplitude * (np.sin(2 * np.pi * t * freq))
         wave = wave * envelope
