@@ -48,7 +48,7 @@ class SoundImage:
         self.tempo: int = data["tempo"]
         self.note_length: float = self.get_note_length()
         self.minutes: int = data["minutes"] + data["seconds"] / 60
-        self.image_array: np.ndarray[float] | None = None
+        self.image_array: list | None = None
         self.split: bool = data["split"]
         self.reveal: bool = data["reveal"]
         self.overrides: list[str] = data["overrides"]
@@ -254,7 +254,9 @@ class SoundImage:
                                 freq_range.append(num)
                 else:
                     freq_range = self.freq_dict
-                color_array = self.generate_color_array(char=char, freq_range=freq_range)
+                color_array = self.generate_color_array(
+                    char=char, freq_range=freq_range
+                )
                 side = "-" + char
                 self.save_wav(
                     self.path,
@@ -382,7 +384,9 @@ class SoundImage:
                         <= tone_array.FREQ_DICT["A4"]
                     ):
                         freq_range.append(num)
-                color_array = self.generate_color_array(char=char, freq_range=freq_range)
+                color_array = self.generate_color_array(
+                    char=char, freq_range=freq_range
+                )
                 color = "-" + char
                 self.save_wav(
                     self.path,
