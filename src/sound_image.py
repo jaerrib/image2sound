@@ -370,71 +370,51 @@ class SoundImage:
         return self
 
     def create_quartet(self) -> None:
-        cyan_freq_range = []
-        magenta_freq_range = []
-        yellow_freq_range = []
-        black_freq_range = []
-        for num in self.freq_dict:
-            # These settings simulate the range of two violins, viola and cello
-            if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["C6"]:
-                cyan_freq_range.append(num)
-                magenta_freq_range.append(num)
-            if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["A5"]:
-                yellow_freq_range.append(num)
-            if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["A4"]:
-                black_freq_range.append(num)
-
         with Halo(text="Converting data…", color="white"):
-            cyan_array, magenta_array, yellow_array, black_array = [], [], [], []
-            index = 0
-            for x in self.image_array:
-                for y in x:
-                    amplitude = self.get_amplitude(index)
-                    self.adsr_settings = envelope_settings["violin"]
-                    cyan_array.append(
-                        self.get_wave(
-                            y[0], cyan_freq_range, amplitude, wave_type=self.waveform
+            for char in self.image_mode:
+                freq_range = []
+                for num in self.freq_dict:
+                    if (
+                        char == "C"
+                        or char == "M"
+                        and tone_array.FREQ_DICT["G3"]
+                        <= num
+                        <= tone_array.FREQ_DICT["C6"]
+                    ):
+                        freq_range.append(num)
+                    if (
+                        char == "Y"
+                        and tone_array.FREQ_DICT["C3"]
+                        <= num
+                        <= tone_array.FREQ_DICT["A5"]
+                    ):
+                        freq_range.append(num)
+                    if (
+                        char == "K"
+                        and tone_array.FREQ_DICT["C2"]
+                        <= num
+                        <= tone_array.FREQ_DICT["A4"]
+                    ):
+                        freq_range.append(num)
+                color_array = []
+                color_index = self.image_mode.index(char)
+                color = "-" + char
+                index = 0
+                for x in self.image_array:
+                    for y in x:
+                        amplitude = self.get_amplitude(index)
+                        color_array.append(
+                            self.get_wave(
+                                y[color_index],
+                                freq_range,
+                                amplitude,
+                                wave_type=self.waveform,
+                            )
                         )
-                    )
-                    magenta_array.append(
-                        self.get_wave(
-                            y[1], magenta_freq_range, amplitude, wave_type=self.waveform
-                        )
-                    )
-                    self.adsr_settings = envelope_settings["viola"]
-                    yellow_array.append(
-                        self.get_wave(
-                            y[2], yellow_freq_range, amplitude, wave_type=self.waveform
-                        )
-                    )
-                    self.adsr_settings = envelope_settings["cello"]
-                    black_array.append(
-                        self.get_wave(
-                            y[3], black_freq_range, amplitude, wave_type=self.waveform
-                        )
-                    )
-                    index += 1
-        self.save_wav(
-            self.path,
-            self.output,
-            "-C",
-            np.hstack((np.array(cyan_array).reshape(-1, 1),)),
-        )
-        self.save_wav(
-            self.path,
-            self.output,
-            "-M",
-            np.hstack((np.array(magenta_array).reshape(-1, 1),)),
-        )
-        self.save_wav(
-            self.path,
-            self.output,
-            "-Y",
-            np.hstack((np.array(yellow_array).reshape(-1, 1),)),
-        )
-        self.save_wav(
-            self.path,
-            self.output,
-            "-K",
-            np.hstack((np.array(black_array).reshape(-1, 1),)),
-        )
+                        index += 1
+                self.save_wav(
+                    self.path,
+                    self.output,
+                    color,
+                    np.hstack((np.array(color_array).reshape(-1, 1),)),
+                )
