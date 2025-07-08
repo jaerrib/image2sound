@@ -236,35 +236,6 @@ class SoundImage:
             return 0.7
         return 0.5
 
-    # def convert_to_multiple(self) -> None:
-    #     with Halo(text="Converting data…", color="white"):
-    #         for char in self.image_mode:
-    #             if self.method2:
-    #                 freq_range = []
-    #                 for num in self.freq_dict:
-    #                     if char == "R":
-    #                         if num <= tone_array.FREQ_DICT["C5"]:
-    #                             freq_range.append(num)
-    #                     else:
-    #                         if (
-    #                             tone_array.FREQ_DICT["C4"]
-    #                             <= num
-    #                             <= tone_array.FREQ_DICT["C7"]
-    #                         ):
-    #                             freq_range.append(num)
-    #             else:
-    #                 freq_range = self.freq_dict
-    #             color_array = self.generate_color_array(
-    #                 char=char, freq_range=freq_range
-    #             )
-    #             side = "-" + char
-    #             self.save_wav(
-    #                 self.path,
-    #                 self.output,
-    #                 side,
-    #                 np.hstack((np.array(color_array).reshape(-1, 1),)),
-    #             )
-
     def convert_to_stereo(self) -> None:
         if self.method2:
             left_freq_range = []
@@ -328,13 +299,6 @@ class SoundImage:
                     self.convert_standard()
                 else:
                     self.convert_to_stereo()
-                # if img.mode == "CMYK":
-                #     print("CMYK format recognized - converting using 'quartet' mode")
-                #     self.create_quartet()
-                # elif self.split:
-                #     self.convert_to_multiple()
-                # else:
-                #     self.convert_to_stereo()
 
     def determine_key(self, red: int, green: int, blue: int) -> Self:
         notes = tone_array.get_chromatic_notes()
@@ -360,44 +324,6 @@ class SoundImage:
         if "minutes" in self.overrides and "seconds" in self.overrides:
             self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
-
-    # def create_quartet(self) -> None:
-    #     with Halo(text="Converting data…", color="white"):
-    #         for char in self.image_mode:
-    #             freq_range = []
-    #             for num in self.freq_dict:
-    #                 if (
-    #                     char == "C"
-    #                     or char == "M"
-    #                     and tone_array.FREQ_DICT["G3"]
-    #                     <= num
-    #                     <= tone_array.FREQ_DICT["C6"]
-    #                 ):
-    #                     freq_range.append(num)
-    #                 if (
-    #                     char == "Y"
-    #                     and tone_array.FREQ_DICT["C3"]
-    #                     <= num
-    #                     <= tone_array.FREQ_DICT["A5"]
-    #                 ):
-    #                     freq_range.append(num)
-    #                 if (
-    #                     char == "K"
-    #                     and tone_array.FREQ_DICT["C2"]
-    #                     <= num
-    #                     <= tone_array.FREQ_DICT["A4"]
-    #                 ):
-    #                     freq_range.append(num)
-    #             color_array = self.generate_color_array(
-    #                 char=char, freq_range=freq_range
-    #             )
-    #             color = "-" + char
-    #             self.save_wav(
-    #                 self.path,
-    #                 self.output,
-    #                 color,
-    #                 np.hstack((np.array(color_array).reshape(-1, 1),)),
-    #             )
 
     def generate_color_array(self, char: str, freq_range: list) -> list:
         color_array = []
