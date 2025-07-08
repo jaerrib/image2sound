@@ -3,7 +3,6 @@ import math
 from mido import Message, MetaMessage, MidiFile, MidiTrack, bpm2tempo
 from PIL import Image
 
-import tone_array
 
 TICKS_PER_BEAT = 480  # ticks per quarter note
 
@@ -29,25 +28,6 @@ def generate_note(sound_image, color_index, freq_range, track, y, note_length):
     )
 
 
-def get_quartet_range(track_num, freq_dict):
-    restricted_freq_dict = []
-    for num in freq_dict:
-        match track_num:
-            case 0:
-                if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["A7"]:
-                    restricted_freq_dict.append(num)
-            case 1:
-                if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["A7"]:
-                    restricted_freq_dict.append(num)
-            case 2:
-                if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["C7"]:
-                    restricted_freq_dict.append(num)
-            case 3:
-                if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["C6"]:
-                    restricted_freq_dict.append(num)
-    return restricted_freq_dict
-
-
 def midi_convert(sound_image) -> None:
     img: Image = sound_image.open_file()
     if img.mode not in ["RGB", "RGBA", "CMYK"]:
@@ -64,11 +44,7 @@ def midi_convert(sound_image) -> None:
         midi_tempo = bpm2tempo(sound_image.tempo)
         note_length = round(TICKS_PER_BEAT / sound_image.time_signature[1])
         for track_num in range(num_tracks):
-            freq_range = (
-                get_quartet_range(track_num, sound_image.freq_dict)
-                if img.mode == "CMYK"
-                else sound_image.freq_dict
-            )
+            freq_range = sound_image.get_freq_range(img.mode[track_num])
             track = MidiTrack()
             midi_file.tracks.append(track)
             track.append(
