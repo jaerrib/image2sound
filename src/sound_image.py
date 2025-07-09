@@ -348,13 +348,13 @@ class SoundImage:
         for num in self.freq_dict:
             match char:
                 case "C":
-                    if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["C6"]:
+                    if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["B5"]:
                         freq_range.append(num)
                 case "M":
-                    if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["C6"]:
+                    if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["B5"]:
                         freq_range.append(num)
                 case "Y":
-                    if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["A5"]:
+                    if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["G5"]:
                         freq_range.append(num)
                 case "K":
                     if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["A4"]:
