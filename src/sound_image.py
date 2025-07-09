@@ -357,7 +357,7 @@ class SoundImage:
                     if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["G5"]:
                         freq_range.append(num)
                 case "K":
-                    if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["A4"]:
+                    if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["E4"]:
                         freq_range.append(num)
                 case "R":
                     if self.method2 and num <= tone_array.FREQ_DICT["C5"]:
