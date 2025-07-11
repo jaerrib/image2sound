@@ -75,7 +75,7 @@ def midi_convert(sound_image) -> None:
                         )
                     index += 1
 
-        midi_file.save("output-cmyk.mid")
+        midi_file.save("output.mid")
 
         print("Midi function complete")
 
