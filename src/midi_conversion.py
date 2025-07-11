@@ -62,14 +62,41 @@ def midi_convert(sound_image) -> None:
             )
             pan_value: int = round((127 / num_tracks) * track_num)
             track.append(Message("control_change", control=10, value=pan_value))
+            index = 0
             for x in sound_image.image_array:
                 for y in x:
-                    generate_note(
-                        sound_image, track_num, freq_range, track, y, note_length
-                    )
+                    if img.mode == "CMYK":
+                        new_note_length = get_note_length(track_num, index, note_length)
+                    else:
+                        new_note_length = note_length
+                    if new_note_length != 0:
+                        generate_note(
+                            sound_image, track_num, freq_range, track, y, new_note_length
+                        )
+                    index += 1
 
-        midi_file.save("output.mid")
+        midi_file.save("output-cmyk.mid")
 
         print("Midi function complete")
 
         return
+
+def get_note_length(track_num: int, index: int, note_length:float) -> float:
+    match track_num:
+        case 1:
+            if index % 2 == 0:
+                return note_length * 2
+            else:
+                return 0
+        case 2:
+            if index % 4 == 0:
+                return note_length * 4
+            else:
+                return 0
+        case 3:
+            if index % 8 == 0:
+                return note_length * 8
+            else:
+                return 0
+        case _:
+            return note_length
