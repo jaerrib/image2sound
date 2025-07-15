@@ -34,13 +34,19 @@ NOTES_PER_MEASURE = 16
 def generate_section(start_index, phrase_setup, test_info):
     section = {}
     current_index = start_index
-    num_phrases = len(phrase_setup)
-    for num in range(num_phrases):
-        phrase_length = phrase_setup[num]
-        new_phrase, new_index = generate_phrase(phrase_length, current_index, test_info)
+    phrase_library = {}
+    for num, entry in enumerate(phrase_setup):
+        label = entry["label"]
+        length = entry["length"]
+        if label in phrase_library:
+            new_phrase = phrase_library[label]
+        else:
+            new_phrase, new_index = generate_phrase(length, current_index, test_info)
+            phrase_library[label] = new_phrase
+            required_space = length * NOTES_PER_MEASURE
+            current_index = (new_index + required_space) % len(test_info)
         section[str(num)] = new_phrase
-        required_space = phrase_length * NOTES_PER_MEASURE
-        current_index = (new_index + required_space) % len(test_info)
+        print("PHRASE", new_phrase)
     return section
 
 
@@ -76,13 +82,13 @@ def get_length(current_note, next_note):
 
 # This is pattern of phrase lengths that make up the section
 section_definition = [
-    4,
-    8,
-    8,
-    8,
-    8,
-    4,
+    {"label": "A", "length": 4},
+    {"label": "B", "length": 8},
+    {"label": "B", "length": 8},
+    {"label": "C", "length": 8},
+    {"label": "A", "length": 4},
 ]
+
 
 new_section = generate_section(
     start_index=0, phrase_setup=section_definition, test_info=TEST_DATA
