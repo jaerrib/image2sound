@@ -31,6 +31,19 @@ TEST_DATA = [
 NOTES_PER_MEASURE = 16
 
 
+def generate_section(start_index, phrase_setup, test_info):
+    section = {}
+    current_index = start_index
+    num_phrases = len(phrase_setup)
+    for num in range(num_phrases):
+        phrase_length = phrase_setup[num]
+        new_phrase, new_index = generate_phrase(phrase_length, current_index, test_info)
+        section[str(num)] = new_phrase
+        required_space = phrase_length * NOTES_PER_MEASURE
+        current_index = (new_index + required_space) % len(test_info)
+    return section
+
+
 def generate_phrase(length, start_index, test_info):
     total_note_index = length * NOTES_PER_MEASURE
     phrase_array = []
@@ -43,27 +56,35 @@ def generate_phrase(length, start_index, test_info):
         note_length = get_length(test_info[note_index], test_info[comp_index])
         if num + note_length > total_note_index:
             note_length = total_note_index - num
-
         phrase_array.append((test_info[note_index], note_length))
         num += note_length
         note_index += 1
-    print(num)
-    return phrase_array
+    return phrase_array, note_index
 
 
 def get_length(current_note, next_note):
     difference = abs(current_note - next_note)
-    if 0 <= difference <= 64:
+    if difference <= 64:
         return 1
-    elif 65 <= difference <= 128:
+    elif difference <= 128:
         return 2
-    elif 129 <= difference <= 1250:
+    elif difference <= 192:
         return 4
     else:
         return 8
 
 
-phrase: list[tuple[float, int]] = generate_phrase(
-    length=8, start_index=0, test_info=TEST_DATA
+# This is pattern of phrase lengths that make up the section
+section_definition = [
+    4,
+    8,
+    8,
+    8,
+    8,
+    4,
+]
+
+new_section = generate_section(
+    start_index=0, phrase_setup=section_definition, test_info=TEST_DATA
 )
-print(phrase)
+print(new_section)
