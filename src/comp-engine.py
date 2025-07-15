@@ -31,6 +31,25 @@ TEST_DATA = [
 NOTES_PER_MEASURE = 16
 
 
+def generate_movement(movement_info, test_info):
+    movement = {}
+    current_index = 0
+    section_library = {}
+    for num, entry in enumerate(movement_info):
+        section_label = entry["section"]
+        section_definition = entry["definition"]
+        if section_label in section_library:
+            new_section = section_library[section_label]
+        else:
+            new_section, new_index = generate_section(
+                current_index, section_definition, test_info
+            )
+            section_library[section_label] = new_section
+            current_index = new_index % len(test_info)
+        movement[str(num)] = new_section
+    return movement
+
+
 def generate_section(start_index, phrase_setup, test_info):
     section = {}
     current_index = start_index
@@ -46,8 +65,8 @@ def generate_section(start_index, phrase_setup, test_info):
             required_space = length * NOTES_PER_MEASURE
             current_index = (new_index + required_space) % len(test_info)
         section[str(num)] = new_phrase
-        print("PHRASE", new_phrase)
-    return section
+        # print("PHRASE", new_phrase)
+    return section, current_index
 
 
 def generate_phrase(length, start_index, test_info):
@@ -80,17 +99,46 @@ def get_length(current_note, next_note):
         return 8
 
 
-# This is pattern of phrase lengths that make up the section
-section_definition = [
-    {"label": "A", "length": 4},
-    {"label": "B", "length": 8},
-    {"label": "B", "length": 8},
-    {"label": "C", "length": 8},
-    {"label": "A", "length": 4},
+# Example movement made up of three sections
+movement_definition = [
+    {
+        "section": 1,
+        "definition": [
+            {"label": "A", "length": 8},
+            {"label": "B", "length": 8},
+            {"label": "C", "length": 8},
+            {"label": "D", "length": 8},
+        ],
+    },
+    {
+        "section": 2,
+        "definition": [
+            {"label": "A", "length": 8},
+            {"label": "A", "length": 8},
+            {"label": "A", "length": 8},
+            {"label": "A", "length": 8},
+        ],
+    },
+    {
+        "section": 3,
+        "definition": [
+            {"label": "A", "length": 8},
+            {"label": "B", "length": 8},
+            {"label": "C", "length": 8},
+            {"label": "D", "length": 8},
+        ],
+    },
+    {
+        "section": 4,
+        "definition": [
+            {"label": "A", "length": 4},
+            {"label": "B", "length": 4},
+            {"label": "C", "length": 4},
+            {"label": "D", "length": 4},
+        ],
+    },
 ]
 
 
-new_section = generate_section(
-    start_index=0, phrase_setup=section_definition, test_info=TEST_DATA
-)
-print(new_section)
+new_movement = generate_movement(movement_definition, TEST_DATA)
+print(new_movement)
