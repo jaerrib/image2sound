@@ -16,7 +16,7 @@ def generate_note(sound_image, _color_index, freq_range, track, y, note_length):
     freq = sound_image.get_freq(y, freq_range)
     note = frequency_to_midi(freq)
     on_time = 0
-    off_time = note_length * TICKS_PER_BEAT
+    off_time = note_length * int(TICKS_PER_BEAT / 4)
     track.append(Message(type="note_on", note=note, velocity=64, time=on_time))
     track.append(
         Message(
