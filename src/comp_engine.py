@@ -1,33 +1,3 @@
-TEST_DATA = [
-    16,
-    128,
-    5,
-    200,
-    78,
-    42,
-    0,
-    0,
-    231,
-    79,
-    42,
-    60,
-    126,
-    100,
-    7,
-    46,
-    82,
-    46,
-    87,
-    13,
-    90,
-    45,
-    72,
-    128,
-    201,
-    199,
-    244,
-    100,
-]
 NOTES_PER_MEASURE = 16
 
 
@@ -65,7 +35,6 @@ def generate_section(start_index, phrase_setup, test_info):
             required_space = length * NOTES_PER_MEASURE
             current_index = (new_index + required_space) % len(test_info)
         section[str(num)] = new_phrase
-        # print("PHRASE", new_phrase)
     return section, current_index
 
 
@@ -138,7 +107,3 @@ movement_definition = [
         ],
     },
 ]
-
-
-new_movement = generate_movement(movement_definition, TEST_DATA)
-print(new_movement)

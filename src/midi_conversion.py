@@ -1,8 +1,8 @@
 import math
+import comp_engine
 
 from mido import Message, MetaMessage, MidiFile, MidiTrack, bpm2tempo
 from PIL import Image
-
 
 TICKS_PER_BEAT = 480  # ticks per quarter note
 
@@ -12,11 +12,11 @@ def frequency_to_midi(frequency: float) -> int:
     return round(midi_note)
 
 
-def generate_note(sound_image, color_index, freq_range, track, y, note_length):
-    freq = sound_image.get_freq(y[color_index], freq_range)
+def generate_note(sound_image, _color_index, freq_range, track, y, note_length):
+    freq = sound_image.get_freq(y, freq_range)
     note = frequency_to_midi(freq)
     on_time = 0
-    off_time = note_length
+    off_time = note_length * TICKS_PER_BEAT
     track.append(Message(type="note_on", note=note, velocity=64, time=on_time))
     track.append(
         Message(
@@ -42,7 +42,6 @@ def midi_convert(sound_image) -> None:
         num_tracks: int = 4 if img.mode == "CMYK" else 3
 
         midi_tempo = bpm2tempo(sound_image.tempo)
-        note_length = round(TICKS_PER_BEAT / sound_image.time_signature[1])
         for track_num in range(num_tracks):
             freq_range = sound_image.get_freq_range(img.mode[track_num])
             track = MidiTrack()
@@ -62,26 +61,22 @@ def midi_convert(sound_image) -> None:
             )
             pan_value: int = round((127 / num_tracks) * track_num)
             track.append(Message("control_change", control=10, value=pan_value))
-            index = 0
-            for x in sound_image.image_array:
-                for y in x:
-                    if img.mode == "CMYK":
-                        new_note_length = get_note_length(track_num, index, note_length)
-                    else:
-                        new_note_length = note_length
-                    if new_note_length != 0:
+            flat_array = flatten_image_array(sound_image.image_array, track_num)
+            new_movement = comp_engine.generate_movement(
+                comp_engine.movement_definition, flat_array
+            )
+            for section_label, phrases in new_movement.items():
+                for phrase_label, notes in phrases.items():
+                    for value, length in notes:
                         generate_note(
-                            sound_image, track_num, freq_range, track, y, new_note_length
+                            sound_image, track_num, freq_range, track, value, length
                         )
-                    index += 1
-
         midi_file.save("output.mid")
-
         print("Midi function complete")
-
         return
 
-def get_note_length(track_num: int, index: int, note_length:float) -> float:
+
+def get_note_length(track_num: int, index: int, note_length: float) -> float:
     match track_num:
         case 1:
             if index % 2 == 0:
@@ -100,3 +95,11 @@ def get_note_length(track_num: int, index: int, note_length:float) -> float:
                 return 0
         case _:
             return note_length
+
+
+def flatten_image_array(image_array, track_num):
+    flattened_array = image_array.reshape(-1, image_array.shape[-1])
+    color_array = []
+    for pixel in flattened_array:
+        color_array.append(pixel[track_num])
+    return color_array
