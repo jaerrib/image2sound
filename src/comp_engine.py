@@ -58,14 +58,14 @@ def generate_phrase(length, start_index, test_info):
 
 def get_length(current_note, next_note):
     difference = abs(current_note - next_note)
-    if difference <= 64:
-        return 1
-    elif difference <= 128:
-        return 2
-    elif difference <= 192:
-        return 4
+    if difference <= 8:
+        return 8  # Half note
+    elif difference <= 16:
+        return 4  # Quarter note
+    elif difference <= 64:
+        return 2  # Eighth note
     else:
-        return 8
+        return 1  # Sixteenth note
 
 
 # Example movement made up of three sections
