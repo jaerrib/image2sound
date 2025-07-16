@@ -1,7 +1,7 @@
 NOTES_PER_MEASURE = 16
 
 
-def generate_movement(movement_info, test_info):
+def generate_movement(movement_info, image_array):
     movement = {}
     current_index = 0
     section_library = {}
@@ -12,15 +12,15 @@ def generate_movement(movement_info, test_info):
             new_section = section_library[section_label]
         else:
             new_section, new_index = generate_section(
-                current_index, section_definition, test_info
+                current_index, section_definition, image_array
             )
             section_library[section_label] = new_section
-            current_index = new_index % len(test_info)
+            current_index = new_index % len(image_array)
         movement[str(num)] = new_section
     return movement
 
 
-def generate_section(start_index, phrase_setup, test_info):
+def generate_section(start_index, phrase_setup, image_array):
     section = {}
     current_index = start_index
     phrase_library = {}
@@ -30,27 +30,27 @@ def generate_section(start_index, phrase_setup, test_info):
         if label in phrase_library:
             new_phrase = phrase_library[label]
         else:
-            new_phrase, new_index = generate_phrase(length, current_index, test_info)
+            new_phrase, new_index = generate_phrase(length, current_index, image_array)
             phrase_library[label] = new_phrase
             required_space = length * NOTES_PER_MEASURE
-            current_index = (new_index + required_space) % len(test_info)
+            current_index = (new_index + required_space) % len(image_array)
         section[str(num)] = new_phrase
     return section, current_index
 
 
-def generate_phrase(length, start_index, test_info):
+def generate_phrase(length, start_index, image_array):
     total_note_index = length * NOTES_PER_MEASURE
     phrase_array = []
     note_index = start_index
     num = 0
     while num < total_note_index:
-        if note_index + 1 > len(test_info) - 1:
-            note_index = len(test_info) - note_index
+        if note_index + 1 > len(image_array) - 1:
+            note_index = len(image_array) - note_index
         comp_index = note_index + 1
-        note_length = get_length(test_info[note_index], test_info[comp_index])
+        note_length = get_length(image_array[note_index], image_array[comp_index])
         if num + note_length > total_note_index:
             note_length = total_note_index - num
-        phrase_array.append((test_info[note_index], note_length))
+        phrase_array.append((image_array[note_index], note_length))
         num += note_length
         note_index += 1
     return phrase_array, note_index
