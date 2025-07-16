@@ -4,7 +4,6 @@ from mido import Message, MetaMessage, MidiFile, MidiTrack, bpm2tempo
 from PIL import Image
 
 import comp_engine
-import movement_definitions
 
 TICKS_PER_BEAT = 480  # ticks per quarter note
 
@@ -31,6 +30,7 @@ def generate_note(sound_image, _color_index, freq_range, track, y, note_length):
 
 
 def midi_convert(sound_image) -> None:
+    movement_style = "sonata"  # placeholder until parameter settings is implemented
     img: Image = sound_image.open_file()
     if img.mode not in ["RGB", "RGBA", "CMYK"]:
         print("Invalid image type. Please use an RGB, RGBA, or CMYK file.")
@@ -64,15 +64,15 @@ def midi_convert(sound_image) -> None:
             pan_value: int = round((127 / num_tracks) * track_num)
             track.append(Message("control_change", control=10, value=pan_value))
             flat_array = flatten_image_array(sound_image.image_array, track_num)
-            new_movement = comp_engine.generate_movement(
-                movement_definitions.movement_type["minuet"], flat_array
-            )
+            new_movement = comp_engine.generate_movement(movement_style, flat_array)
+
             for section_label, phrases in new_movement.items():
-                for phrase_label, notes in phrases.items():
-                    for value, length in notes:
+                for phrase in phrases:
+                    for value, length in phrase:
                         generate_note(
                             sound_image, track_num, freq_range, track, value, length
                         )
+
         midi_file.save("output.mid")
         print("Midi function complete")
         return

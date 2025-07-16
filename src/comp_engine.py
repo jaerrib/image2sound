@@ -1,41 +1,37 @@
 NOTES_PER_MEASURE = 16
 
+import movement_definitions
 
-def generate_movement(movement_info, image_array):
+
+def generate_movement(movement_style, image_array):
+    phrase_library = generate_phrase_library(image_array, movement_style)
     movement = {}
-    current_index = 0
-    section_library = {}
-    for num, entry in enumerate(movement_info):
-        section_label = entry["section"]
-        section_definition = entry["definition"]
-        if section_label in section_library:
-            new_section = section_library[section_label]
-        else:
-            new_section, new_index = generate_section(
-                current_index, section_definition, image_array
-            )
-            section_library[section_label] = new_section
-            current_index = new_index % len(image_array)
-        movement[str(num)] = new_section
+    for section in movement_definitions.movement_type[movement_style]["sections"]:
+        label = section["label"]
+        sequence = section["sequence"]
+        section_data = generate_section_library(phrase_library, sequence)
+        movement[str(label)] = section_data
     return movement
 
 
-def generate_section(start_index, phrase_setup, image_array):
-    section = {}
-    current_index = start_index
+def generate_phrase_library(image_array, movement_style):
     phrase_library = {}
-    for num, entry in enumerate(phrase_setup):
-        label = entry["label"]
-        length = entry["length"]
-        if label in phrase_library:
-            new_phrase = phrase_library[label]
-        else:
-            new_phrase, new_index = generate_phrase(length, current_index, image_array)
-            phrase_library[label] = new_phrase
-            required_space = length * NOTES_PER_MEASURE
-            current_index = (new_index + required_space) % len(image_array)
-        section[str(num)] = new_phrase
-    return section, current_index
+    note_index = 0  # Starting point for scanning image_array
+    for phrase in movement_definitions.movement_type[movement_style]["phrases"]:
+        label = phrase["label"]
+        length = phrase["length"]
+        phrase_data, note_index = generate_phrase(length, note_index, image_array)
+        phrase_library[label] = phrase_data
+    return phrase_library
+
+
+def generate_section_library(phrase_library, sequence):
+    section = []
+    for label in sequence:
+        if label not in phrase_library:
+            raise ValueError(f"Phrase '{label}' not found in phrase_library")
+        section.append(phrase_library[label])
+    return section
 
 
 def generate_phrase(length, start_index, image_array):
