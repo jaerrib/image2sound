@@ -1,6 +1,9 @@
 import argparse
 
+from envelope_settings import envelope_settings
+from movement_definitions import movement_type
 from sound_image import DEFAULT_SETTINGS, SoundImage
+from tone_array import SCALE_PATTERNS
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -16,11 +19,12 @@ parser.add_argument(
     help="The filepath to save the output file to",
     type=str,
 )
+available_scale_patterns = ", ".join(SCALE_PATTERNS.keys())
 parser.add_argument(
     "-key",
     "--key",
-    help="Key of the output track as a capital letter, then a dash, plus"
-    "Major/Minor/MajorPentatonic/MinorPentatonic/8Tone, without spaces",
+    help="Key of the output track as a capital letter, then a dash, plus "
+    f"one of  {available_scale_patterns}, without spaces. For example: C-Major.",
     type=str,
 )
 parser.add_argument(
@@ -67,10 +71,11 @@ parser.add_argument(
     help="Apply a smoothing filter",
     action="store_true",
 )
+available_envelopes = ", ".join(envelope_settings.keys())
 parser.add_argument(
     "-adsr",
     "--adsr",
-    help="Provide a general template for ADSR settings. Defaults to 'piano'. See envelope_settings.py for more options.",
+    help=f"Provide a general template for ADSR settings. Defaults to 'piano'.  Available types: {available_envelopes}.",
     type=str,
 )
 
@@ -85,12 +90,14 @@ parser.add_argument(
     help="Whether to convert to MIDI instead of WAV",
     action="store_true",
 )
+available_types = ", ".join(movement_type.keys())
 parser.add_argument(
     "-mt",
     "--movement_type",
-    help="Provide a movement type template to the composition engine when using midi output. Defaults to 'sonata'. See movement_definitions.py for more options.",
+    help=f"Provide a movement type template to the composition engine when using midi output. Defaults to 'sonata'. Available types: {available_types}",
     type=str,
 )
+
 
 data = vars(parser.parse_args())
 data["overrides"] = []
