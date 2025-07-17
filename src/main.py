@@ -57,19 +57,16 @@ parser.add_argument(
     help="Sets the time signature as 3/4, 12/8, etc. Defaults to 4/4. The bottom number is handled as the number of notes per measure while the top determines how often to emphasize a note with a greater amplitude.",
     type=str,
 )
-
 parser.add_argument(
     "--method2",
     help="Whether to use the new conversion method",
     action="store_true",
 )
-
 parser.add_argument(
     "--smooth",
     help="Apply a smoothing filter",
     action="store_true",
 )
-
 parser.add_argument(
     "-adsr",
     "--adsr",
@@ -83,12 +80,16 @@ parser.add_argument(
     help="Which waveform to use: sine, square, triangle, sawtooth or piano (which uses special harmonic generation) - defaults to sine",
     type=str,
 )
-
-
 parser.add_argument(
     "--midi",
     help="Whether to convert to MIDI instead of WAV",
     action="store_true",
+)
+parser.add_argument(
+    "-mt",
+    "--movement_type",
+    help="Provide a movement type template to the composition engine when using midi output. Defaults to 'sonata'. See movement_definitions.py for more options.",
+    type=str,
 )
 
 data = vars(parser.parse_args())

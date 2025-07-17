@@ -28,6 +28,7 @@ DEFAULT_SETTINGS: dict = {
     "reveal": False,
     "method2": False,
     "midi": False,
+    "movement_type": "sonata",
     "smooth": False,
     "time_signature": "4/4",
     "adsr": "piano",
@@ -54,6 +55,7 @@ class SoundImage:
         self.overrides: list[str] = data["overrides"]
         self.method2: bool = data["method2"]
         self.midi: bool = data["midi"]
+        self.movement_type: str = data["movement_type"]
         self.smooth: bool = data["smooth"]
         self.image_mode: str | None = None
         self.adsr: str = data["adsr"]
