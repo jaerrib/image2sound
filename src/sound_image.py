@@ -28,6 +28,7 @@ DEFAULT_SETTINGS: dict = {
     "reveal": False,
     "method2": False,
     "midi": False,
+    "movement_type": "sonata",
     "smooth": False,
     "time_signature": "4/4",
     "adsr": "piano",
@@ -54,6 +55,7 @@ class SoundImage:
         self.overrides: list[str] = data["overrides"]
         self.method2: bool = data["method2"]
         self.midi: bool = data["midi"]
+        self.movement_type: str = data["movement_type"]
         self.smooth: bool = data["smooth"]
         self.image_mode: str | None = None
         self.adsr: str = data["adsr"]
@@ -347,47 +349,32 @@ class SoundImage:
         freq_range = []
         for num in self.freq_dict:
             match char:
-                case "C":
+                case "C" | "R" if not self.method2:
                     # Limits range to 3rd position of violin
                     if tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["D#6"]:
                         freq_range.append(num)
-                case "M":
+                case "M" | "A":
                     # Limits range to 1st position of violin
                     if tone_array.FREQ_DICT["G3"] <= num <= tone_array.FREQ_DICT["B5"]:
                         freq_range.append(num)
-                case "Y":
+                case "Y" | "G" if not self.method2:
                     # Limits range to 1st position of viola
                     if tone_array.FREQ_DICT["C3"] <= num <= tone_array.FREQ_DICT["E5"]:
                         freq_range.append(num)
-                case "K":
+                case "K" | "B" if not self.method2:
                     # Limits range to 1st position of cello
                     if tone_array.FREQ_DICT["C2"] <= num <= tone_array.FREQ_DICT["D#4"]:
                         freq_range.append(num)
-                case "R":
-                    if self.method2 and num <= tone_array.FREQ_DICT["C5"]:
-                        freq_range.append(num)
-                    else:
-                        freq_range.append(num)
-                case "G":
-                    if (
-                        self.method2
-                        and tone_array.FREQ_DICT["C4"]
-                        <= num
-                        <= tone_array.FREQ_DICT["C7"]
-                    ):
-                        freq_range.append(num)
-                    else:
-                        freq_range.append(num)
-                case "B":
-                    if (
-                        self.method2
-                        and tone_array.FREQ_DICT["C4"]
-                        <= num
-                        <= tone_array.FREQ_DICT["C7"]
-                    ):
-                        freq_range.append(num)
-                    else:
-                        freq_range.append(num)
+                case "R" if num <= tone_array.FREQ_DICT["C5"]:
+                    freq_range.append(num)
+                case "G" if (
+                    tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["C7"]
+                ):
+                    freq_range.append(num)
+                case "B" if (
+                    tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["C7"]
+                ):
+                    freq_range.append(num)
                 case _:
                     freq_range.append(num)
         return freq_range
