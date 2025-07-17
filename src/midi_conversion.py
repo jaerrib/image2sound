@@ -16,13 +16,12 @@ def frequency_to_midi(frequency: float) -> int:
 
 def generate_note(
     sound_image,
-    color_index: int,
+    channel: int,
     freq_range: list[float],
     track: MidiTrack,
     y: int,
     note_length: int,
 ) -> None:
-    channel: int = color_index + 1
     freq: float = sound_image.get_freq(y, freq_range)
     note: int = frequency_to_midi(freq)
     on_time: int = 0
@@ -70,7 +69,11 @@ def midi_convert(sound_image) -> None:
                 )
             )
             pan_value: int = round((127 / num_tracks) * track_num)
-            track.append(Message("control_change", control=10, value=pan_value))
+            track.append(
+                Message(
+                    "control_change", control=10, value=pan_value, channel=track_num
+                )
+            )
             flat_array: list = flatten_image_array(sound_image.image_array, track_num)
             new_movement: dict = comp_engine.generate_movement(
                 movement_style, flat_array
