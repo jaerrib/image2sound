@@ -16,24 +16,22 @@ def frequency_to_midi(frequency: float) -> int:
 
 def generate_note(
     sound_image,
-    _color_index,
+    color_index: int,
     freq_range: list[float],
     track: MidiTrack,
     y: int,
     note_length: int,
 ) -> None:
+    channel: int = color_index + 1
     freq: float = sound_image.get_freq(y, freq_range)
     note: int = frequency_to_midi(freq)
     on_time: int = 0
     off_time: int = note_length * int(TICKS_PER_BEAT / 4)
-    track.append(Message(type="note_on", note=note, velocity=64, time=on_time))
     track.append(
-        Message(
-            type="note_off",
-            note=note,
-            velocity=64,
-            time=off_time,
-        )
+        Message(type="note_on", note=note, velocity=64, time=on_time, channel=channel)
+    )
+    track.append(
+        Message(type="note_off", note=note, velocity=64, time=off_time, channel=channel)
     )
 
 
