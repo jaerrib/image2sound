@@ -37,6 +37,34 @@ def generate_note(
     )
 
 
+def total_measures_from_movement(movement_name: str) -> int:
+    movement: dict = movement_type[movement_name]
+    phrase_lengths = {
+        phrase["label"]: phrase["length"] for phrase in movement["phrases"]
+    }
+    total_measures: int = 0
+    for section in movement["sections"]:
+        for phrase_label in section["sequence"]:
+            length = phrase_lengths.get(phrase_label)
+            if length is None:
+                raise ValueError(f"Phrase '{phrase_label}' not found in phrases")
+            total_measures += length
+    return total_measures
+
+
+def determine_optimum_size(movement_data) -> int:
+    total_measures: int = total_measures_from_movement(movement_data)
+    max_notes: int = total_measures * comp_engine.NOTES_PER_MEASURE
+    dimension: int = math.floor(math.sqrt(max_notes))
+    return dimension
+
+
+def image_to_midi_array(img: Image.Image, movement_data: str) -> np.ndarray:
+    optimal_dim = determine_optimum_size(movement_data)
+    resized_img = img.resize((optimal_dim, optimal_dim))
+    return np.asarray(resized_img, dtype="int64")
+
+
 def midi_convert(sound_image) -> None:
     movement_style: str = sound_image.movement_type
     if movement_style not in movement_type:
@@ -51,7 +79,7 @@ def midi_convert(sound_image) -> None:
         else:
             if sound_image.reveal:
                 sound_image.override(img)
-            sound_image.image_to_array(img)
+            sound_image.image_array = image_to_midi_array(img, movement_style)
             sound_image.image_mode = img.mode
             midi_file = MidiFile(ticks_per_beat=TICKS_PER_BEAT, type=1)
 
@@ -93,6 +121,7 @@ def midi_convert(sound_image) -> None:
                 new_movement: dict = comp_engine.generate_movement(
                     movement_style, flat_array
                 )
+
                 for section_label, phrases in new_movement.items():
                     for phrase in phrases:
                         for value, length in phrase:
