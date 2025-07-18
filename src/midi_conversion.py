@@ -83,6 +83,10 @@ def midi_convert(sound_image) -> None:
                         "control_change", control=10, value=pan_value, channel=track_num
                     )
                 )
+                program_value: int = get_program_instrument(img.mode, track_num)
+                track.append(
+                    Message("program_change", program=program_value, channel=track_num)
+                )
                 flat_array: list = flatten_image_array(
                     sound_image.image_array, track_num
                 )
@@ -97,6 +101,19 @@ def midi_convert(sound_image) -> None:
                             )
             midi_file.save("output.mid")
             print("Midi function complete")
+
+
+def get_program_instrument(image_mode, track_num: int) -> int:
+    channel_value: str = image_mode[track_num]
+    match channel_value:
+        case "C" | "M" | "R":
+            return 40
+        case "Y" | "G":
+            return 41
+        case "K" | "B" | "A":
+            return 42
+        case _:
+            return 0
 
 
 def get_note_length(track_num: int, index: int, note_length: float) -> float:
