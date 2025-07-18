@@ -116,27 +116,6 @@ def get_program_instrument(image_mode, track_num: int) -> int:
             return 0
 
 
-def get_note_length(track_num: int, index: int, note_length: float) -> float:
-    match track_num:
-        case 1:
-            if index % 2 == 0:
-                return note_length * 2
-            else:
-                return 0
-        case 2:
-            if index % 4 == 0:
-                return note_length * 4
-            else:
-                return 0
-        case 3:
-            if index % 8 == 0:
-                return note_length * 8
-            else:
-                return 0
-        case _:
-            return note_length
-
-
 def flatten_image_array(image_array, track_num: int) -> list:
     if image_array is None:
         raise ValueError(
