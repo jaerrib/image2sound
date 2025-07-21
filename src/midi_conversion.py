@@ -118,8 +118,9 @@ def midi_convert(sound_image) -> None:
                 flat_array: list = flatten_image_array(
                     sound_image.image_array, track_num
                 )
+                avg_color_dif = get_avg_color_dif(flat_array)
                 new_movement: dict = comp_engine.generate_movement(
-                    movement_style, flat_array
+                    movement_style, flat_array, avg_color_dif
                 )
 
                 for section_label, phrases in new_movement.items():
@@ -154,3 +155,12 @@ def flatten_image_array(image_array, track_num: int) -> list:
     flattened_array = image_array.reshape(-1, image_array.shape[-1])
     color_array: list = [pixel[track_num] for pixel in flattened_array]
     return color_array
+
+
+def get_avg_color_dif(flat_array: list) -> float:
+    dif_array = []
+    for i in range(len(flat_array)):
+        next_index = (i + 1) % len(flat_array)  # wraps around to 0 at the end
+        comp_val = abs(flat_array[i] - flat_array[next_index])
+        dif_array.append(comp_val)
+    return sum(dif_array) / len(dif_array)
