@@ -11,10 +11,11 @@ from mutagen.id3 import APIC
 from mutagen.wave import WAVE
 from PIL import Image
 
-import dimension_calc
+import comp_engine
 import tone_array
 from envelope_settings import envelope_settings
 from midi_conversion import midi_convert
+from movement_definitions import movement_type
 
 RATE: int = 44100
 DEFAULT_SETTINGS: dict = {
@@ -65,14 +66,26 @@ class SoundImage:
     def open_file(self) -> Image:
         return Image.open(self.path)
 
+    def total_measures_from_movement(self) -> int:
+        movement: dict = movement_type[self.movement_type]
+        phrase_lengths = {
+            phrase["label"]: phrase["length"] for phrase in movement["phrases"]
+        }
+        total_measures: int = 0
+        for section in movement["sections"]:
+            for phrase_label in section["sequence"]:
+                length = phrase_lengths.get(phrase_label)
+                if length is None:
+                    raise ValueError(f"Phrase '{phrase_label}' not found in phrases")
+                total_measures += length
+        return total_measures
+
     def image_to_array(self, img: Image.Image) -> Self:
+        total_measures: int = self.total_measures_from_movement()
+        max_notes: int = total_measures * comp_engine.NOTES_PER_MEASURE
+        optimal_dim: int = math.floor(math.sqrt(max_notes))
         self.image_array = np.asarray(
-            img.resize(
-                dimension_calc.get_new_dim(
-                    img.size, self.minutes, self.tempo, self.time_signature
-                )
-            ),
-            dtype="int64",
+            img.resize((optimal_dim, optimal_dim)), dtype="int64"
         )
         return self
 
