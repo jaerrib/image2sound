@@ -3,22 +3,29 @@
 **image2sound** is a utility that accepts an image file, converts the RGB values
 of each pixel to a frequency, and saves the result to three separate WAV files.
 
-*NOTE: Large image files no longer automatically result in large audio files as
-the user can specify a target track length and sane defaults are applied when
-this is not specified.*
-
 ## Requirements
 
 *See `requirements.txt` for specifics*
 
+## Setup
+
+Create and enter a virtual environment then install the requirements: 
+
+```
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
+```
+
 ## To run
 
-Simply running `python3 main.py` will generate audio using the test image and
-default settings.
+Simply running `python3 main.py` from inside the src folder will generate audio
+using the test image and default settings. Running it with `--help` now provides
+dynamic and more verbose assistance by pulling from the parameter definition files. 
 
 ### Arguments
 
-The following optional arguments may be set, however:
+The following optional arguments may be set:
 
 - `-p` for a path to an image
 - `-o` for path to save the output file to
@@ -33,8 +40,8 @@ The following optional arguments may be set, however:
 
 > The "clicky" audio found in older versions has now been solved by introducing
 > ADSR envelope filters. This also negates the need to use Blackman smoothing,
-> which is now an option rather than the default behavior. To apply smoothing,
-> pass `--smooth`.
+> which is now an option rather than the default behavior. If you prefer to use
+> smoothing, pass `--smooth`.
 
 - Use `-adsr` followed by a [template type](/src/envelope_settings.py) to choose
   a preset for attack, decay, sustain, and release values. This defaults to
@@ -72,12 +79,19 @@ Using CMYK images will automatically trigger "quartet mode". This will create
 four separate, mono WAV files with each being limited to the sonic range
 associated with the four instruments used in a traditional string quartet
 
-### MIDI export (experimental)
+### MIDI export with Composition Engine
 
-Adding `--midi" will export the converted audio as a MIDI file. This is to be
-considered **experimental only** as many features have not been ported to this
-mode yet. That said, it's serviceable, and the file can be imported to other
-software, such as MuseScore or LMMS, for further modification.
+Adding `--midi` will export the converted audio as a MIDI file.
+
+#### Differences from the standard conversion method
+
+- MIDI now uses a composition engine which arranges phrases and sections into songs. You can specify a movement type with `-mt` (sonata is the default).
+- It also incorporates *variable note lengths*. The note lengths are determined by the difference between the color value of the current note in the list and that of the following note.
+- Composition styles are defined in `movement_definitions.py` and new variations can be added there.
+- Use of the composition engine means that *time parameters passed by the user no longer have any effect* since the track length is determined by the movement style and the tempo.
+  - Red, cyan, and magenta = violin
+  - Blue and yellow = viola
+  - Green and black = cello
 
 ### Examples
 
@@ -103,4 +117,10 @@ Example 4:
 
 ```
 python3 main.py -p image.png -key G-Major -t 96 -min 4 -sec 20 -ts 3/4 -adsr cello -w sawtooth --split
+```
+
+Example 5:
+
+```
+python3 main.py -p image.png -key A-Major -t 80 --midi -mt rondo
 ```
