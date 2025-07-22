@@ -1,4 +1,5 @@
 import math
+import os
 import sys
 
 import numpy as np
@@ -129,8 +130,20 @@ def midi_convert(sound_image) -> None:
                             generate_note(
                                 sound_image, track_num, freq_range, track, value, length
                             )
-            midi_file.save("output.mid")
-            print("Midi function complete")
+            save_midi_file(sound_image, midi_file)
+
+
+def save_midi_file(sound_image, midi_file: MidiFile) -> None:
+    file_name = ".".join(sound_image.path.split(".")[:-1]).split("/")[-1] + ".mid"
+    if sound_image.output == "":
+        pass
+    elif os.path.isdir(sound_image.output):
+        file_name = sound_image.output + file_name
+    else:
+        file_name = file_name
+    with Halo(text="Saving file…", color="white"):
+        midi_file.save(file_name)
+    print(f"Midi function complete - file saved as {file_name}")
 
 
 def get_program_instrument(image_mode, track_num: int) -> int:
