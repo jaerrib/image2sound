@@ -15,7 +15,12 @@ from PIL import Image
 import comp_engine
 import tone_array
 from envelope_settings import envelope_settings
-from midi_conversion import midi_convert
+from midi_conversion import (
+    midi_convert,
+    flatten_image_array,
+    get_avg_color_dif,
+    total_measures_from_movement,
+)
 from movement_definitions import movement_type
 
 RATE: int = 44100
@@ -67,22 +72,8 @@ class SoundImage:
     def open_file(self) -> Image:
         return Image.open(self.path)
 
-    def total_measures_from_movement(self) -> int:
-        movement: dict = movement_type[self.movement_type]
-        phrase_lengths = {
-            phrase["label"]: phrase["length"] for phrase in movement["phrases"]
-        }
-        total_measures: int = 0
-        for section in movement["sections"]:
-            for phrase_label in section["sequence"]:
-                length = phrase_lengths.get(phrase_label)
-                if length is None:
-                    raise ValueError(f"Phrase '{phrase_label}' not found in phrases")
-                total_measures += length
-        return total_measures
-
     def image_to_array(self, img: Image.Image) -> Self:
-        total_measures: int = self.total_measures_from_movement()
+        total_measures: int = total_measures_from_movement(self.movement_type)
         max_notes: int = total_measures * comp_engine.NOTES_PER_MEASURE
         optimal_dim: int = math.floor(math.sqrt(max_notes))
         self.image_array = np.asarray(
@@ -412,8 +403,8 @@ class SoundImage:
                 freq_range: list[float] = self.get_freq_range(
                     self.image_mode[track_num]
                 )
-                flat_array: list = self.flatten_image_array(self.image_array, track_num)
-                avg_color_dif = self.get_avg_color_dif(flat_array)
+                flat_array: list = flatten_image_array(self.image_array, track_num)
+                avg_color_dif = get_avg_color_dif(flat_array)
                 new_movement: dict = comp_engine.generate_movement(
                     movement_style, flat_array, avg_color_dif
                 )
@@ -431,26 +422,6 @@ class SoundImage:
                     color,
                     array=np.concatenate(color_array).reshape(-1, 1),
                 )
-
-    @staticmethod
-    def flatten_image_array(image_array, track_num: int) -> list:
-        if image_array is None:
-            raise ValueError(
-                "image_array is None. Check if sound_image.image_to_array() is working correctly."
-            )
-        image_array = np.array(image_array)
-        flattened_array = image_array.reshape(-1, image_array.shape[-1])
-        color_array: list = [pixel[track_num] for pixel in flattened_array]
-        return color_array
-
-    @staticmethod
-    def get_avg_color_dif(flat_array: list) -> float:
-        dif_array = []
-        for i in range(len(flat_array)):
-            next_index = (i + 1) % len(flat_array)  # wraps around to 0 at the end
-            comp_val = abs(flat_array[i] - flat_array[next_index])
-            dif_array.append(comp_val)
-        return sum(dif_array) / len(dif_array)
 
     def generate_note(self, track_num, freq_range, freq, length):
         amplitude = self.get_amplitude(track_num)
@@ -480,13 +451,10 @@ class SoundImage:
                 wave = self.create_piano_wave(amplitude, freq, t)
             case _:
                 wave = amplitude * (np.sin(2 * np.pi * t * freq))
-
         wave = wave * envelope
         if self.smooth:
             wave = self.apply_blackman(wave)
-
         # Ensure the wave array is not empty
         if len(wave) == 0:
             wave = np.zeros(1)
-
         return wave
