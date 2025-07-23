@@ -1,5 +1,6 @@
 import math
 import os
+import sys
 from typing import Self
 
 import numpy as np
@@ -106,8 +107,13 @@ class SoundImage:
         return split_time_signature
 
     @staticmethod
-    def get_freq(color: int, freq_range) -> float:
-        return freq_range[math.trunc(color / (256 / len(freq_range))) - 1]
+    def get_freq(self, color: int, freq_range: list[float]) -> float:
+        # Convert color (0-255) to MIDI note first
+        midi_note = (
+            math.trunc(color / (256 / len(freq_range))) + 60
+        )  # Start from middle C (60)
+        # Convert MIDI note to frequency
+        return midi_to_frequency(midi_note)
 
     @staticmethod
     def apply_blackman(wave: np.ndarray) -> np.ndarray:
@@ -116,15 +122,15 @@ class SoundImage:
         wave *= blackman_window
         return wave
 
-    def get_envelope(self, amplitude: float) -> np.ndarray:
-        attack: float = self.adsr_settings["a"] * self.note_length
-        decay: float = self.adsr_settings["d"] * self.note_length
+    def get_envelope(self, amplitude: float, length: float) -> np.ndarray:
+        attack: float = self.adsr_settings["a"] * length
+        decay: float = self.adsr_settings["d"] * length
         sustain: float = self.adsr_settings["s"] * amplitude
         sustain_level: float = sustain
-        release: float = self.adsr_settings["r"] * self.note_length
+        release: float = self.adsr_settings["r"] * length
         sample_rate: int = RATE
 
-        total_samples = int(RATE * self.note_length)
+        total_samples = int(RATE * length)
         attack_samples = int(attack * sample_rate)
         decay_samples = int(decay * sample_rate)
         release_samples = int(release * sample_rate)
@@ -200,7 +206,7 @@ class SoundImage:
         t = np.linspace(
             0, self.note_length, int(RATE * self.note_length), endpoint=False
         )
-        envelope = self.get_envelope(amplitude)
+        envelope = self.get_envelope(amplitude, self.note_length)
 
         match wave_type:
             case "sine":
@@ -311,7 +317,7 @@ class SoundImage:
                 self.image_to_array(img)
                 self.image_mode = img.mode
                 if img.mode == "CMYK" or self.split:
-                    self.convert_standard()
+                    self.convert_with_comp_engine()
                 else:
                     self.convert_to_stereo()
 
@@ -392,17 +398,114 @@ class SoundImage:
                     freq_range.append(num)
         return freq_range
 
-    def convert_standard(self) -> None:
+    # def convert_standard(self) -> None:
+    #     with Halo(text="Converting data…", color="white"):
+    #         for char in self.image_mode:
+    #             freq_range = self.get_freq_range(char)
+    #             color_array = self.generate_color_array(
+    #                 char=char, freq_range=freq_range
+    #             )
+    #             color = "-" + char
+    #             self.save_wav(
+    #                 self.path,
+    #                 self.output,
+    #                 color,
+    #                 np.hstack((np.array(color_array).reshape(-1, 1),)),
+    #             )
+
+    def convert_with_comp_engine(self):
+        movement_style: str = self.movement_type
+        if movement_style not in movement_type:
+            print(
+                f"Unsupported movement type: '{movement_style}'. Available types are: {list(movement_type.keys())}"
+            )
+            sys.exit(1)
         with Halo(text="Converting data…", color="white"):
-            for char in self.image_mode:
-                freq_range = self.get_freq_range(char)
-                color_array = self.generate_color_array(
-                    char=char, freq_range=freq_range
+            num_tracks: int = 4 if self.image_mode == "CMYK" else 3
+            for track_num in range(num_tracks):
+                char: str = self.image_mode[track_num]
+                freq_range: list[float] = self.get_freq_range(
+                    self.image_mode[track_num]
                 )
+                flat_array: list = self.flatten_image_array(self.image_array, track_num)
+                avg_color_dif = self.get_avg_color_dif(flat_array)
+                new_movement: dict = comp_engine.generate_movement(
+                    movement_style, flat_array, avg_color_dif
+                )
+                color_array = []
+                for section_label, phrases in new_movement.items():
+                    for phrase in phrases:
+                        for value, length in phrase:
+                            color_array.append(
+                                self.generate_note(track_num, freq_range, value, length)
+                            )
                 color = "-" + char
                 self.save_wav(
                     self.path,
                     self.output,
                     color,
-                    np.hstack((np.array(color_array).reshape(-1, 1),)),
+                    array=np.concatenate(color_array).reshape(-1, 1),
                 )
+
+    @staticmethod
+    def flatten_image_array(image_array, track_num: int) -> list:
+        if image_array is None:
+            raise ValueError(
+                "image_array is None. Check if sound_image.image_to_array() is working correctly."
+            )
+        image_array = np.array(image_array)
+        flattened_array = image_array.reshape(-1, image_array.shape[-1])
+        color_array: list = [pixel[track_num] for pixel in flattened_array]
+        return color_array
+
+    @staticmethod
+    def get_avg_color_dif(flat_array: list) -> float:
+        dif_array = []
+        for i in range(len(flat_array)):
+            next_index = (i + 1) % len(flat_array)  # wraps around to 0 at the end
+            comp_val = abs(flat_array[i] - flat_array[next_index])
+            dif_array.append(comp_val)
+        return sum(dif_array) / len(dif_array)
+
+    def generate_note(self, track_num, freq_range, freq, length):
+        amplitude = self.get_amplitude(track_num)
+        # Calculate the duration in seconds for a sixteenth note at the current tempo
+        sixteenth_duration = 60.0 / (
+            self.tempo * 4
+        )  # quarter note duration divided by 4
+        # Total duration for this note based on its length in sixteenth notes
+        note_duration = sixteenth_duration * length
+        num_samples = int(RATE * note_duration)
+        if num_samples <= 0:
+            num_samples = 1
+
+        t = np.linspace(0, note_duration, num_samples, endpoint=False)
+        envelope = self.get_envelope(amplitude, note_duration)
+
+        match self.waveform:
+            case "sine":
+                wave = self.create_sine_wave(amplitude, freq, t)
+            case "square":
+                wave = self.create_square_wave(amplitude, freq, t)
+            case "triangle":
+                wave = self.create_triangle_wave(amplitude, freq, t)
+            case "sawtooth":
+                wave = self.create_sawtooth_wave(amplitude, freq, t)
+            case "piano":
+                wave = self.create_piano_wave(amplitude, freq, t)
+            case _:
+                wave = amplitude * (np.sin(2 * np.pi * t * freq))
+
+        wave = wave * envelope
+        if self.smooth:
+            wave = self.apply_blackman(wave)
+
+        # Ensure the wave array is not empty
+        if len(wave) == 0:
+            wave = np.zeros(1)
+
+        return wave
+
+
+def midi_to_frequency(midi_note: int) -> float:
+    return 440.0 * (2.0 ** ((midi_note - 69) / 12.0))
