@@ -398,21 +398,6 @@ class SoundImage:
                     freq_range.append(num)
         return freq_range
 
-    # def convert_standard(self) -> None:
-    #     with Halo(text="Converting data…", color="white"):
-    #         for char in self.image_mode:
-    #             freq_range = self.get_freq_range(char)
-    #             color_array = self.generate_color_array(
-    #                 char=char, freq_range=freq_range
-    #             )
-    #             color = "-" + char
-    #             self.save_wav(
-    #                 self.path,
-    #                 self.output,
-    #                 color,
-    #                 np.hstack((np.array(color_array).reshape(-1, 1),)),
-    #             )
-
     def convert_with_comp_engine(self):
         movement_style: str = self.movement_type
         if movement_style not in movement_type:
@@ -505,4 +490,3 @@ class SoundImage:
             wave = np.zeros(1)
 
         return wave
-
