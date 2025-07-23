@@ -102,7 +102,7 @@ class SoundImage:
         # Convert color (0-255) to MIDI note first
         midi_note = (
             math.trunc(color / (256 / len(freq_range))) + 60
-        )  # Start from middle C (60)
+        )  # Start from middle-C (60)
         # Convert MIDI note to frequency
         return 440.0 * (2.0 ** ((midi_note - 69) / 12.0))
 
@@ -243,7 +243,7 @@ class SoundImage:
         print("Saved file as " + file_name)
 
     def get_amplitude(self, index: int) -> float:
-        # Accents the first beat of each measure by applying a higher amplitude
+        # Accents the first beat of each measure by applying higher amplitude
         if index % self.time_signature[0] == 0:
             return 0.7
         return 0.5
@@ -360,7 +360,7 @@ class SoundImage:
         for num in self.freq_dict:
             match char:
                 case "C" | "R" if not self.method2:
-                    # Limits range to 3rd position of violin
+                    # Limits range to the 3rd position of violin
                     if tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["D#6"]:
                         freq_range.append(num)
                 case "M" | "A":
@@ -400,9 +400,6 @@ class SoundImage:
             num_tracks: int = 4 if self.image_mode == "CMYK" else 3
             for track_num in range(num_tracks):
                 char: str = self.image_mode[track_num]
-                freq_range: list[float] = self.get_freq_range(
-                    self.image_mode[track_num]
-                )
                 flat_array: list = flatten_image_array(self.image_array, track_num)
                 avg_color_dif = get_avg_color_dif(flat_array)
                 new_movement: dict = comp_engine.generate_movement(
@@ -413,7 +410,7 @@ class SoundImage:
                     for phrase in phrases:
                         for value, length in phrase:
                             color_array.append(
-                                self.generate_note(track_num, freq_range, value, length)
+                                self.generate_note(track_num, value, length)
                             )
                 color = "-" + char
                 self.save_wav(
@@ -423,7 +420,7 @@ class SoundImage:
                     array=np.concatenate(color_array).reshape(-1, 1),
                 )
 
-    def generate_note(self, track_num, freq_range, freq, length):
+    def generate_note(self, track_num, freq, length):
         amplitude = self.get_amplitude(track_num)
         # Calculate the duration in seconds for a sixteenth note at the current tempo
         sixteenth_duration = 60.0 / (
