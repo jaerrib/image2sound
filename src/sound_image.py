@@ -107,13 +107,13 @@ class SoundImage:
         return split_time_signature
 
     @staticmethod
-    def get_freq(self, color: int, freq_range: list[float]) -> float:
+    def get_freq(color: int, freq_range: list[float]) -> float:
         # Convert color (0-255) to MIDI note first
         midi_note = (
             math.trunc(color / (256 / len(freq_range))) + 60
         )  # Start from middle C (60)
         # Convert MIDI note to frequency
-        return midi_to_frequency(midi_note)
+        return 440.0 * (2.0 ** ((midi_note - 69) / 12.0))
 
     @staticmethod
     def apply_blackman(wave: np.ndarray) -> np.ndarray:
@@ -506,6 +506,3 @@ class SoundImage:
 
         return wave
 
-
-def midi_to_frequency(midi_note: int) -> float:
-    return 440.0 * (2.0 ** ((midi_note - 69) / 12.0))
