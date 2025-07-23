@@ -53,7 +53,7 @@ def total_measures_from_movement(movement_name: str) -> int:
     return total_measures
 
 
-def determine_optimum_size(movement_data) -> int:
+def determine_optimum_size(movement_data: str) -> int:
     total_measures: int = total_measures_from_movement(movement_data)
     max_notes: int = total_measures * comp_engine.NOTES_PER_MEASURE
     dimension: int = math.floor(math.sqrt(max_notes))
