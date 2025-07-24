@@ -65,7 +65,7 @@ def get_length(current_note: int, next_note: int, avg_color_dif: float):
         return 8  # Half note
     elif difference <= 12 * modifier:
         return 4  # Quarter note
-    elif difference <= 24 * modifier:
+    elif difference <= 32 * modifier:
         return 2  # Eighth note
     else:
-        return 1  # Sixteenth note
+        return 1  # Sixteenth note`
