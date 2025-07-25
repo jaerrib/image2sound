@@ -31,12 +31,9 @@ The following optional arguments may be set:
 - `-o` for path to save the output file to
 - `-key` for musical key (defaults to C )
 - `-t` for tempo (defaults to 60 bpm)
-- `-min` for the desired number of minutes (defaults to 1 so must be set to zero
-  if shorter tracks are wanted)
-- `-sec` for the desired number of seconds (defaults to zero)
 - `-ts` to set the time signature (defaults to 4/4)
-- `-w` to use specific waveform types (sine, square, triangle, sawtooth or
-  piano)
+- `-w` to use specific waveform types (sine, square, triangle, sawtooth, or
+  piano) 
 
 > The "clicky" audio found in older versions has now been solved by introducing
 > ADSR envelope filters. This also negates the need to use Blackman smoothing,
@@ -47,12 +44,20 @@ The following optional arguments may be set:
   a preset for attack, decay, sustain, and release values. This defaults to
   *piano*.
 
-### "Split" mode
+### "Stereo" mode
 
-Note that the default behavior of the utility is to create a single stereo audio
-file.
-Adding `--split` will split the resulting audio into three separate files (red,
-green, blue).
+Note that the default behavior of the utility is to split the resulting audio into
+separate files to make better use of DAWs. However, you may want a stereo file
+instead. Do this by adding '--stereo' to your run command. Please note that this
+mode bypasses the composition engine, uses a different conversion method for
+generating the audio, and is incompatible with CMYK images. In addition, you can
+use the following parameters in conjunction with stereo mode:
+
+- `-min` for the desired number of minutes (defaults to 1 so must be set to zero
+  if shorter tracks are wanted)
+- `-sec` for the desired number of seconds (defaults to zero)
+
+> "Stereo" mode is planned to be deprecated at some point in the future. 
 
 ### "Reveal" mode
 
@@ -75,7 +80,7 @@ not currently support "Split" mode.
 
 ### "Quartet Mode"
 
-Using CMYK images will automatically trigger "quartet mode". This will create
+Using CMYK images will automatically trigger "quartet mode." This will create
 four separate, mono WAV files with each being limited to the sonic range
 associated with the four instruments used in a traditional string quartet
 
@@ -116,7 +121,7 @@ python3 main.py -p image.png --reveal
 Example 4:
 
 ```
-python3 main.py -p image.png -key G-Major -t 96 -min 4 -sec 20 -ts 3/4 -adsr cello -w sawtooth --split
+python3 main.py -p image.png -key G-Major -t 96 -min 4 -sec 20 -ts 3/4 -adsr cello -w sawtooth --stereo
 ```
 
 Example 5:
