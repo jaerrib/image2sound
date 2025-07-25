@@ -29,9 +29,6 @@ DEFAULT_SETTINGS: dict = {
     "output": "",
     "key": "C-Major",
     "tempo": 60,
-    "minutes": 1,
-    "seconds": 0,
-    "stereo": False,
     "reveal": False,
     "method2": False,
     "midi": False,
@@ -54,10 +51,7 @@ class SoundImage:
             data["time_signature"]
         )
         self.tempo: int = data["tempo"]
-        self.note_length: float = self.get_note_length()
-        self.minutes: int = data["minutes"] + data["seconds"] / 60
         self.image_array: list | None = None
-        self.stereo: bool = data["stereo"]
         self.reveal: bool = data["reveal"]
         self.overrides: list[str] = data["overrides"]
         self.method2: bool = data["method2"]
@@ -80,11 +74,6 @@ class SoundImage:
             img.resize((optimal_dim, optimal_dim)), dtype="int64"
         )
         return self
-
-    def get_note_length(self) -> float:
-        duration = 60 / self.tempo
-        note_length = duration / self.time_signature[1]
-        return note_length
 
     @staticmethod
     def separate_time_signature(time_signature: str) -> list[int]:
@@ -190,33 +179,6 @@ class SoundImage:
         wave += amplitude * 0.125 * np.sin(2 * np.pi * 4 * freq * t)
         return wave
 
-    def get_wave(
-        self, color: int, freq_range: list[float], amplitude: float, wave_type: str
-    ) -> np.ndarray:
-        freq = self.get_freq(color, freq_range)
-        t = np.linspace(
-            0, self.note_length, int(RATE * self.note_length), endpoint=False
-        )
-        envelope = self.get_envelope(amplitude, self.note_length)
-
-        match wave_type:
-            case "sine":
-                wave = self.create_sine_wave(amplitude, freq, t)
-            case "square":
-                wave = self.create_square_wave(amplitude, freq, t)
-            case "triangle":
-                wave = self.create_triangle_wave(amplitude, freq, t)
-            case "sawtooth":
-                wave = self.create_sawtooth_wave(amplitude, freq, t)
-            case "piano":
-                wave = self.create_piano_wave(amplitude, freq, t)
-            case _:
-                wave = amplitude * (np.sin(2 * np.pi * t * freq))
-        wave = wave * envelope
-        if self.smooth:
-            wave = self.apply_blackman(wave)
-        return wave
-
     @staticmethod
     def save_wav(input_path: str, output_path: str, side: str, array) -> None:
         file_name = ".".join(input_path.split(".")[:-1]).split("/")[-1] + side + ".wav"
@@ -248,53 +210,6 @@ class SoundImage:
             return 0.7
         return 0.5
 
-    def convert_to_stereo(self) -> None:
-        if self.method2:
-            left_freq_range = []
-            right_freq_range = []
-            for num in self.freq_dict:
-                if num <= tone_array.FREQ_DICT["C5"]:
-                    left_freq_range.append(num)
-                elif tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["C7"]:
-                    right_freq_range.append(num)
-        else:
-            left_freq_range = self.freq_dict
-            right_freq_range = self.freq_dict
-        with Halo(text="Converting data…", color="white"):
-            left_data, right_data = [], []
-            index = 0
-            for x in self.image_array:
-                for y in x:
-                    amplitude = self.get_amplitude(index)
-                    left_data.append(
-                        self.get_wave(
-                            (y[0] + y[1]) / 2,
-                            left_freq_range,
-                            amplitude,
-                            wave_type=self.waveform,
-                        )
-                    )
-                    right_data.append(
-                        self.get_wave(
-                            (y[2] + y[1]) / 2,
-                            right_freq_range,
-                            amplitude,
-                            wave_type=self.waveform,
-                        )
-                    )
-                    index += 1
-        self.save_wav(
-            self.path,
-            self.output,
-            "-stereo",
-            np.hstack(
-                (
-                    np.array(left_data).reshape(-1, 1),
-                    np.array(right_data).reshape(-1, 1),
-                )
-            ),
-        )
-
     def convert(self) -> None:
         if self.midi:
             midi_convert(self)
@@ -307,10 +222,7 @@ class SoundImage:
                     self.override(img)
                 self.image_to_array(img)
                 self.image_mode = img.mode
-                if img.mode == "CMYK" or not self.stereo:
-                    self.convert_with_comp_engine()
-                else:
-                    self.convert_to_stereo()
+                self.convert_with_comp_engine()
 
     def determine_key(self, red: int, green: int, blue: int) -> Self:
         notes = tone_array.get_chromatic_notes()
@@ -333,27 +245,9 @@ class SoundImage:
             self.tempo = (red + green + blue) / 3
         if "key" in self.overrides:
             self.determine_key(red=red, green=green, blue=blue)
-        if "minutes" in self.overrides and "seconds" in self.overrides:
-            self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
+        # if "minutes" in self.overrides and "seconds" in self.overrides:
+        #     self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
-
-    def generate_color_array(self, char: str, freq_range: list) -> list:
-        color_array = []
-        color_index = self.image_mode.index(char)
-        index = 0
-        for x in self.image_array:
-            for y in x:
-                amplitude = self.get_amplitude(index)
-                color_array.append(
-                    self.get_wave(
-                        y[color_index],
-                        freq_range,
-                        amplitude,
-                        wave_type=self.waveform,
-                    )
-                )
-                index += 1
-        return color_array
 
     def get_freq_range(self, char: str) -> list:
         freq_range = []
@@ -410,7 +304,7 @@ class SoundImage:
                     for phrase in phrases:
                         for value, length in phrase:
                             color_array.append(
-                                self.generate_note(track_num, value, length)
+                                self.generate_wave(track_num, value, length)
                             )
                 color = "-" + char
                 self.save_wav(
@@ -420,7 +314,7 @@ class SoundImage:
                     array=np.concatenate(color_array).reshape(-1, 1),
                 )
 
-    def generate_note(self, track_num, freq, length):
+    def generate_wave(self, track_num, freq, length):
         amplitude = self.get_amplitude(track_num)
         # Calculate the duration in seconds for a sixteenth note at the current tempo
         sixteenth_duration = 60.0 / (
