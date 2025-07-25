@@ -66,7 +66,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--method2",
-    help="Whether to use the new conversion method",
+    help="Whether to use an alternate conversion method, splitting audio into frequency ranges associated with 'left-hand' and 'right-hand' piano parts.",
     action="store_true",
 )
 parser.add_argument(
