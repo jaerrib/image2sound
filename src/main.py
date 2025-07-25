@@ -36,18 +36,18 @@ parser.add_argument(
 parser.add_argument(
     "-min",
     "--minutes",
-    help="Length of the output track in minutes",
+    help="Length of the output track in minutes. Only used in conjunction with --stereo.",
     type=int,
 )
 parser.add_argument(
     "-sec",
     "--seconds",
-    help="Length of the output track in seconds",
+    help="Length of the output track in seconds. Only used in conjunction with --stereo.",
     type=int,
 )
 parser.add_argument(
-    "--split",
-    help="Whether to save the different subpixel tracks as separate files",
+    "--stereo",
+    help="Saves the audio as a stereo WAV file using a different conversion method and bypassed the composition engine.",
     action="store_true",
 )
 parser.add_argument(

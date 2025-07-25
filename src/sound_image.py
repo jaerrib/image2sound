@@ -31,7 +31,7 @@ DEFAULT_SETTINGS: dict = {
     "tempo": 60,
     "minutes": 1,
     "seconds": 0,
-    "split": False,
+    "stereo": False,
     "reveal": False,
     "method2": False,
     "midi": False,
@@ -57,7 +57,7 @@ class SoundImage:
         self.note_length: float = self.get_note_length()
         self.minutes: int = data["minutes"] + data["seconds"] / 60
         self.image_array: list | None = None
-        self.split: bool = data["split"]
+        self.stereo: bool = data["stereo"]
         self.reveal: bool = data["reveal"]
         self.overrides: list[str] = data["overrides"]
         self.method2: bool = data["method2"]
@@ -307,7 +307,7 @@ class SoundImage:
                     self.override(img)
                 self.image_to_array(img)
                 self.image_mode = img.mode
-                if img.mode == "CMYK" or self.split:
+                if img.mode == "CMYK" or not self.stereo:
                     self.convert_with_comp_engine()
                 else:
                     self.convert_to_stereo()
