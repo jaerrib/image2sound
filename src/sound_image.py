@@ -1,5 +1,6 @@
 import math
 import os
+import sys
 from typing import Self
 
 import numpy as np
@@ -11,10 +12,16 @@ from mutagen.id3 import APIC
 from mutagen.wave import WAVE
 from PIL import Image
 
-import dimension_calc
+import comp_engine
 import tone_array
 from envelope_settings import envelope_settings
-from midi_conversion import midi_convert
+from midi_conversion import (
+    midi_convert,
+    flatten_image_array,
+    get_avg_color_dif,
+    total_measures_from_movement,
+)
+from movement_definitions import movement_type
 
 RATE: int = 44100
 DEFAULT_SETTINGS: dict = {
@@ -24,7 +31,7 @@ DEFAULT_SETTINGS: dict = {
     "tempo": 60,
     "minutes": 1,
     "seconds": 0,
-    "split": False,
+    "stereo": False,
     "reveal": False,
     "method2": False,
     "midi": False,
@@ -50,7 +57,7 @@ class SoundImage:
         self.note_length: float = self.get_note_length()
         self.minutes: int = data["minutes"] + data["seconds"] / 60
         self.image_array: list | None = None
-        self.split: bool = data["split"]
+        self.stereo: bool = data["stereo"]
         self.reveal: bool = data["reveal"]
         self.overrides: list[str] = data["overrides"]
         self.method2: bool = data["method2"]
@@ -66,13 +73,11 @@ class SoundImage:
         return Image.open(self.path)
 
     def image_to_array(self, img: Image.Image) -> Self:
+        total_measures: int = total_measures_from_movement(self.movement_type)
+        max_notes: int = total_measures * comp_engine.NOTES_PER_MEASURE
+        optimal_dim: int = math.floor(math.sqrt(max_notes))
         self.image_array = np.asarray(
-            img.resize(
-                dimension_calc.get_new_dim(
-                    img.size, self.minutes, self.tempo, self.time_signature
-                )
-            ),
-            dtype="int64",
+            img.resize((optimal_dim, optimal_dim)), dtype="int64"
         )
         return self
 
@@ -93,8 +98,13 @@ class SoundImage:
         return split_time_signature
 
     @staticmethod
-    def get_freq(color: int, freq_range) -> float:
-        return freq_range[math.trunc(color / (256 / len(freq_range))) - 1]
+    def get_freq(color: int, freq_range: list[float]) -> float:
+        # Convert color (0-255) to MIDI note first
+        midi_note = (
+            math.trunc(color / (256 / len(freq_range))) + 60
+        )  # Start from middle-C (60)
+        # Convert MIDI note to frequency
+        return 440.0 * (2.0 ** ((midi_note - 69) / 12.0))
 
     @staticmethod
     def apply_blackman(wave: np.ndarray) -> np.ndarray:
@@ -103,15 +113,15 @@ class SoundImage:
         wave *= blackman_window
         return wave
 
-    def get_envelope(self, amplitude: float) -> np.ndarray:
-        attack: float = self.adsr_settings["a"] * self.note_length
-        decay: float = self.adsr_settings["d"] * self.note_length
+    def get_envelope(self, amplitude: float, length: float) -> np.ndarray:
+        attack: float = self.adsr_settings["a"] * length
+        decay: float = self.adsr_settings["d"] * length
         sustain: float = self.adsr_settings["s"] * amplitude
         sustain_level: float = sustain
-        release: float = self.adsr_settings["r"] * self.note_length
+        release: float = self.adsr_settings["r"] * length
         sample_rate: int = RATE
 
-        total_samples = int(RATE * self.note_length)
+        total_samples = int(RATE * length)
         attack_samples = int(attack * sample_rate)
         decay_samples = int(decay * sample_rate)
         release_samples = int(release * sample_rate)
@@ -187,7 +197,7 @@ class SoundImage:
         t = np.linspace(
             0, self.note_length, int(RATE * self.note_length), endpoint=False
         )
-        envelope = self.get_envelope(amplitude)
+        envelope = self.get_envelope(amplitude, self.note_length)
 
         match wave_type:
             case "sine":
@@ -233,7 +243,7 @@ class SoundImage:
         print("Saved file as " + file_name)
 
     def get_amplitude(self, index: int) -> float:
-        # Accents the first beat of each measure by applying a higher amplitude
+        # Accents the first beat of each measure by applying higher amplitude
         if index % self.time_signature[0] == 0:
             return 0.7
         return 0.5
@@ -297,8 +307,8 @@ class SoundImage:
                     self.override(img)
                 self.image_to_array(img)
                 self.image_mode = img.mode
-                if img.mode == "CMYK" or self.split:
-                    self.convert_standard()
+                if img.mode == "CMYK" or not self.stereo:
+                    self.convert_with_comp_engine()
                 else:
                     self.convert_to_stereo()
 
@@ -350,7 +360,7 @@ class SoundImage:
         for num in self.freq_dict:
             match char:
                 case "C" | "R" if not self.method2:
-                    # Limits range to 3rd position of violin
+                    # Limits range to the 3rd position of violin
                     if tone_array.FREQ_DICT["C4"] <= num <= tone_array.FREQ_DICT["D#6"]:
                         freq_range.append(num)
                 case "M" | "A":
@@ -379,17 +389,69 @@ class SoundImage:
                     freq_range.append(num)
         return freq_range
 
-    def convert_standard(self) -> None:
+    def convert_with_comp_engine(self):
+        movement_style: str = self.movement_type
+        if movement_style not in movement_type:
+            print(
+                f"Unsupported movement type: '{movement_style}'. Available types are: {list(movement_type.keys())}"
+            )
+            sys.exit(1)
         with Halo(text="Converting data…", color="white"):
-            for char in self.image_mode:
-                freq_range = self.get_freq_range(char)
-                color_array = self.generate_color_array(
-                    char=char, freq_range=freq_range
+            num_tracks: int = 4 if self.image_mode == "CMYK" else 3
+            for track_num in range(num_tracks):
+                char: str = self.image_mode[track_num]
+                flat_array: list = flatten_image_array(self.image_array, track_num)
+                avg_color_dif = get_avg_color_dif(flat_array)
+                new_movement: dict = comp_engine.generate_movement(
+                    movement_style, flat_array, avg_color_dif
                 )
+                color_array = []
+                for section_label, phrases in new_movement.items():
+                    for phrase in phrases:
+                        for value, length in phrase:
+                            color_array.append(
+                                self.generate_note(track_num, value, length)
+                            )
                 color = "-" + char
                 self.save_wav(
                     self.path,
                     self.output,
                     color,
-                    np.hstack((np.array(color_array).reshape(-1, 1),)),
+                    array=np.concatenate(color_array).reshape(-1, 1),
                 )
+
+    def generate_note(self, track_num, freq, length):
+        amplitude = self.get_amplitude(track_num)
+        # Calculate the duration in seconds for a sixteenth note at the current tempo
+        sixteenth_duration = 60.0 / (
+            self.tempo * 4
+        )  # quarter note duration divided by 4
+        # Total duration for this note based on its length in sixteenth notes
+        note_duration = sixteenth_duration * length
+        num_samples = int(RATE * note_duration)
+        if num_samples <= 0:
+            num_samples = 1
+
+        t = np.linspace(0, note_duration, num_samples, endpoint=False)
+        envelope = self.get_envelope(amplitude, note_duration)
+
+        match self.waveform:
+            case "sine":
+                wave = self.create_sine_wave(amplitude, freq, t)
+            case "square":
+                wave = self.create_square_wave(amplitude, freq, t)
+            case "triangle":
+                wave = self.create_triangle_wave(amplitude, freq, t)
+            case "sawtooth":
+                wave = self.create_sawtooth_wave(amplitude, freq, t)
+            case "piano":
+                wave = self.create_piano_wave(amplitude, freq, t)
+            case _:
+                wave = amplitude * (np.sin(2 * np.pi * t * freq))
+        wave = wave * envelope
+        if self.smooth:
+            wave = self.apply_blackman(wave)
+        # Ensure the wave array is not empty
+        if len(wave) == 0:
+            wave = np.zeros(1)
+        return wave

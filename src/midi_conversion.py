@@ -1,4 +1,5 @@
 import math
+import os
 import sys
 
 import numpy as np
@@ -52,7 +53,7 @@ def total_measures_from_movement(movement_name: str) -> int:
     return total_measures
 
 
-def determine_optimum_size(movement_data) -> int:
+def determine_optimum_size(movement_data: str) -> int:
     total_measures: int = total_measures_from_movement(movement_data)
     max_notes: int = total_measures * comp_engine.NOTES_PER_MEASURE
     dimension: int = math.floor(math.sqrt(max_notes))
@@ -118,8 +119,9 @@ def midi_convert(sound_image) -> None:
                 flat_array: list = flatten_image_array(
                     sound_image.image_array, track_num
                 )
+                avg_color_dif = get_avg_color_dif(flat_array)
                 new_movement: dict = comp_engine.generate_movement(
-                    movement_style, flat_array
+                    movement_style, flat_array, avg_color_dif
                 )
 
                 for section_label, phrases in new_movement.items():
@@ -128,8 +130,20 @@ def midi_convert(sound_image) -> None:
                             generate_note(
                                 sound_image, track_num, freq_range, track, value, length
                             )
-            midi_file.save("output.mid")
-            print("Midi function complete")
+            save_midi_file(sound_image, midi_file)
+
+
+def save_midi_file(sound_image, midi_file: MidiFile) -> None:
+    file_name = ".".join(sound_image.path.split(".")[:-1]).split("/")[-1] + ".mid"
+    if sound_image.output == "":
+        pass
+    elif os.path.isdir(sound_image.output):
+        file_name = sound_image.output + file_name
+    else:
+        file_name = file_name
+    with Halo(text="Saving file…", color="white"):
+        midi_file.save(file_name)
+    print(f"Midi function complete - file saved as {file_name}")
 
 
 def get_program_instrument(image_mode, track_num: int) -> int:
@@ -154,3 +168,12 @@ def flatten_image_array(image_array, track_num: int) -> list:
     flattened_array = image_array.reshape(-1, image_array.shape[-1])
     color_array: list = [pixel[track_num] for pixel in flattened_array]
     return color_array
+
+
+def get_avg_color_dif(flat_array: list) -> float:
+    dif_array = []
+    for i in range(len(flat_array)):
+        next_index = (i + 1) % len(flat_array)  # wraps around to 0 at the end
+        comp_val = abs(flat_array[i] - flat_array[next_index])
+        dif_array.append(comp_val)
+    return sum(dif_array) / len(dif_array)

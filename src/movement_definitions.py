@@ -57,6 +57,22 @@ movement_type = {
             {"label": "Rondo Form", "sequence": ["A", "B", "A", "C", "A", "D"]}
         ],
     },
+    "finale": {
+        "phrases": [
+            {"label": "A", "length": 4},
+            {"label": "B", "length": 6},
+            {"label": "C", "length": 6},
+            {"label": "D", "length": 4},
+            {"label": "E", "length": 4},
+            {"label": "F", "length": 2},
+            {"label": "G", "length": 4},
+        ],
+        "sections": [
+            {"label": "Exposition", "sequence": ["A", "B", "A"]},
+            {"label": "Development", "sequence": ["C", "D", "A"]},
+            {"label": "Recapitulation", "sequence": ["E", "A", "F", "G"]},
+        ],
+    },
     "punk": {
         "phrases": [
             {"label": "A", "length": 4},
