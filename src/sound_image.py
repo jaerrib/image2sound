@@ -88,12 +88,9 @@ class SoundImage:
 
     @staticmethod
     def get_freq(color: int, freq_range: list[float]) -> float:
-        # Convert color (0-255) to MIDI note first
-        midi_note = (
-            math.trunc(color / (256 / len(freq_range))) + 60
-        )  # Start from middle-C (60)
-        # Convert MIDI note to frequency
-        return 440.0 * (2.0 ** ((midi_note - 69) / 12.0))
+        # Convert color (0-255) to an index in the freq_range
+        index = min(math.trunc(color / (256 / len(freq_range))), len(freq_range) - 1)
+        return freq_range[index]
 
     @staticmethod
     def apply_blackman(wave: np.ndarray) -> np.ndarray:
