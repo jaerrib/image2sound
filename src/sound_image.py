@@ -242,6 +242,12 @@ class SoundImage:
             self.tempo = (red + green + blue) / 3
         if "key" in self.overrides:
             self.determine_key(red=red, green=green, blue=blue)
+        if "movement_type" in self.overrides:
+            movements = list(movement_type.keys())
+            avg_color = (red + green + blue) / 3
+            self.movement_type = movements[
+                math.trunc(avg_color / (255 / len(movements)))
+            ]
         return self
 
     def get_freq_range(self, char: str) -> list:
