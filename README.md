@@ -44,24 +44,9 @@ The following optional arguments may be set:
   a preset for attack, decay, sustain, and release values. This defaults to
   *piano*.
 
-### "Stereo" mode
-
-Note that the default behavior of the utility is to split the resulting audio into
-separate files to make better use of DAWs. However, you may want a stereo file
-instead. Do this by adding '--stereo' to your run command. Please note that this
-mode bypasses the composition engine, uses a different conversion method for
-generating the audio, and is incompatible with CMYK images. In addition, you can
-use the following parameters in conjunction with stereo mode:
-
-- `-min` for the desired number of minutes (defaults to 1 so must be set to zero
-  if shorter tracks are wanted)
-- `-sec` for the desired number of seconds (defaults to zero)
-
-> "Stereo" mode is planned to be deprecated at some point in the future. 
-
 ### "Reveal" mode
 
-Adding `--reveal` will override the key, tempo, and minutes/seconds with data
+Adding `--reveal` will override the key, tempo, and movement type with data
 derived from the image itself, "revealing" the music within the image
 
 > **"Reveal" mode plus overrides**
@@ -103,16 +88,10 @@ Adding `--midi` will export the converted audio as a MIDI file.
 Example 1:
 
 ```
-python3 main.py -p image.png -key D-minor -t 80 -min 11 -sec 38
+python3 main.py -p image.png -key D-minor -t 80
 ```
 
 Example 2:
-
-```
-python3 main.py -p image.png -key D-minor -t 80 -min 11 -sec 38 --split
-```
-
-Example 3:
 
 ```
 python3 main.py -p image.png --reveal
@@ -121,7 +100,7 @@ python3 main.py -p image.png --reveal
 Example 4:
 
 ```
-python3 main.py -p image.png -key G-Major -t 96 -min 4 -sec 20 -ts 3/4 -adsr cello -w sawtooth --stereo
+python3 main.py -p image.png -key G-Major -t 96 -ts 3/4 -adsr cello -w sawtooth
 ```
 
 Example 5:
