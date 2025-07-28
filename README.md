@@ -61,7 +61,7 @@ use the following parameters in conjunction with stereo mode:
 
 ### "Reveal" mode
 
-Adding `--reveal` will override the key, tempo, and minutes/seconds with data
+Adding `--reveal` will override the key, tempo, and movement type with data
 derived from the image itself, "revealing" the music within the image
 
 > **"Reveal" mode plus overrides**
