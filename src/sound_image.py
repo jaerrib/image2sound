@@ -242,8 +242,6 @@ class SoundImage:
             self.tempo = (red + green + blue) / 3
         if "key" in self.overrides:
             self.determine_key(red=red, green=green, blue=blue)
-        # if "minutes" in self.overrides and "seconds" in self.overrides:
-        #     self.minutes = math.sqrt((img.size[0] + img.size[1]) / 2) / 2
         return self
 
     def get_freq_range(self, char: str) -> list:
