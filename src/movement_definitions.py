@@ -73,6 +73,98 @@ movement_type = {
             {"label": "Recapitulation", "sequence": ["E", "A", "F", "G"]},
         ],
     },
+    "passacaglia": {
+        "phrases": [
+            {"label": "Ground", "length": 8},
+            {"label": "Var1", "length": 8},
+            {"label": "Var2", "length": 8},
+            {"label": "Var3", "length": 8},
+            {"label": "Var4", "length": 8},
+            {"label": "Var5", "length": 8},
+        ],
+        "sections": [
+            {"label": "Theme", "sequence": ["Ground"]},
+            {
+                "label": "Variations",
+                "sequence": ["Var1", "Var2", "Var3", "Var4", "Var5", "Ground"],
+            },
+        ],
+    },
+    "chaconne": {
+        "phrases": [
+            {"label": "Bass", "length": 4},
+            {"label": "VarA", "length": 8},
+            {"label": "VarB", "length": 8},
+            {"label": "VarC", "length": 8},
+            {"label": "VarD", "length": 8},
+        ],
+        "sections": [
+            {"label": "Theme", "sequence": ["Bass"]},
+            {
+                "label": "Variations",
+                "sequence": ["VarA", "VarB", "VarC", "VarD", "Bass"],
+            },
+        ],
+    },
+    "fugue": {
+        "phrases": [
+            {"label": "Subject", "length": 6},
+            {"label": "Answer", "length": 6},
+            {"label": "Countersubject", "length": 6},
+            {"label": "Episode", "length": 8},
+            {"label": "Stretto", "length": 6},
+            {"label": "Coda", "length": 4},
+        ],
+        "sections": [
+            {
+                "label": "Exposition",
+                "sequence": ["Subject", "Answer", "Countersubject"],
+            },
+            {
+                "label": "Middle Entries",
+                "sequence": ["Episode", "Subject", "Episode", "Answer"],
+            },
+            {"label": "Final Section", "sequence": ["Stretto", "Subject", "Coda"]},
+        ],
+    },
+    "nocturne": {
+        "phrases": [
+            {"label": "A", "length": 12},
+            {"label": "B", "length": 16},
+            {"label": "A'", "length": 12},
+        ],
+        "sections": [
+            {"label": "Opening", "sequence": ["A"]},
+            {"label": "Middle", "sequence": ["B"]},
+            {"label": "Return", "sequence": ["A'"]},
+        ],
+    },
+    "toccata": {
+        "phrases": [
+            {"label": "A", "length": 4},
+            {"label": "B", "length": 6},
+            {"label": "C", "length": 4},
+            {"label": "D", "length": 6},
+            {"label": "E", "length": 8},
+        ],
+        "sections": [
+            {"label": "Opening", "sequence": ["A", "B"]},
+            {"label": "Middle", "sequence": ["C", "D"]},
+            {"label": "Climax", "sequence": ["E", "A", "B", "E"]},
+        ],
+    },
+    "lament": {
+        "phrases": [
+            {"label": "A", "length": 8},
+            {"label": "B", "length": 8},
+            {"label": "C", "length": 10},
+        ],
+        "sections": [
+            {"label": "Statement", "sequence": ["A"]},
+            {"label": "Expansion", "sequence": ["B"]},
+            {"label": "Climax/Resolution", "sequence": ["C"]},
+        ],
+    },
     "punk": {
         "phrases": [
             {"label": "A", "length": 4},
