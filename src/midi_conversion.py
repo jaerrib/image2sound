@@ -134,7 +134,11 @@ def midi_convert(sound_image) -> None:
 
 
 def save_midi_file(sound_image, midi_file: MidiFile) -> None:
-    file_name = ".".join(sound_image.path.split(".")[:-1]).split("/")[-1] + ".mid"
+    tempo = tempo_marking(sound_image.tempo)
+    file_name = (
+        ".".join(sound_image.path.split(".")[:-1]).split("/")[-1]
+        + f", {sound_image.movement_type.capitalize()} in {sound_image.key} ({tempo}).mid"
+    )
     if sound_image.output == "":
         pass
     elif os.path.isdir(sound_image.output):
@@ -157,6 +161,18 @@ def get_program_instrument(image_mode, track_num: int) -> int:
             return 42
         case _:
             return 0
+
+
+def tempo_marking(bpm):
+    tempo_map = [
+        (60, "Largo"),
+        (76, "Adagio"),
+        (108, "Andante"),
+        (120, "Moderato"),
+        (168, "Allegro"),
+        (999, "Presto"),
+    ]
+    return next(label for limit, label in tempo_map if bpm <= limit)
 
 
 def flatten_image_array(image_array, track_num: int) -> list:
