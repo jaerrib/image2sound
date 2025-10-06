@@ -165,6 +165,66 @@ movement_type = {
             {"label": "Climax/Resolution", "sequence": ["C"]},
         ],
     },
+    "prelude": {
+        "phrases": [
+            {"label": "Intro", "length": 6},
+            {"label": "Figuration1", "length": 8},
+            {"label": "Figuration2", "length": 8},
+            {"label": "Climax", "length": 10},
+            {"label": "Coda", "length": 4},
+        ],
+        "sections": [
+            {"label": "Opening", "sequence": ["Intro"]},
+            {
+                "label": "Developmental Passage",
+                "sequence": ["Figuration1", "Figuration2"],
+            },
+            {"label": "Climax", "sequence": ["Climax"]},
+            {"label": "Closing", "sequence": ["Coda"]},
+        ],
+    },
+    "theme_and_variations": {
+        "phrases": [
+            {"label": "A", "length": 8},
+            {"label": "B", "length": 8},
+            {"label": "C", "length": 8},
+            {"label": "D", "length": 8},
+            {"label": "E", "length": 8},
+            {"label": "F", "length": 8},
+        ],
+        "sections": [
+            {"label": "Theme Statement", "sequence": ["A"]},
+            {"label": "Variation Cycle", "sequence": ["B", "C", "D", "E", "F"]},
+        ],
+    },
+    "concerto_ritornello": {
+        "phrases": [
+            {"label": "A", "length": 12},
+            {"label": "B", "length": 8},
+            {"label": "C", "length": 10},
+            {"label": "D", "length": 8},
+            {"label": "E", "length": 12},
+        ],
+        "sections": [
+            {"label": "Opening Section", "sequence": ["A"]},
+            {"label": "Middle Cycle 1", "sequence": ["B", "A"]},
+            {"label": "Middle Cycle 2", "sequence": ["C", "A"]},
+            {"label": "Middle Cycle 3", "sequence": ["D"]},
+            {"label": "Closing Section", "sequence": ["E"]},
+        ],
+    },
+    "french_overture": {
+        "phrases": [
+            {"label": "A", "length": 10},
+            {"label": "B", "length": 16},
+            {"label": "C", "length": 6},
+        ],
+        "sections": [
+            {"label": "Grave Introduction", "sequence": ["A"]},
+            {"label": "Fugal Allegro", "sequence": ["B"]},
+            {"label": "Closing", "sequence": ["C"]},
+        ],
+    },
     "punk": {
         "phrases": [
             {"label": "A", "length": 4},
