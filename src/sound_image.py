@@ -63,7 +63,7 @@ class SoundImage:
         self.adsr_settings: dict = envelope_settings[self.adsr]
         self.waveform: str = data["waveform"]
 
-    def open_file(self) -> Image:
+    def open_file(self) -> Image.Image:
         return Image.open(self.path)
 
     def image_to_array(self, img: Image.Image) -> Self:
@@ -211,7 +211,7 @@ class SoundImage:
         if self.midi:
             midi_convert(self)
         else:
-            img: Image = self.open_file()
+            img: Image.Image = self.open_file()
             if img.mode not in ["RGB", "RGBA", "CMYK"]:
                 print("Invalid image type. Please use an RGB, RGBA, or CMYK file.")
             else:

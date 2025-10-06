@@ -74,7 +74,7 @@ def midi_convert(sound_image) -> None:
         )
         sys.exit(1)
     with Halo(text="Converting data…", color="white"):
-        img: Image = sound_image.open_file()
+        img: Image.Image = sound_image.open_file()
         if img.mode not in ["RGB", "RGBA", "CMYK"]:
             print("Invalid image type. Please use an RGB, RGBA, or CMYK file.")
         else:
