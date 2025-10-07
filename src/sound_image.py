@@ -16,9 +16,10 @@ import comp_engine
 import tone_array
 from envelope_settings import envelope_settings
 from midi_conversion import (
-    midi_convert,
     flatten_image_array,
     get_avg_color_dif,
+    midi_convert,
+    tempo_marking,
     total_measures_from_movement,
 )
 from movement_definitions import movement_type
@@ -177,7 +178,11 @@ class SoundImage:
         return wave
 
     def save_wav(self, side: str, array) -> None:
-        file_name = ".".join(self.path.split(".")[:-1]).split("/")[-1] + side + ".wav"
+        tempo = tempo_marking(self.tempo)
+        file_name = (
+            ".".join(self.path.split(".")[:-1]).split("/")[-1]
+            + f", {self.movement_type.capitalize()} in {self.key} ({tempo}){side}.wav"
+        )
         if self.output == "":
             pass
         elif os.path.isdir(self.output):
