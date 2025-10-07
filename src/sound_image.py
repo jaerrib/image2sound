@@ -176,13 +176,12 @@ class SoundImage:
         wave += amplitude * 0.125 * np.sin(2 * np.pi * 4 * freq * t)
         return wave
 
-    @staticmethod
-    def save_wav(input_path: str, output_path: str, side: str, array) -> None:
-        file_name = ".".join(input_path.split(".")[:-1]).split("/")[-1] + side + ".wav"
-        if output_path == "":
+    def save_wav(self, side: str, array) -> None:
+        file_name = ".".join(self.path.split(".")[:-1]).split("/")[-1] + side + ".wav"
+        if self.output == "":
             pass
-        elif os.path.isdir(output_path):
-            file_name = output_path + file_name
+        elif os.path.isdir(self.output):
+            file_name = self.output + file_name
         else:
             file_name = file_name
         with Halo(text="Saving file…", color="white"):
@@ -192,10 +191,10 @@ class SoundImage:
             audio_file.tags.add(
                 APIC(
                     encoding=3,  # 3 is for utf-8
-                    mime=f"image/{Image.open(input_path).format.lower()}",  # can be image/jpeg or image/png
+                    mime=f"image/{Image.open(self.path).format.lower()}",  # can be image/jpeg or image/png
                     type=3,  # 3 is for the cover image
                     desc="Cover",
-                    data=open(input_path, mode="rb").read(),
+                    data=open(self.path, mode="rb").read(),
                 )
             )
             audio_file.save()
@@ -309,8 +308,6 @@ class SoundImage:
                             )
                 color = "-" + char
                 self.save_wav(
-                    self.path,
-                    self.output,
                     color,
                     array=np.concatenate(color_array).reshape(-1, 1),
                 )
