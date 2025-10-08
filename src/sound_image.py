@@ -331,7 +331,7 @@ class SoundImage:
 
         t = np.linspace(0, note_duration, num_samples, endpoint=False)
         envelope = self.get_envelope(amplitude, note_duration)
-
+        wave: np.ndarray = np.zeros(1)
         match self.waveform:
             case "sine":
                 wave = self.create_sine_wave(amplitude, freq, t)
@@ -345,10 +345,7 @@ class SoundImage:
                 wave = self.create_piano_wave(amplitude, freq, t)
             case _:
                 wave = amplitude * (np.sin(2 * np.pi * t * freq))
-        wave = wave * envelope
+        wave *= envelope
         if self.smooth:
             wave = self.apply_blackman(wave)
-        # Ensure the wave array is not empty
-        if len(wave) == 0:
-            wave = np.zeros(1)
         return wave
