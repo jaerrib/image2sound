@@ -225,6 +225,43 @@ movement_type = {
             {"label": "Closing", "sequence": ["C"]},
         ],
     },
+    "allemande": {
+        "phrases": [{"label": "A", "length": 8}, {"label": "B", "length": 8}],
+        "sections": [{"label": "Binary Form", "sequence": ["A", "B"]}],
+    },
+    "courante": {
+        "phrases": [{"label": "A", "length": 10}, {"label": "B", "length": 10}],
+        "sections": [{"label": "Binary Form", "sequence": ["A", "B"]}],
+    },
+    "sarabande": {
+        "phrases": [{"label": "A", "length": 8}, {"label": "B", "length": 8}],
+        "sections": [{"label": "Binary Form", "sequence": ["A", "B"]}],
+    },
+    "gigue": {
+        "phrases": [{"label": "A", "length": 12}, {"label": "B", "length": 12}],
+        "sections": [{"label": "Binary Form", "sequence": ["A", "B"]}],
+    },
+    "minuet": {
+        "phrases": [
+            {"label": "A", "length": 8},
+            {"label": "B", "length": 8},
+            {"label": "C", "length": 8},
+            {"label": "D", "length": 8},
+        ],
+        "sections": [
+            {"label": "Minuet I", "sequence": ["A", "B"]},
+            {"label": "Trio", "sequence": ["C", "D"]},
+            {"label": "Minuet I da capo", "sequence": ["A", "B"]},
+        ],
+    },
+    "gavotte": {
+        "phrases": [{"label": "A", "length": 8}, {"label": "B", "length": 8}],
+        "sections": [{"label": "Binary Form", "sequence": ["A", "B"]}],
+    },
+    "bourree": {
+        "phrases": [{"label": "A", "length": 8}, {"label": "B", "length": 8}],
+        "sections": [{"label": "Binary Form", "sequence": ["A", "B"]}],
+    },
     "punk": {
         "phrases": [
             {"label": "A", "length": 4},
