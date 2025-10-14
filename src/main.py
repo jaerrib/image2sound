@@ -93,5 +93,5 @@ for key in data:
             data["overrides"].append(key)
         data[key] = DEFAULT_SETTINGS[key]
 
-new_sound_image = SoundImage(data)
+new_sound_image: SoundImage = SoundImage(data)
 new_sound_image.convert()
