@@ -40,7 +40,7 @@ def generate_note(
 
 def total_measures_from_movement(movement_name: str) -> int:
     movement: dict = movement_type[movement_name]
-    phrase_lengths = {
+    phrase_lengths: dict = {
         phrase["label"]: phrase["length"] for phrase in movement["phrases"]
     }
     total_measures: int = 0
@@ -61,8 +61,8 @@ def determine_optimum_size(movement_data: str) -> int:
 
 
 def image_to_midi_array(img: Image.Image, movement_data: str) -> np.ndarray:
-    optimal_dim = determine_optimum_size(movement_data)
-    resized_img = img.resize((optimal_dim, optimal_dim))
+    optimal_dim: int = determine_optimum_size(movement_data)
+    resized_img: Image.Image = img.resize((optimal_dim, optimal_dim))
     return np.asarray(resized_img, dtype="int64")
 
 
@@ -82,7 +82,7 @@ def midi_convert(sound_image) -> None:
                 sound_image.override(img)
             sound_image.image_array = image_to_midi_array(img, movement_style)
             sound_image.image_mode = img.mode
-            midi_file = MidiFile(ticks_per_beat=TICKS_PER_BEAT, type=1)
+            midi_file: MidiFile = MidiFile(ticks_per_beat=TICKS_PER_BEAT, type=1)
 
             num_tracks: int = 4 if img.mode == "CMYK" else 3
 
@@ -119,7 +119,7 @@ def midi_convert(sound_image) -> None:
                 flat_array: list = flatten_image_array(
                     sound_image.image_array, track_num
                 )
-                avg_color_dif = get_avg_color_dif(flat_array)
+                avg_color_dif: float = get_avg_color_dif(flat_array)
                 new_movement: dict = comp_engine.generate_movement(
                     movement_style, flat_array, avg_color_dif
                 )
@@ -150,7 +150,7 @@ def save_midi_file(sound_image, midi_file: MidiFile) -> None:
     print(f"Midi function complete - file saved as {file_name}")
 
 
-def get_program_instrument(image_mode, track_num: int) -> int:
+def get_program_instrument(image_mode: str, track_num: int) -> int:
     channel_value: str = image_mode[track_num]
     match channel_value:
         case "C" | "M" | "R":
@@ -163,7 +163,7 @@ def get_program_instrument(image_mode, track_num: int) -> int:
             return 0
 
 
-def tempo_marking(bpm):
+def tempo_marking(bpm: int):
     tempo_map = [
         (60, "Largo"),
         (76, "Adagio"),
