@@ -232,7 +232,7 @@ class SoundImage:
         key: str = notes[math.trunc(red / (255 / len(notes)))] + (
             "Major" if blue % 2 == 0 else "Minor"
         )
-        if type(math.sqrt(red * green * blue)) is not float:
+        if not math.isclose(math.sqrt(red * green * blue) % 1, 0):
             key = notes[math.trunc(red / (255 / len(notes)))] + "8Tone"
         elif green % 16 == 0:
             key += "Pentatonic"
