@@ -39,22 +39,21 @@ def generate_section_library(phrase_library: dict, sequence: list):
 
 
 def generate_phrase(length: int, start_index: int, image_array, avg_color_dif: float):
-    total_note_index: int = length * NOTES_PER_MEASURE
-    phrase_array: list = []
+    total_notes: int = length * NOTES_PER_MEASURE
+    phrase: list = []
     note_index: int = start_index
-    num: int = 0
-    while num < total_note_index:
+    count: int = 0
+    while count < total_notes:
         note_index = (note_index + 1) % len(image_array)
-        comp_index: int = note_index + 1
-        note_length: int = get_length(
-            image_array[note_index], image_array[comp_index], avg_color_dif
-        )
-        if num + note_length > total_note_index:
-            note_length = total_note_index - num
-        phrase_array.append((image_array[note_index], note_length))
-        num += note_length
+        current: int = image_array[note_index]
+        next_val: int = image_array[note_index + 1]
+        note_length = get_length(current, next_val, avg_color_dif)
+        if count + note_length > total_notes:
+            note_length = total_notes - count
+        phrase.append((current, note_length))
+        count += note_length
         note_index += 1
-    return phrase_array, note_index
+    return phrase, note_index
 
 
 def get_length(current_note: int, next_note: int, avg_color_dif: float):
