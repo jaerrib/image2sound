@@ -177,6 +177,9 @@ class SoundImage:
                 * np.sin(2 * np.pi * k * freq * t)
             )
             wave += harmonic
+        max_val = np.max(np.abs(wave))
+        if max_val > 0:
+            wave = wave / max_val
         return wave
 
     @staticmethod
