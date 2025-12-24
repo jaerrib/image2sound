@@ -133,9 +133,12 @@ class SoundImage:
 
     @staticmethod
     def create_sine_wave(amplitude: float, freq: float, t: np.ndarray) -> np.ndarray:
-        wave: np.ndarray = amplitude * (np.sin(2 * np.pi * t * freq))
+        wave: np.ndarray = amplitude * np.sin(2 * np.pi * freq * t)
         for k in range(1, 6):
             wave += amplitude * (1 / k) * np.sin(2 * np.pi * k * freq * t)
+        max_val = np.max(np.abs(wave))
+        if max_val > 0:
+            wave = wave / max_val
         return wave
 
     @staticmethod
@@ -143,6 +146,9 @@ class SoundImage:
         wave: np.ndarray = amplitude * 0.5 * (1 + np.sign(np.sin(2 * np.pi * freq * t)))
         for k in range(1, 10, 2):
             wave += amplitude * (1 / k) * np.sin(2 * np.pi * k * freq * t)
+        max_val = np.max(np.abs(wave))
+        if max_val > 0:
+            wave = wave / max_val
         return wave
 
     @staticmethod
