@@ -291,4 +291,19 @@ movement_type = {
             {"label": "Outro", "sequence": ["D"]},
         ],
     },
+    "cabinet": {
+        "phrases": [
+            {"label": "Shadow", "length": 12},
+            {"label": "Corridor", "length": 10},
+            {"label": "Tilt", "length": 8},
+            {"label": "Panic", "length": 6},
+            {"label": "Stillness", "length": 14},
+        ],
+        "sections": [
+            {"label": "Opening", "sequence": ["Shadow"]},
+            {"label": "Wandering", "sequence": ["Corridor", "Tilt"]},
+            {"label": "Crisis", "sequence": ["Panic"]},
+            {"label": "Dissolve", "sequence": ["Stillness"]},
+        ],
+    },
 }
