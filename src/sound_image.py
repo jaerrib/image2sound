@@ -90,7 +90,7 @@ class SoundImage:
     @staticmethod
     def get_freq(color: int, freq_range: list[float]) -> float:
         # Convert color (0-255) to an index in the freq_range
-        index = min(math.trunc(color / (256 / len(freq_range))), len(freq_range) - 1)
+        index = int((color / 255) * (len(freq_range) - 1))
         return freq_range[index]
 
     @staticmethod
@@ -115,7 +115,7 @@ class SoundImage:
         sustain_samples: int = total_samples - (
             attack_samples + decay_samples + release_samples
         )
-
+        sustain_samples = max(0, sustain_samples)
         envelope = np.zeros(total_samples)
         envelope[:attack_samples] = np.linspace(0, amplitude, attack_samples)
         envelope[attack_samples : attack_samples + decay_samples] = np.linspace(
