@@ -137,7 +137,6 @@ def get_tone_array(key: str) -> list[float]:
     for index in range(1, 8):
         for note in converted_scale:
             tone_array.append(FREQ_DICT[f"{note}{index}"])
-    print(tone_array)
     return tone_array
 
 
