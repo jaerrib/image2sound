@@ -245,7 +245,7 @@ class SoundImage:
         green = int(tiny_img_arr[0][0][1])
         blue = int(tiny_img_arr[0][0][2])
         if "tempo" in self.overrides:
-            self.tempo = int((red + green + blue) / 3)
+            self.tempo = (red + green + blue) // 3
         if "key" in self.overrides:
             self.determine_key(red=red, green=green, blue=blue)
         if "movement_type" in self.overrides:
