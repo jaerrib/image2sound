@@ -44,15 +44,14 @@ def generate_phrase(length: int, start_index: int, image_array, avg_color_dif: f
     note_index: int = start_index
     count: int = 0
     while count < total_notes:
-        note_index = (note_index + 1) % len(image_array)
         current: int = image_array[note_index]
-        next_val: int = image_array[note_index + 1]
+        next_val: int = image_array[(note_index + 1) % len(image_array)]
         note_length = get_length(current, next_val, avg_color_dif)
         if count + note_length > total_notes:
             note_length = total_notes - count
         phrase.append((current, note_length))
         count += note_length
-        note_index += 1
+        note_index = (note_index + 1) % len(image_array)
     return phrase, note_index
 
 
