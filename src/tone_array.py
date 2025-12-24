@@ -116,10 +116,7 @@ SCALE_PATTERNS: dict[str, list[int]] = {
 
 
 def flat_conversion(scale: list[str]) -> list[str]:
-    for index in range(len(scale)):
-        if scale[index] in EQUIVALENT_NOTES:
-            scale[index] = EQUIVALENT_NOTES[scale[index]]
-    return scale
+    return [EQUIVALENT_NOTES.get(note, note) for note in scale]
 
 
 def get_scale(string: str) -> list[str]:
@@ -152,6 +149,7 @@ def get_tone_array(key: str) -> list[float]:
     for index in range(1, 8):
         for note in converted_scale:
             tone_array.append(FREQ_DICT[f"{note}{index}"])
+    print(tone_array)
     return tone_array
 
 
