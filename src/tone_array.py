@@ -120,25 +120,13 @@ def flat_conversion(scale: list[str]) -> list[str]:
 
 
 def get_scale(string: str) -> list[str]:
-    data = string.split("-")
-    root, family = data[0], data[1]
-    for key in EQUIVALENT_NOTES:
-        if root == key:
-            root = EQUIVALENT_NOTES[key]
-    index = 0
-    step_index = 0
-    for note in NOTES:
-        if root == note:
-            root_index = index
-            step_index = root_index
-            break
-        index += 1
+    root, family = string.split("-")
+    root = EQUIVALENT_NOTES.get(root, root)
+    step_index = NOTES.index(root)
     scale = []
     for step in SCALE_PATTERNS[family]:
-        if step_index + step >= len(NOTES):
-            step_index -= len(NOTES)
         scale.append(NOTES[step_index])
-        step_index += step
+        step_index = (step_index + step) % len(NOTES)
     return scale
 
 
