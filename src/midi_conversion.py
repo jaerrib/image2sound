@@ -14,6 +14,8 @@ TICKS_PER_BEAT: int = 480  # ticks per quarter note
 
 
 def frequency_to_midi(frequency: float) -> int:
+    if frequency <= 0:
+        raise ValueError(f"Frequency must be positive, got {frequency}")
     midi_note: float = 69 + 12 * math.log2(frequency / 440.0)
     return round(midi_note)
 
