@@ -112,6 +112,11 @@ SCALE_PATTERNS: dict[str, list[int]] = {
     "MajorPentatonic": [2, 2, 3, 2, 3],
     "MinorPentatonic": [3, 2, 2, 3, 2],
     "8Tone": [1, 2, 1, 1, 1, 2, 2, 2],
+    "Octatonic": [2, 1, 2, 1, 2, 1, 2, 1],
+    "TritoneScale": [1, 5, 1, 5],
+    "ExpressionistPentatonic": [1, 3, 1, 4, 3],
+    "Caligari": [1, 3, 2, 1, 4, 1],
+    "Somnambulist": [2, 1, 4, 1, 4],
 }
 
 
