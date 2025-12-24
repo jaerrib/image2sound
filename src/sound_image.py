@@ -158,7 +158,9 @@ class SoundImage:
         wave: np.ndarray = amplitude * 2 * (t * freq - np.floor(0.5 + t * freq))
         for k in range(2, 20):
             wave += (amplitude / k) * 2 * (t * k * freq - np.floor(0.5 + t * k * freq))
-        wave = wave / np.max(np.abs(wave))
+        max_val = np.max(np.abs(wave))
+        if max_val > 0:
+            wave = wave / max_val
         return wave
 
     @staticmethod
