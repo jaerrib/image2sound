@@ -44,8 +44,7 @@ def generate_phrase(length: int, start_index: int, image_array, avg_color_dif: f
     note_index: int = start_index
     num: int = 0
     while num < total_note_index:
-        if note_index + 1 > len(image_array) - 1:
-            note_index = len(image_array) - note_index
+        note_index = (note_index + 1) % len(image_array)
         comp_index: int = note_index + 1
         note_length: int = get_length(
             image_array[note_index], image_array[comp_index], avg_color_dif
