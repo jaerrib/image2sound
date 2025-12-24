@@ -138,7 +138,7 @@ def get_scale(string: str) -> list[str]:
         index += 1
     scale = []
     for step in SCALE_PATTERNS[family]:
-        if step_index + step > len(NOTES):
+        if step_index + step >= len(NOTES):
             step_index -= len(NOTES)
         scale.append(NOTES[step_index])
         step_index += step
