@@ -108,7 +108,7 @@ def midi_convert(sound_image) -> None:
                         tempo=midi_tempo,
                     )
                 )
-                pan_value: int = round((127 / num_tracks) * track_num)
+                pan_value: int = round((127 / (num_tracks - 1)) * track_num)
                 track.append(
                     Message(
                         "control_change", control=10, value=pan_value, channel=track_num
