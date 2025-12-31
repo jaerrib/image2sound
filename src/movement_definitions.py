@@ -301,9 +301,9 @@ movement_type = {
         ],
         "sections": [
             {"label": "Opening", "sequence": ["Shadow"]},
-            {"label": "Wandering", "sequence": ["Corridor", "Tilt"]},
-            {"label": "Crisis", "sequence": ["Panic"]},
-            {"label": "Dissolve", "sequence": ["Stillness"]},
+            {"label": "Wandering", "sequence": ["Corridor", "Tilt", "Shadow"]},
+            {"label": "Crisis", "sequence": ["Panic", "Corridor", "Shadow"]},
+            {"label": "Dissolve", "sequence": ["Stillness", "Shadow"]},
         ],
     },
 }
