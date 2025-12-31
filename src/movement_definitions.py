@@ -306,4 +306,59 @@ movement_type = {
             {"label": "Dissolve", "sequence": ["Stillness", "Shadow"]},
         ],
     },
+    "hollowing": {
+        "phrases": [
+            {"label": "Void", "length": 8},
+            {"label": "Ash", "length": 6},
+            {"label": "Fissure", "length": 4},
+            {"label": "Echo", "length": 10},
+        ],
+        "sections": [
+            {"label": "Descent I", "sequence": ["Void", "Ash", "Echo"]},
+            {"label": "Descent II", "sequence": ["Void", "Fissure"]},
+            {"label": "Descent III", "sequence": ["Ash", "Fissure"]},
+            {"label": "Descent IV", "sequence": ["Fissure"]},
+        ],
+    },
+    "corridor": {
+        "phrases": [
+            {"label": "Gleam", "length": 10},
+            {"label": "Glass", "length": 8},
+            {"label": "Pulse", "length": 12},
+            {"label": "Breath", "length": 6},
+        ],
+        "sections": [
+            {"label": "Reflection I", "sequence": ["Gleam", "Glass", "Gleam"]},
+            {"label": "Reflection II", "sequence": ["Pulse", "Breath", "Pulse"]},
+            {"label": "Reflection III", "sequence": ["Glass", "Gleam", "Glass"]},
+        ],
+    },
+    "mechanism": {
+        "phrases": [
+            {"label": "Gear", "length": 6},
+            {"label": "Signal", "length": 8},
+            {"label": "Rise", "length": 10},
+            {"label": "Flare", "length": 12},
+        ],
+        "sections": [
+            {"label": "Cycle I", "sequence": ["Gear"]},
+            {"label": "Cycle II", "sequence": ["Gear", "Signal"]},
+            {"label": "Cycle III", "sequence": ["Gear", "Signal", "Rise"]},
+            {"label": "Cycle IV", "sequence": ["Gear", "Signal", "Rise", "Flare"]},
+        ],
+    },
+    "architecture": {
+        "phrases": [
+            {"label": "Pillar", "length": 14},
+            {"label": "Chamber", "length": 10},
+            {"label": "Spire", "length": 12},
+            {"label": "Ember", "length": 8},
+        ],
+        "sections": [
+            {"label": "Foundation", "sequence": ["Pillar"]},
+            {"label": "Elevation", "sequence": ["Chamber", "Pillar"]},
+            {"label": "Vibration", "sequence": ["Spire", "Chamber", "Pillar"]},
+            {"label": "Transfiguration", "sequence": ["Ember", "Spire", "Pillar"]},
+        ],
+    },
 }
