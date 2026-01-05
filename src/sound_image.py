@@ -52,7 +52,7 @@ class SoundImage:
             data["time_signature"]
         )
         self.tempo: int = data["tempo"]
-        self.image_array: list | None = None
+        self.image_array: np.ndarray | None = None
         self.reveal: bool = data["reveal"]
         self.overrides: list[str] = data["overrides"]
         self.method2: bool = data["method2"]
@@ -71,7 +71,7 @@ class SoundImage:
         total_measures: int = total_measures_from_movement(self.movement_type)
         max_notes: int = total_measures * comp_engine.NOTES_PER_MEASURE
         optimal_dim: int = math.floor(math.sqrt(max_notes))
-        self.image_array: np.ndarray = np.asarray(
+        self.image_array = np.asarray(
             img.resize((optimal_dim, optimal_dim)), dtype="int64"
         )
         return self

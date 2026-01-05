@@ -109,9 +109,18 @@ EQUIVALENT_NOTES: dict[str, str] = {
 SCALE_PATTERNS: dict[str, list[int]] = {
     "Major": [2, 2, 1, 2, 2, 2, 1],
     "Minor": [2, 1, 2, 2, 1, 2, 2],
+    "HarmonicMinor": [2, 1, 2, 2, 1, 3, 1],
     "MajorPentatonic": [2, 2, 3, 2, 3],
     "MinorPentatonic": [3, 2, 2, 3, 2],
+    "PhrygianDominant": [1, 3, 1, 2, 1, 4],
+    "Enigmatic": [1, 3, 2, 2, 2, 1, 1],
+    "WholeTone": [2, 2, 2, 2, 2, 2],
     "8Tone": [1, 2, 1, 1, 1, 2, 2, 2],
+    "Octatonic": [2, 1, 2, 1, 2, 1, 2, 1],
+    "TritoneScale": [1, 5, 1, 5],
+    "ExpressionistPentatonic": [1, 3, 1, 4, 3],
+    "Caligari": [1, 3, 2, 1, 4, 1],
+    "Somnambulist": [2, 1, 4, 1, 4],
 }
 
 
