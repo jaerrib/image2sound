@@ -21,7 +21,7 @@ FREQ_DICT: dict[str, float] = {
     "E2": 82.40689,
     "F2": 87.30706,
     "F#2": 92.49861,
-    "G2": 97.49861,
+    "G2": 97.99886,
     "G#2": 103.8262,
     "A2": 110.0000,
     "A#2": 116.5409,
@@ -51,10 +51,10 @@ FREQ_DICT: dict[str, float] = {
     "A#4": 466.1638,
     "B4": 493.8833,
     "C5": 523.2511,
-    "C#5": 523.2511,
+    "C#5": 554.3653,
     "D5": 587.3295,
     "D#5": 622.2540,
-    "E5": 659.4565,
+    "E5": 659.2551,
     "F5": 698.4565,
     "F#5": 739.9888,
     "G5": 783.9909,
@@ -77,7 +77,7 @@ FREQ_DICT: dict[str, float] = {
     "C7": 2093.005,
     "C#7": 2217.461,
     "D7": 2349.318,
-    "D#7": 248.016,
+    "D#7": 2489.016,
     "E7": 2637.020,
     "F7": 2793.826,
     "F#7": 2969.955,
@@ -109,47 +109,43 @@ EQUIVALENT_NOTES: dict[str, str] = {
 SCALE_PATTERNS: dict[str, list[int]] = {
     "Major": [2, 2, 1, 2, 2, 2, 1],
     "Minor": [2, 1, 2, 2, 1, 2, 2],
+    "HarmonicMinor": [2, 1, 2, 2, 1, 3, 1],
     "MajorPentatonic": [2, 2, 3, 2, 3],
     "MinorPentatonic": [3, 2, 2, 3, 2],
+    "PhrygianDominant": [1, 3, 1, 2, 1, 4],
+    "Enigmatic": [1, 3, 2, 2, 2, 1, 1],
+    "WholeTone": [2, 2, 2, 2, 2, 2],
     "8Tone": [1, 2, 1, 1, 1, 2, 2, 2],
+    "Octatonic": [2, 1, 2, 1, 2, 1, 2, 1],
+    "TritoneScale": [1, 5, 1, 5],
+    "ExpressionistPentatonic": [1, 3, 1, 4, 3],
+    "Caligari": [1, 3, 2, 1, 4, 1],
+    "Somnambulist": [2, 1, 4, 1, 4],
 }
 
 
 def flat_conversion(scale: list[str]) -> list[str]:
-    for index in range(len(scale)):
-        if scale[index] in EQUIVALENT_NOTES:
-            scale[index] = EQUIVALENT_NOTES[scale[index]]
-    return scale
+    return [EQUIVALENT_NOTES.get(note, note) for note in scale]
 
 
 def get_scale(string: str) -> list[str]:
-    data = string.split("-")
-    root, family = data[0], data[1]
-    for key in EQUIVALENT_NOTES:
-        if root == key:
-            root = EQUIVALENT_NOTES[key]
-    index = 0
-    step_index = 0
-    for note in NOTES:
-        if root == note:
-            root_index = index
-            step_index = root_index
-            break
-        index += 1
+    root, family = string.split("-")
+    root = EQUIVALENT_NOTES.get(root, root)
+    step_index = NOTES.index(root)
     scale = []
     for step in SCALE_PATTERNS[family]:
-        if step_index + step > len(NOTES):
-            step_index -= len(NOTES)
         scale.append(NOTES[step_index])
-        step_index += step
+        step_index = (step_index + step) % len(NOTES)
     return scale
 
 
 def get_tone_array(key: str) -> list[float]:
     tone_array = []
+    scale = get_scale(key)
+    converted_scale = flat_conversion(scale)
     for index in range(1, 8):
-        for note in flat_conversion(get_scale(key)):
-            tone_array.append(FREQ_DICT[note + str(index)])
+        for note in converted_scale:
+            tone_array.append(FREQ_DICT[f"{note}{index}"])
     return tone_array
 
 

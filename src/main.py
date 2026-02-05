@@ -34,23 +34,6 @@ parser.add_argument(
     type=int,
 )
 parser.add_argument(
-    "-min",
-    "--minutes",
-    help="Length of the output track in minutes. Only used in conjunction with --stereo.",
-    type=int,
-)
-parser.add_argument(
-    "-sec",
-    "--seconds",
-    help="Length of the output track in seconds. Only used in conjunction with --stereo.",
-    type=int,
-)
-parser.add_argument(
-    "--stereo",
-    help="Saves the audio as a stereo WAV file using a different conversion method and bypassed the composition engine.",
-    action="store_true",
-)
-parser.add_argument(
     "--reveal",
     help="Whether to use the image data itself to provide arguments",
     action="store_true",
@@ -110,5 +93,5 @@ for key in data:
             data["overrides"].append(key)
         data[key] = DEFAULT_SETTINGS[key]
 
-new_sound_image = SoundImage(data)
+new_sound_image: SoundImage = SoundImage(data)
 new_sound_image.convert()

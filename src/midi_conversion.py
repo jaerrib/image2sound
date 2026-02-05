@@ -14,6 +14,8 @@ TICKS_PER_BEAT: int = 480  # ticks per quarter note
 
 
 def frequency_to_midi(frequency: float) -> int:
+    if frequency <= 0:
+        raise ValueError(f"Frequency must be positive, got {frequency}")
     midi_note: float = 69 + 12 * math.log2(frequency / 440.0)
     return round(midi_note)
 
@@ -40,7 +42,7 @@ def generate_note(
 
 def total_measures_from_movement(movement_name: str) -> int:
     movement: dict = movement_type[movement_name]
-    phrase_lengths = {
+    phrase_lengths: dict = {
         phrase["label"]: phrase["length"] for phrase in movement["phrases"]
     }
     total_measures: int = 0
@@ -61,8 +63,8 @@ def determine_optimum_size(movement_data: str) -> int:
 
 
 def image_to_midi_array(img: Image.Image, movement_data: str) -> np.ndarray:
-    optimal_dim = determine_optimum_size(movement_data)
-    resized_img = img.resize((optimal_dim, optimal_dim))
+    optimal_dim: int = determine_optimum_size(movement_data)
+    resized_img: Image.Image = img.resize((optimal_dim, optimal_dim))
     return np.asarray(resized_img, dtype="int64")
 
 
@@ -74,7 +76,7 @@ def midi_convert(sound_image) -> None:
         )
         sys.exit(1)
     with Halo(text="Converting data…", color="white"):
-        img: Image = sound_image.open_file()
+        img: Image.Image = sound_image.open_file()
         if img.mode not in ["RGB", "RGBA", "CMYK"]:
             print("Invalid image type. Please use an RGB, RGBA, or CMYK file.")
         else:
@@ -82,7 +84,7 @@ def midi_convert(sound_image) -> None:
                 sound_image.override(img)
             sound_image.image_array = image_to_midi_array(img, movement_style)
             sound_image.image_mode = img.mode
-            midi_file = MidiFile(ticks_per_beat=TICKS_PER_BEAT, type=1)
+            midi_file: MidiFile = MidiFile(ticks_per_beat=TICKS_PER_BEAT, type=1)
 
             num_tracks: int = 4 if img.mode == "CMYK" else 3
 
@@ -106,7 +108,7 @@ def midi_convert(sound_image) -> None:
                         tempo=midi_tempo,
                     )
                 )
-                pan_value: int = round((127 / num_tracks) * track_num)
+                pan_value: int = round((127 / (num_tracks - 1)) * track_num)
                 track.append(
                     Message(
                         "control_change", control=10, value=pan_value, channel=track_num
@@ -119,7 +121,7 @@ def midi_convert(sound_image) -> None:
                 flat_array: list = flatten_image_array(
                     sound_image.image_array, track_num
                 )
-                avg_color_dif = get_avg_color_dif(flat_array)
+                avg_color_dif: float = get_avg_color_dif(flat_array)
                 new_movement: dict = comp_engine.generate_movement(
                     movement_style, flat_array, avg_color_dif
                 )
@@ -134,7 +136,11 @@ def midi_convert(sound_image) -> None:
 
 
 def save_midi_file(sound_image, midi_file: MidiFile) -> None:
-    file_name = ".".join(sound_image.path.split(".")[:-1]).split("/")[-1] + ".mid"
+    tempo = tempo_marking(sound_image.tempo)
+    file_name = (
+        ".".join(sound_image.path.split(".")[:-1]).split("/")[-1]
+        + f", {sound_image.movement_type.capitalize()} in {sound_image.key} ({tempo}).mid"
+    )
     if sound_image.output == "":
         pass
     elif os.path.isdir(sound_image.output):
@@ -146,7 +152,7 @@ def save_midi_file(sound_image, midi_file: MidiFile) -> None:
     print(f"Midi function complete - file saved as {file_name}")
 
 
-def get_program_instrument(image_mode, track_num: int) -> int:
+def get_program_instrument(image_mode: str, track_num: int) -> int:
     channel_value: str = image_mode[track_num]
     match channel_value:
         case "C" | "M" | "R":
@@ -157,6 +163,18 @@ def get_program_instrument(image_mode, track_num: int) -> int:
             return 42
         case _:
             return 0
+
+
+def tempo_marking(bpm: int):
+    tempo_map = [
+        (60, "Largo"),
+        (76, "Adagio"),
+        (108, "Andante"),
+        (120, "Moderato"),
+        (168, "Allegro"),
+        (999, "Presto"),
+    ]
+    return next(label for limit, label in tempo_map if bpm <= limit)
 
 
 def flatten_image_array(image_array, track_num: int) -> list:
